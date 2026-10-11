@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
 import { WOOD_MATERIALS, UPHOLSTERY_MATERIALS, FLAGSHIP_PRODUCT } from '@/data/catalog';
-import { ArrowDown, Check, Layers, Sliders, Home } from 'lucide-react';
+import { ArrowDown, Check, Layers, Sliders, Home, Play } from 'lucide-react';
 import Link from 'next/link';
+import { BrandFilmModal } from '@/components/media/BrandFilmModal';
 
 export const ScrollStoryOverlay: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,6 +29,7 @@ export const ScrollStoryOverlay: React.FC = () => {
   } = useSceneStore();
 
   const { addItem } = useCartStore();
+  const [isFilmModalOpen, setIsFilmModalOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -161,20 +163,27 @@ export const ScrollStoryOverlay: React.FC = () => {
 
         {/* Hero Bottom Bar & CTA */}
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 pointer-events-auto pt-8 sm:pt-12">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
             <button
               onClick={handleQuickAdd}
-              className="bg-ivory hover:bg-white text-charcoal-950 px-8 py-4 uppercase tracking-[0.25em] text-xs font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] flex items-center justify-center space-x-2"
+              className="bg-ivory hover:bg-white text-charcoal-950 px-7 py-4 uppercase tracking-[0.25em] text-xs font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] flex items-center justify-center space-x-2"
             >
               <span>Acquire Monograph</span>
               <span className="font-mono text-charcoal-700 font-normal">· $3,450</span>
             </button>
             <Link
               href={`/products/${FLAGSHIP_PRODUCT.slug}`}
-              className="border border-white/20 hover:border-white/50 text-sand-200 hover:text-white px-6 py-4 uppercase tracking-[0.25em] text-xs transition-colors text-center"
+              className="border border-white/20 hover:border-white/50 text-sand-200 hover:text-white px-5 py-4 uppercase tracking-[0.25em] text-xs transition-colors text-center"
             >
               Interactive Dossier
             </Link>
+            <button
+              onClick={() => setIsFilmModalOpen(true)}
+              className="border border-accent/40 bg-accent/10 hover:bg-accent/20 text-accent px-5 py-4 uppercase tracking-[0.25em] text-xs transition-all duration-200 flex items-center justify-center space-x-2 group"
+            >
+              <Play className="w-3.5 h-3.5 fill-current transition-transform group-hover:scale-110" />
+              <span>Watch Film</span>
+            </button>
           </div>
 
           <div className="flex items-center space-x-3 text-sand-400 text-xs tracking-widest font-mono">
@@ -346,6 +355,9 @@ export const ScrollStoryOverlay: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Cinematic Brand Film Modal */}
+      <BrandFilmModal isOpen={isFilmModalOpen} onClose={() => setIsFilmModalOpen(false)} />
     </div>
   );
 };

@@ -104,7 +104,7 @@ export const FLAGSHIP_PRODUCT: Product = {
       price: 3450,
       inStock: true,
       leadTimeWeeks: 2,
-      images: ['https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1400&q=85'],
+      images: ['/images/film/hero-plinth.jpg'],
     },
     {
       id: 'var-02',
@@ -117,7 +117,7 @@ export const FLAGSHIP_PRODUCT: Product = {
       compareAtPrice: 4200,
       inStock: true,
       leadTimeWeeks: 3,
-      images: ['https://images.unsplash.com/photo-1580481077195-c3f25c81bdf9?auto=format&fit=crop&w=1400&q=85'],
+      images: ['/images/film/cognac-leather.jpg'],
     },
     {
       id: 'var-03',
@@ -129,7 +129,7 @@ export const FLAGSHIP_PRODUCT: Product = {
       price: 3600,
       inStock: true,
       leadTimeWeeks: 4,
-      images: ['https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1400&q=85'],
+      images: ['/images/film/exploded-view.jpg'],
     },
   ],
   annotations: [
@@ -175,10 +175,10 @@ export const FLAGSHIP_PRODUCT: Product = {
     },
   ],
   images: {
-    hero: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1400&q=85',
-    editorial: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1400&q=85',
-    detail: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1400&q=85',
-    inSitu: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1400&q=85',
+    hero: '/images/film/hero-plinth.jpg',
+    editorial: '/images/film/interior-villa.jpg',
+    detail: '/images/film/macro-joinery.jpg',
+    inSitu: '/images/film/cognac-leather.jpg',
   },
   featured: true,
   tags: ['Hero', 'Lounge', 'Iconic', 'Architectural'],

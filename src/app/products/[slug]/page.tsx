@@ -37,7 +37,7 @@ interface ProductPageProps {
 export default function ProductDetailPage({ params }: ProductPageProps) {
   const product = PRODUCTS_CATALOG.find((p) => p.slug === params.slug) || PRODUCTS_CATALOG[0];
   const [quantity, setQuantity] = useState(1);
-  const [viewMode, setViewMode] = useState<'3d' | 'editorial'>('3d');
+  const [viewMode, setViewMode] = useState<'3d' | 'editorial' | 'film'>('3d');
 
   const { selectedWoodId, selectedFabricId, setSelectedWood, setSelectedFabric } = useSceneStore();
   const { addItem } = useCartStore();
@@ -83,10 +83,10 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
           {/* Left Column: 3D Studio Viewer / Editorial Images */}
           <div className="lg:col-span-7 space-y-6">
             {/* View Mode Toggle */}
-            <div className="flex items-center space-x-2 text-xs font-mono tracking-widest uppercase">
+            <div className="flex items-center space-x-2 text-xs font-mono tracking-widest uppercase overflow-x-auto">
               <button
                 onClick={() => setViewMode('3d')}
-                className={`py-2 px-4 border transition-all ${
+                className={`py-2 px-4 border transition-all whitespace-nowrap ${
                   viewMode === '3d'
                     ? 'border-accent bg-accent/10 text-accent font-semibold'
                     : 'border-white/10 text-sand-400 hover:text-white'
@@ -96,7 +96,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               </button>
               <button
                 onClick={() => setViewMode('editorial')}
-                className={`py-2 px-4 border transition-all ${
+                className={`py-2 px-4 border transition-all whitespace-nowrap ${
                   viewMode === 'editorial'
                     ? 'border-accent bg-accent/10 text-accent font-semibold'
                     : 'border-white/10 text-sand-400 hover:text-white'
@@ -104,10 +104,31 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               >
                 Editorial In Situ
               </button>
+              <button
+                onClick={() => setViewMode('film')}
+                className={`py-2 px-4 border transition-all whitespace-nowrap ${
+                  viewMode === 'film'
+                    ? 'border-accent bg-accent/10 text-accent font-semibold'
+                    : 'border-white/10 text-sand-400 hover:text-white'
+                }`}
+              >
+                Brand Film (0:10)
+              </button>
             </div>
 
             {viewMode === '3d' ? (
               <ProductStudioViewer />
+            ) : viewMode === 'film' ? (
+              <div className="relative aspect-video w-full border border-white/10 bg-black overflow-hidden shadow-2xl">
+                <video
+                  src="/videos/brand-film.mp4"
+                  controls
+                  autoPlay
+                  loop
+                  playsInline
+                  className="w-full h-full object-contain"
+                />
+              </div>
             ) : (
               <div className="space-y-4">
                 <div className="relative aspect-[4/3] border border-white/10 overflow-hidden bg-charcoal-900">

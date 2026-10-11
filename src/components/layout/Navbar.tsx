@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Menu, X, ArrowUpRight } from 'lucide-react';
+import { ShoppingBag, Menu, X, ArrowUpRight, Play } from 'lucide-react';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
+import { BrandFilmModal } from '@/components/media/BrandFilmModal';
 
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [filmModalOpen, setFilmModalOpen] = useState(false);
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
 
@@ -69,6 +71,14 @@ export const Navbar: React.FC = () => {
 
           {/* Actions: Cart & Mobile Menu */}
           <div className="flex items-center space-x-6">
+            <button
+              onClick={() => setFilmModalOpen(true)}
+              className="hidden lg:inline-flex items-center space-x-1.5 text-[11px] uppercase tracking-widest text-accent hover:text-white border border-accent/40 hover:border-accent px-3 py-1.5 rounded-none transition-all duration-200"
+            >
+              <Play className="w-2.5 h-2.5 fill-current" />
+              <span>Film</span>
+            </button>
+
             <Link
               href="/collections"
               className="hidden lg:inline-flex items-center space-x-1.5 text-[11px] uppercase tracking-widest text-sand-300 hover:text-white border border-white/10 px-3.5 py-1.5 rounded-none transition-all duration-200 hover:border-white/30"
@@ -116,10 +126,20 @@ export const Navbar: React.FC = () => {
                 {item.label}
               </Link>
             ))}
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setFilmModalOpen(true);
+              }}
+              className="py-2 border-b border-white/5 hover:text-accent transition-colors text-accent flex items-center space-x-2 text-left"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Watch Brand Film</span>
+            </button>
             <Link
               href="/collections"
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 border-b border-white/5 hover:text-accent transition-colors text-accent"
+              className="py-2 border-b border-white/5 hover:text-accent transition-colors text-sand-300"
             >
               All Collections →
             </Link>
@@ -133,6 +153,9 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Brand Film Cinema Modal */}
+      <BrandFilmModal isOpen={filmModalOpen} onClose={() => setFilmModalOpen(false)} />
     </>
   );
 };
