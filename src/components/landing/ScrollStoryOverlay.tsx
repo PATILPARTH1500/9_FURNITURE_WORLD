@@ -5,27 +5,35 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
-import { WOOD_MATERIALS, UPHOLSTERY_MATERIALS, FLAGSHIP_PRODUCT } from '@/data/catalog';
-import { ArrowDown, Check, Layers, Sliders, Home, Play } from 'lucide-react';
+import { FLAGSHIP_PRODUCT, PRODUCTS_CATALOG } from '@/data/catalog';
+import { ArrowDown, Play, Compass, ArrowUpRight, Check, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { BrandFilmModal } from '@/components/media/BrandFilmModal';
+import { ProductQuickDrawer } from '@/components/discovery/ProductQuickDrawer';
+
+const RESIDENCE_ROOMS = [
+  { id: 'foyer', name: 'Entrance Foyer', subtitle: 'Stone Portal & Gallery Bench' },
+  { id: 'salon', name: 'Main Living Salon', subtitle: 'Bouclé Sectional & Travertine Hearth' },
+  { id: 'fireside', name: 'Fireside Seating', subtitle: 'Kronos Lounge Chair & Garden Glazing' },
+  { id: 'dining', name: 'Dining Sanctuary', subtitle: '280cm Smoked Walnut Monolith Table' },
+  { id: 'sanctuary', name: 'Master Sanctuary', subtitle: 'Low Rift-Oak Platform Bed & Linens' },
+  { id: 'vista', name: 'Architectural Vista', subtitle: 'Continuous Residence Overview' },
+];
 
 export const ScrollStoryOverlay: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLDivElement>(null);
-  const engineeringRef = useRef<HTMLDivElement>(null);
-  const materialsRef = useRef<HTMLDivElement>(null);
-  const interiorRef = useRef<HTMLDivElement>(null);
+  const foyerRef = useRef<HTMLDivElement>(null);
+  const salonRef = useRef<HTMLDivElement>(null);
+  const firesideRef = useRef<HTMLDivElement>(null);
+  const diningRef = useRef<HTMLDivElement>(null);
+  const sanctuaryRef = useRef<HTMLDivElement>(null);
+  const vistaRef = useRef<HTMLDivElement>(null);
 
   const {
-    activeScene,
-    selectedWoodId,
-    selectedFabricId,
-    setActiveScene,
+    activeRoomIndex,
+    setActiveRoomIndex,
     setScrollProgress,
-    setExplodedProgress,
-    setSelectedWood,
-    setSelectedFabric,
+    setActiveProduct,
   } = useSceneStore();
 
   const { addItem } = useCartStore();
@@ -36,7 +44,7 @@ export const ScrollStoryOverlay: React.FC = () => {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // 1. Overall scroll progress tracker
+      // 1. Overall continuous scroll progress tracker
       ScrollTrigger.create({
         trigger: containerRef.current,
         start: 'top top',
@@ -46,58 +54,58 @@ export const ScrollStoryOverlay: React.FC = () => {
         },
       });
 
-      // 2. Scene 0: Hero
+      // 2. Room 0: Foyer
       ScrollTrigger.create({
-        trigger: heroRef.current,
+        trigger: foyerRef.current,
         start: 'top top',
         end: 'bottom top',
-        onEnter: () => setActiveScene(0),
-        onEnterBack: () => setActiveScene(0),
+        onEnter: () => setActiveRoomIndex(0),
+        onEnterBack: () => setActiveRoomIndex(0),
       });
 
-      // 3. Scene 1: Engineering / Exploded view
+      // 3. Room 1: Living Salon
       ScrollTrigger.create({
-        trigger: engineeringRef.current,
-        start: 'top 80%',
-        end: 'bottom 20%',
-        onEnter: () => setActiveScene(1),
-        onEnterBack: () => setActiveScene(1),
-        onUpdate: (self) => {
-          const progress = self.progress;
-          if (progress < 0.28) {
-            setExplodedProgress(progress / 0.28);
-          } else if (progress < 0.72) {
-            setExplodedProgress(1.0);
-          } else {
-            setExplodedProgress((1 - progress) / 0.28);
-          }
-        },
-        onLeave: () => setExplodedProgress(0),
-        onLeaveBack: () => setExplodedProgress(0),
-      });
-
-      // 4. Scene 2: Materials
-      ScrollTrigger.create({
-        trigger: materialsRef.current,
+        trigger: salonRef.current,
         start: 'top 70%',
         end: 'bottom 30%',
-        onEnter: () => {
-          setActiveScene(2);
-          setExplodedProgress(0);
-        },
-        onEnterBack: () => {
-          setActiveScene(2);
-          setExplodedProgress(0);
-        },
+        onEnter: () => setActiveRoomIndex(1),
+        onEnterBack: () => setActiveRoomIndex(1),
       });
 
-      // 5. Scene 3: Interior Reveal
+      // 4. Room 2: Fireside Kronos Lounge
       ScrollTrigger.create({
-        trigger: interiorRef.current,
+        trigger: firesideRef.current,
         start: 'top 70%',
-        end: 'bottom 20%',
-        onEnter: () => setActiveScene(3),
-        onEnterBack: () => setActiveScene(3),
+        end: 'bottom 30%',
+        onEnter: () => setActiveRoomIndex(2),
+        onEnterBack: () => setActiveRoomIndex(2),
+      });
+
+      // 5. Room 3: Dining Wing
+      ScrollTrigger.create({
+        trigger: diningRef.current,
+        start: 'top 70%',
+        end: 'bottom 30%',
+        onEnter: () => setActiveRoomIndex(3),
+        onEnterBack: () => setActiveRoomIndex(3),
+      });
+
+      // 6. Room 4: Bedroom Sanctuary
+      ScrollTrigger.create({
+        trigger: sanctuaryRef.current,
+        start: 'top 70%',
+        end: 'bottom 30%',
+        onEnter: () => setActiveRoomIndex(4),
+        onEnterBack: () => setActiveRoomIndex(4),
+      });
+
+      // 7. Room 5: Architectural Vista
+      ScrollTrigger.create({
+        trigger: vistaRef.current,
+        start: 'top 70%',
+        end: 'bottom bottom',
+        onEnter: () => setActiveRoomIndex(5),
+        onEnterBack: () => setActiveRoomIndex(5),
       });
 
       ScrollTrigger.refresh();
@@ -106,20 +114,24 @@ export const ScrollStoryOverlay: React.FC = () => {
     return () => {
       ctx.revert();
     };
-  }, [setActiveScene, setScrollProgress, setExplodedProgress]);
+  }, [setActiveRoomIndex, setScrollProgress]);
 
-  const handleQuickAdd = () => {
+  const scrollToRoom = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleQuickAddKronos = () => {
     const currentVariant = FLAGSHIP_PRODUCT.variants[0];
-    const woodObj = WOOD_MATERIALS.find((w) => w.id === selectedWoodId) || WOOD_MATERIALS[0];
-    const fabricObj = UPHOLSTERY_MATERIALS.find((f) => f.id === selectedFabricId) || UPHOLSTERY_MATERIALS[0];
-
     addItem({
       productId: FLAGSHIP_PRODUCT.id,
       variantId: currentVariant.id,
       productName: FLAGSHIP_PRODUCT.name,
-      variantName: `${woodObj.name} / ${fabricObj.name}`,
-      woodFinish: woodObj.name,
-      fabricFinish: fabricObj.name,
+      variantName: currentVariant.name,
+      woodFinish: 'Natural White Oak',
+      fabricFinish: 'Nordic Bouclé Ivory',
       unitPrice: FLAGSHIP_PRODUCT.price,
       quantity: 1,
       image: FLAGSHIP_PRODUCT.images.hero,
@@ -128,236 +140,274 @@ export const ScrollStoryOverlay: React.FC = () => {
 
   return (
     <div ref={containerRef} className="relative z-10 w-full pointer-events-none">
-      {/* HUD Section Counter (Top Right) */}
-      <div className="fixed top-24 right-6 md:right-12 z-20 hidden sm:flex items-center space-x-3 pointer-events-auto">
-        <div className="bg-charcoal-900/85 backdrop-blur-md border border-white/10 px-3.5 py-1.5 flex items-center space-x-3 text-[11px] font-mono tracking-widest text-sand-300 shadow-xl">
+      {/* =========================================================================
+          HUD RESIDENCE ROOM NAVIGATION (Top Right Floating Bar)
+         ========================================================================= */}
+      <div className="fixed top-24 right-6 md:right-12 z-30 hidden lg:flex flex-col items-end space-y-2 pointer-events-auto">
+        <div className="bg-charcoal-900/90 backdrop-blur-md border border-white/10 px-4 py-2 flex items-center space-x-3 text-[11px] font-mono tracking-widest text-sand-300 shadow-2xl">
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          <span className="text-white">
-            {`0${activeScene + 1} · ${['OVERVIEW', 'ANATOMY', 'MATERIALITY', 'SPATIAL', 'CURATION'][activeScene]}`}
+          <span className="text-white uppercase">
+            {`0${activeRoomIndex + 1} · ${RESIDENCE_ROOMS[activeRoomIndex]?.name || 'RESIDENCE'}`}
           </span>
+        </div>
+
+        {/* Room Waypoint Anchors */}
+        <div className="bg-charcoal-950/80 backdrop-blur-md border border-white/5 p-1.5 flex flex-col space-y-1 text-[10px] font-mono">
+          {RESIDENCE_ROOMS.map((room, idx) => (
+            <button
+              key={room.id}
+              onClick={() => scrollToRoom(room.id)}
+              className={`px-3 py-1 text-left transition-all flex items-center space-x-2 ${
+                activeRoomIndex === idx
+                  ? 'bg-accent/15 text-accent font-semibold border-l-2 border-accent'
+                  : 'text-sand-400 hover:text-white'
+              }`}
+            >
+              <span>0{idx + 1}</span>
+              <span className="uppercase tracking-wider">{room.name}</span>
+            </button>
+          ))}
         </div>
       </div>
 
       {/* =========================================================================
-          SCENE 1: CINEMATIC HERO
+          ROOM 01: ENTRANCE FOYER
          ========================================================================= */}
       <section
-        ref={heroRef}
-        id="story"
-        className="min-h-screen flex flex-col justify-between pt-28 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-16 max-w-7xl mx-auto"
+        ref={foyerRef}
+        id="foyer"
+        className="min-h-screen flex flex-col justify-between pt-28 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-16 max-w-7xl mx-auto scroll-mt-24"
       >
-        {/* Top Kicker & Headline (Framed on the left) */}
+        {/* Top Kicker & Editorial Title */}
         <div className="space-y-3 pointer-events-auto max-w-lg">
           <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
             <span className="w-1.5 h-1.5 bg-accent rounded-full" />
-            <span>Monograph No. 01 — {FLAGSHIP_PRODUCT.year}</span>
+            <span>Architectural Tour — Residence No. 01</span>
           </div>
           <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-ivory font-light leading-[1.05]">
-            The Kronos <br />
-            <span className="italic font-normal">Lounge Chair</span>
+            The Continuous <br />
+            <span className="italic font-normal">Luxury Residence</span>
           </h1>
           <p className="text-xs md:text-sm text-sand-300 font-light tracking-wide max-w-md pt-2 leading-relaxed">
-            {FLAGSHIP_PRODUCT.description}
+            Travel through a single architect-designed home. As you scroll, the camera glides
+            naturally through connected rooms, revealing furniture and craftsmanship within one continuous
+            environment of travertine, natural oak, and warm sunlight.
           </p>
         </div>
 
-        {/* Hero Bottom Bar & CTA */}
+        {/* Bottom Actions */}
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 pointer-events-auto pt-8 sm:pt-12">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
             <button
-              onClick={handleQuickAdd}
+              onClick={() => setActiveProduct('prod-003')}
               className="bg-ivory hover:bg-white text-charcoal-950 px-7 py-4 uppercase tracking-[0.25em] text-xs font-semibold transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.02] flex items-center justify-center space-x-2"
             >
-              <span>Acquire Monograph</span>
-              <span className="font-mono text-charcoal-700 font-normal">· $3,450</span>
+              <span>Inspect Foyer Bench</span>
+              <span className="font-mono text-charcoal-700 font-normal">· $4,200</span>
             </button>
-            <Link
-              href={`/products/${FLAGSHIP_PRODUCT.slug}`}
-              className="border border-white/20 hover:border-white/50 text-sand-200 hover:text-white px-5 py-4 uppercase tracking-[0.25em] text-xs transition-colors text-center"
-            >
-              Interactive Dossier
-            </Link>
             <button
               onClick={() => setIsFilmModalOpen(true)}
               className="border border-accent/40 bg-accent/10 hover:bg-accent/20 text-accent px-5 py-4 uppercase tracking-[0.25em] text-xs transition-all duration-200 flex items-center justify-center space-x-2 group"
             >
               <Play className="w-3.5 h-3.5 fill-current transition-transform group-hover:scale-110" />
-              <span>Watch Film</span>
+              <span>Watch Film (0:10)</span>
             </button>
           </div>
 
           <div className="flex items-center space-x-3 text-sand-400 text-xs tracking-widest font-mono">
-            <span className="text-[10px] uppercase">Scroll to deconstruct</span>
+            <span className="text-[10px] uppercase">Scroll to enter salon</span>
             <ArrowDown className="w-4 h-4 animate-bounce text-accent" />
           </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SCENE 2: ENGINEERING / EXPLODED VIEW
+          ROOM 02: MAIN LIVING SALON
          ========================================================================= */}
       <section
-        ref={engineeringRef}
-        id="engineering"
-        className="min-h-[140vh] flex flex-col justify-center px-6 md:px-16 max-w-7xl mx-auto py-24 scroll-mt-24"
+        ref={salonRef}
+        id="salon"
+        className="min-h-[120vh] flex flex-col justify-center px-6 md:px-16 max-w-7xl mx-auto py-24 scroll-mt-24"
       >
-        <div className="pointer-events-auto max-w-md space-y-4 bg-charcoal-950/80 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
+        <div className="pointer-events-auto max-w-md space-y-4 bg-charcoal-950/85 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
           <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
-            <Layers className="w-3.5 h-3.5" />
-            <span>02 · Structural Architecture</span>
+            <Compass className="w-3.5 h-3.5" />
+            <span>02 · The Living Pavilion</span>
           </div>
 
           <h2 className="font-serif text-3xl md:text-4xl text-ivory tracking-wide leading-tight">
-            Separated in space. <br />
-            <span className="italic">Tenon-joined permanence.</span>
+            Expansive volume. <br />
+            <span className="italic">Grounded stillness.</span>
           </h2>
 
           <p className="text-xs md:text-sm text-sand-300 font-light leading-relaxed">
-            Every component is machined to sub-millimeter tolerances. As you scroll, the solid
-            timber armature, ergonomic thoracic incline, and channeled natural latex core separate
-            to reveal internal Kyoto mortise-and-tenon craftsmanship.
+            Moving through the stone portal reveals the grand living pavilion. A low-profile modular
+            sectional sofa upholstered in textured Nordic bouclé anchors the floor, floating beside
+            a raw honed travertine coffee table and the turned solid oak Kyoto pedestal.
           </p>
 
-          <div className="pt-2 border-t border-white/10">
-            <p className="text-[10px] uppercase tracking-widest text-accent font-mono">
-              ✦ Click floating gold markers in 3D scene to inspect joinery specifications
-            </p>
+          <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+            <button
+              onClick={() => setActiveProduct('prod-001')}
+              className="text-[10px] uppercase tracking-widest text-accent hover:text-white font-mono flex items-center space-x-1"
+            >
+              <span>✦ Quick Dossier: Kanso Sectional ($8,400)</span>
+            </button>
           </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SCENE 3: MATERIALS & FINISHES
+          ROOM 03: FIRESIDE FOCAL (KRONOS LOUNGE CHAIR)
          ========================================================================= */}
       <section
-        ref={materialsRef}
-        id="materials"
-        className="min-h-screen flex flex-col justify-center px-6 md:px-16 max-w-7xl mx-auto py-24 scroll-mt-24"
+        ref={firesideRef}
+        id="fireside"
+        className="min-h-[120vh] flex flex-col justify-center items-end px-6 md:px-16 max-w-7xl mx-auto py-24 scroll-mt-24"
       >
-        <div className="pointer-events-auto max-w-md ml-auto space-y-6 bg-charcoal-950/85 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
+        <div className="pointer-events-auto max-w-md space-y-4 bg-charcoal-950/85 backdrop-blur-md p-8 border border-white/10 shadow-2xl text-left">
           <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
-            <Sliders className="w-3.5 h-3.5" />
-            <span>03 · Tactile Materiality</span>
+            <span className="w-1.5 h-1.5 bg-accent rounded-full" />
+            <span>03 · Fireside Contemplation</span>
           </div>
 
           <h2 className="font-serif text-3xl md:text-4xl text-ivory tracking-wide leading-tight">
-            PBR Texture Response
+            The Kronos <br />
+            <span className="italic">Lounge Chair</span>
           </h2>
 
-          <p className="text-xs text-sand-300 font-light leading-relaxed">
-            Real physically based rendering reacting to ambient studio light. Select materials below
-            to dynamically alter the 3D surface roughness, metalness, and tone in real-time.
+          <p className="text-xs md:text-sm text-sand-300 font-light leading-relaxed">
+            Positioned beside the cantilevered travertine hearth and garden sliding glass, the
+            Kronos armchair balances Japanese mortise-and-tenon armature with relaxed 112° thoracic incline.
           </p>
 
-          {/* Timber Swatches */}
-          <div className="space-y-2 pt-2 border-t border-white/10">
-            <span className="text-[10px] tracking-widest uppercase text-sand-400 font-mono block">
-              Solid Timber Finish
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              {WOOD_MATERIALS.map((wood) => {
-                const isSelected = selectedWoodId === wood.id;
-                return (
-                  <button
-                    key={wood.id}
-                    onClick={() => setSelectedWood(wood.id)}
-                    className={`p-2.5 text-left border transition-all ${
-                      isSelected
-                        ? 'border-accent bg-charcoal-800'
-                        : 'border-white/10 hover:border-white/30 bg-charcoal-900/60'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span
-                        className="w-3 h-3 rounded-full border border-black/40"
-                        style={{ backgroundColor: wood.colorHex }}
-                      />
-                      {isSelected && <Check className="w-3 h-3 text-accent ml-auto" />}
-                    </div>
-                    <p className="text-[10px] text-ivory leading-tight truncate">{wood.name}</p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Upholstery Swatches */}
-          <div className="space-y-2 pt-2 border-t border-white/10">
-            <span className="text-[10px] tracking-widest uppercase text-sand-400 font-mono block">
-              Upholstery Textile
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              {UPHOLSTERY_MATERIALS.map((fab) => {
-                const isSelected = selectedFabricId === fab.id;
-                return (
-                  <button
-                    key={fab.id}
-                    onClick={() => setSelectedFabric(fab.id)}
-                    className={`p-2.5 text-left border transition-all ${
-                      isSelected
-                        ? 'border-accent bg-charcoal-800'
-                        : 'border-white/10 hover:border-white/30 bg-charcoal-900/60'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span
-                        className="w-3 h-3 rounded-full border border-black/40"
-                        style={{ backgroundColor: fab.colorHex }}
-                      />
-                      {isSelected && <Check className="w-3 h-3 text-accent ml-auto" />}
-                    </div>
-                    <p className="text-[10px] text-ivory leading-tight truncate">{fab.name}</p>
-                  </button>
-                );
-              })}
-            </div>
+          <div className="pt-2 border-t border-white/10 flex items-center space-x-4">
+            <button
+              onClick={handleQuickAddKronos}
+              className="bg-ivory hover:bg-white text-charcoal-950 px-4 py-2 text-[10px] uppercase font-mono tracking-widest font-semibold"
+            >
+              Acquire ($3,450)
+            </button>
+            <Link
+              href={`/products/${FLAGSHIP_PRODUCT.slug}`}
+              className="text-[10px] uppercase font-mono tracking-widest text-accent hover:text-white"
+            >
+              Inspect 3D Dossier →
+            </Link>
           </div>
         </div>
       </section>
 
       {/* =========================================================================
-          SCENE 4: INTERIOR REVEAL & SCALE
+          ROOM 04: DINING WING (SÖLVE MONOLITH TABLE)
          ========================================================================= */}
       <section
-        ref={interiorRef}
-        id="spaces"
-        className="min-h-screen flex flex-col justify-end px-6 md:px-16 max-w-7xl mx-auto pb-24 scroll-mt-24"
+        ref={diningRef}
+        id="dining"
+        className="min-h-[120vh] flex flex-col justify-center px-6 md:px-16 max-w-7xl mx-auto py-24 scroll-mt-24"
       >
-        <div className="pointer-events-auto max-w-md space-y-4 bg-charcoal-950/80 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
+        <div className="pointer-events-auto max-w-md space-y-4 bg-charcoal-950/85 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
           <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
-            <Home className="w-3.5 h-3.5" />
-            <span>04 · In Situ Equilibrium</span>
+            <span className="w-1.5 h-1.5 bg-accent rounded-full" />
+            <span>04 · The Dining Sanctuary</span>
           </div>
 
           <h2 className="font-serif text-3xl md:text-4xl text-ivory tracking-wide leading-tight">
-            Resting in Architectural Stillness
+            Sölve Monolith. <br />
+            <span className="italic">Ceremonial timber.</span>
           </h2>
 
           <p className="text-xs md:text-sm text-sand-300 font-light leading-relaxed">
-            The camera draws back to reveal the chair resting upon a honed monolithic travertine
-            plinth. Natural diagonal sunlight streams across the architectural volume, illustrating
-            how quiet proportions ground contemporary living spaces.
+            Gliding into the dining pavilion reveals the 280cm smoked walnut monolith, supported
+            by fluted twin pedestals and flanked by sculpted Silva dining chairs beneath a linear bronze luminaire.
           </p>
 
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10 text-center font-mono">
-            <div>
-              <p className="text-[10px] text-sand-500 uppercase">Width</p>
-              <p className="text-sm text-ivory font-semibold">84 cm</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-sand-500 uppercase">Depth</p>
-              <p className="text-sm text-ivory font-semibold">89 cm</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-sand-500 uppercase">Height</p>
-              <p className="text-sm text-ivory font-semibold">76 cm</p>
-            </div>
+          <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+            <button
+              onClick={() => setActiveProduct('prod-002')}
+              className="text-[10px] uppercase tracking-widest text-accent hover:text-white font-mono"
+            >
+              ✦ Inspect Sölve Dining Table ($6,800)
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Cinematic Brand Film Modal */}
+      {/* =========================================================================
+          ROOM 05: MASTER BEDROOM SANCTUARY
+         ========================================================================= */}
+      <section
+        ref={sanctuaryRef}
+        id="sanctuary"
+        className="min-h-[120vh] flex flex-col justify-center items-end px-6 md:px-16 max-w-7xl mx-auto py-24 scroll-mt-24"
+      >
+        <div className="pointer-events-auto max-w-md space-y-4 bg-charcoal-950/85 backdrop-blur-md p-8 border border-white/10 shadow-2xl text-left">
+          <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
+            <span className="w-1.5 h-1.5 bg-accent rounded-full" />
+            <span>05 · The Sleeping Sanctuary</span>
+          </div>
+
+          <h2 className="font-serif text-3xl md:text-4xl text-ivory tracking-wide leading-tight">
+            Oriente Platform. <br />
+            <span className="italic">Acoustic quiet.</span>
+          </h2>
+
+          <p className="text-xs md:text-sm text-sand-300 font-light leading-relaxed">
+            Along the gallery corridor lies the private bedroom wing, lined in rift-cut white oak
+            wall cladding. The low-profile Oriente bed with Belgian linen bedding rests opposite
+            the corner window and Nordica daybed.
+          </p>
+
+          <div className="pt-2 border-t border-white/10 flex items-center space-x-4">
+            <button
+              onClick={() => setActiveProduct('prod-004')}
+              className="text-[10px] uppercase tracking-widest text-accent hover:text-white font-mono"
+            >
+              ✦ Inspect Oriente Suite ($5,600)
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          ROOM 06: ARCHITECTURAL VISTA & COLLECTION OVERVIEW
+         ========================================================================= */}
+      <section
+        ref={vistaRef}
+        id="vista"
+        className="min-h-screen flex flex-col justify-end px-6 md:px-16 max-w-7xl mx-auto py-32 scroll-mt-24"
+      >
+        <div className="pointer-events-auto max-w-xl space-y-4 bg-charcoal-950/90 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
+          <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
+            <span className="w-1.5 h-1.5 bg-accent rounded-full" />
+            <span>06 · Architectural Conclusion</span>
+          </div>
+
+          <h2 className="font-serif text-4xl md:text-5xl text-ivory tracking-tight">
+            A cohesive language for living.
+          </h2>
+
+          <p className="text-xs md:text-sm text-sand-300 font-light leading-relaxed">
+            Every edition within Atelier Archetyp is designed to exist in harmony across interconnected
+            architectural spaces. Explore the full permanent collection below or order custom finishes.
+          </p>
+
+          <div className="pt-4 border-t border-white/10 flex items-center space-x-6">
+            <Link
+              href="/collections"
+              className="bg-ivory hover:bg-white text-charcoal-950 px-6 py-3.5 uppercase tracking-[0.25em] text-xs font-semibold"
+            >
+              Explore Permanent Collection →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* =========================================================================
+          INTERACTIVE OVERLAYS: CINEMA MODAL & PRODUCT QUICK DRAWER
+         ========================================================================= */}
       <BrandFilmModal isOpen={isFilmModalOpen} onClose={() => setIsFilmModalOpen(false)} />
+      <ProductQuickDrawer />
     </div>
   );
 };

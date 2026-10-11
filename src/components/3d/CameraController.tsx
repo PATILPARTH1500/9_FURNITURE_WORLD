@@ -5,14 +5,66 @@ import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useSceneStore } from '@/store/useSceneStore';
 
+interface CameraWaypoint {
+  pos: [number, number, number];
+  lookAt: [number, number, number];
+  mobilePos: [number, number, number];
+  mobileLookAt: [number, number, number];
+}
+
+const RESIDENCE_WAYPOINTS: CameraWaypoint[] = [
+  // 0. Entrance Foyer
+  {
+    pos: [0.6, 1.45, 14.8],
+    lookAt: [-0.3, 0.55, 11.5],
+    mobilePos: [0.3, 1.5, 16.2],
+    mobileLookAt: [-0.2, 0.55, 11.5],
+  },
+  // 1. Main Living Salon Entry
+  {
+    pos: [1.8, 1.6, 7.2],
+    lookAt: [-0.6, 0.65, 3.8],
+    mobilePos: [1.2, 1.7, 8.5],
+    mobileLookAt: [-0.4, 0.65, 3.8],
+  },
+  // 2. Fireside Kronos Lounge Chair Focal
+  {
+    pos: [-2.0, 1.15, 3.8],
+    lookAt: [-3.2, 0.65, 2.8],
+    mobilePos: [-1.8, 1.25, 4.5],
+    mobileLookAt: [-3.2, 0.65, 2.8],
+  },
+  // 3. Dining Wing Monolith
+  {
+    pos: [6.8, 1.5, 2.8],
+    lookAt: [9.5, 0.75, 1.5],
+    mobilePos: [6.2, 1.65, 3.8],
+    mobileLookAt: [9.5, 0.75, 1.5],
+  },
+  // 4. Master Bedroom Sanctuary
+  {
+    pos: [-6.8, 1.45, -6.5],
+    lookAt: [-9.5, 0.75, -9.5],
+    mobilePos: [-6.2, 1.6, -5.2],
+    mobileLookAt: [-9.5, 0.75, -9.5],
+  },
+  // 5. Architectural Vista Panorama
+  {
+    pos: [3.2, 3.8, 12.5],
+    lookAt: [0.5, 0.8, 2.0],
+    mobilePos: [2.0, 4.5, 14.5],
+    mobileLookAt: [0.5, 0.8, 2.0],
+  },
+];
+
 export const CameraController: React.FC = () => {
   const { camera } = useThree();
-  const { activeScene, scrollProgress, isReducedMotion } = useSceneStore();
+  const { activeRoomIndex, scrollProgress, isReducedMotion } = useSceneStore();
 
-  const currentPos = useRef(new THREE.Vector3(1.75, 1.25, 3.2));
-  const currentTarget = useRef(new THREE.Vector3(-0.45, 0.35, 0));
-  const targetPos = useRef(new THREE.Vector3(1.75, 1.25, 3.2));
-  const targetLookAt = useRef(new THREE.Vector3(-0.45, 0.35, 0));
+  const currentPos = useRef(new THREE.Vector3(0.6, 1.45, 14.8));
+  const currentTarget = useRef(new THREE.Vector3(-0.3, 0.55, 11.5));
+  const targetPos = useRef(new THREE.Vector3(0.6, 1.45, 14.8));
+  const targetLookAt = useRef(new THREE.Vector3(-0.3, 0.55, 11.5));
 
   const mouse = useRef({ x: 0, y: 0 });
   const isMobileRef = useRef(false);
@@ -24,8 +76,8 @@ export const CameraController: React.FC = () => {
     checkMobile();
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouse.current.x = (e.clientX / window.innerWidth - 0.5) * 0.25;
-      mouse.current.y = (e.clientY / window.innerHeight - 0.5) * 0.18;
+      mouse.current.x = (e.clientX / window.innerWidth - 0.5) * 0.16;
+      mouse.current.y = (e.clientY / window.innerHeight - 0.5) * 0.12;
     };
 
     window.addEventListener('resize', checkMobile);
@@ -37,65 +89,49 @@ export const CameraController: React.FC = () => {
   }, []);
 
   useFrame((_, delta) => {
-    const lerpSpeed = Math.min(1, delta * 3.8);
     const isMobile = isMobileRef.current;
+    const lerpSpeed = Math.min(1, delta * 3.6);
 
-    if (isMobile) {
-      // Responsive Mobile Framing (centered, lower elevation, wider distance)
-      if (activeScene === 0) {
-        const heroPush = Math.min(1, scrollProgress * 1.5);
-        targetPos.current.set(1.9 - heroPush * 0.2, 1.35 - heroPush * 0.1, 4.2 - heroPush * 0.4);
-        targetLookAt.current.set(0, -0.05, 0);
-      } else if (activeScene === 1) {
-        targetPos.current.set(1.6, 1.45, 3.5);
-        targetLookAt.current.set(0, 0.15, 0);
-      } else if (activeScene === 2) {
-        targetPos.current.set(1.4, 1.0, 2.7);
-        targetLookAt.current.set(0, 0.2, 0);
-      } else if (activeScene === 3) {
-        targetPos.current.set(3.2, 2.0, 5.0);
-        targetLookAt.current.set(0, 0.05, 0);
-      } else {
-        targetPos.current.set(2.4, 1.6, 4.2);
-        targetLookAt.current.set(0, 0.1, 0);
-      }
-    } else {
-      // Desktop Framing: Positions chair in right 60% of viewport, leaving left side for editorial copy
-      if (activeScene === 0) {
-        const heroPush = Math.min(1, scrollProgress * 1.6);
-        targetPos.current.set(
-          1.75 - heroPush * 0.22,
-          1.25 - heroPush * 0.1,
-          3.2 - heroPush * 0.42
-        );
-        targetLookAt.current.set(-0.45, 0.35, 0);
-      } else if (activeScene === 1) {
-        targetPos.current.set(1.55, 1.35, 2.7);
-        targetLookAt.current.set(-0.38, 0.42, 0);
-      } else if (activeScene === 2) {
-        targetPos.current.set(1.65, 0.85, 2.0);
-        targetLookAt.current.set(0.55, 0.35, 0);
-      } else if (activeScene === 3) {
-        targetPos.current.set(2.7, 1.85, 4.3);
-        targetLookAt.current.set(-0.42, 0.35, 0);
-      } else {
-        targetPos.current.set(2.5, 1.5, 3.8);
-        targetLookAt.current.set(-0.1, 0.35, 0);
-      }
-    }
+    // Compute continuous waypoint interpolation based on scrollProgress across 6 stages
+    const totalWaypoints = RESIDENCE_WAYPOINTS.length;
+    const progress = Math.max(0, Math.min(0.9999, scrollProgress));
+    const segment = progress * (totalWaypoints - 1);
+    const indexA = Math.floor(segment);
+    const indexB = Math.min(totalWaypoints - 1, indexA + 1);
+    const blend = segment - indexA;
 
-    const parallaxX = isReducedMotion ? 0 : mouse.current.x;
-    const parallaxY = isReducedMotion ? 0 : -mouse.current.y;
+    // Smooth hermite ease for segment transitions
+    const easedBlend = blend * blend * (3 - 2 * blend);
 
-    currentPos.current.lerp(
-      new THREE.Vector3(
-        targetPos.current.x + parallaxX,
-        targetPos.current.y + parallaxY,
-        targetPos.current.z
-      ),
-      lerpSpeed
+    const wpA = RESIDENCE_WAYPOINTS[indexA];
+    const wpB = RESIDENCE_WAYPOINTS[indexB];
+
+    const posA = isMobile ? wpA.mobilePos : wpA.pos;
+    const posB = isMobile ? wpB.mobilePos : wpB.pos;
+    const lookA = isMobile ? wpA.mobileLookAt : wpA.lookAt;
+    const lookB = isMobile ? wpB.mobileLookAt : wpB.lookAt;
+
+    // Interpolate positions
+    targetPos.current.set(
+      THREE.MathUtils.lerp(posA[0], posB[0], easedBlend),
+      THREE.MathUtils.lerp(posA[1], posB[1], easedBlend),
+      THREE.MathUtils.lerp(posA[2], posB[2], easedBlend)
     );
 
+    targetLookAt.current.set(
+      THREE.MathUtils.lerp(lookA[0], lookB[0], easedBlend),
+      THREE.MathUtils.lerp(lookA[1], lookB[1], easedBlend),
+      THREE.MathUtils.lerp(lookA[2], lookB[2], easedBlend)
+    );
+
+    // Add subtle ambient mouse parallax
+    if (!isReducedMotion) {
+      targetPos.current.x += mouse.current.x;
+      targetPos.current.y += mouse.current.y;
+    }
+
+    // Smoothly damp camera vectors
+    currentPos.current.lerp(targetPos.current, lerpSpeed);
     currentTarget.current.lerp(targetLookAt.current, lerpSpeed);
 
     camera.position.copy(currentPos.current);
@@ -104,4 +140,3 @@ export const CameraController: React.FC = () => {
 
   return null;
 };
-

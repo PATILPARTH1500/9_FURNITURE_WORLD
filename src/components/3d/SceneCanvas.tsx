@@ -2,9 +2,9 @@
 
 import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { FurnitureModel } from './FurnitureModel';
-import { ArchitecturalEnvironment } from './ArchitecturalEnvironment';
 import { CameraController } from './CameraController';
+import { ResidenceScene } from './ResidenceScene';
+import { FurnitureCollectionModels } from './FurnitureCollectionModels';
 import { useSceneStore } from '@/store/useSceneStore';
 import Image from 'next/image';
 
@@ -40,8 +40,8 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({ className = '' }) => {
       <div className="w-full h-full flex flex-col items-center justify-center bg-charcoal-950 text-sand-300 p-8 text-center">
         <div className="relative w-72 h-72 mb-6 border border-white/10">
           <Image
-            src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80"
-            alt="Kronos Lounge Chair"
+            src="/images/film/interior-villa.jpg"
+            alt="Atelier Archetyp Continuous Residence"
             fill
             className="object-cover"
           />
@@ -58,7 +58,7 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({ className = '' }) => {
     <div className={`canvas-container relative w-full h-full ${className}`}>
       <Canvas
         shadows
-        camera={{ position: [2.4, 1.3, 3.4], fov: 38 }}
+        camera={{ position: [0.6, 1.45, 14.8], fov: 40 }}
         gl={{
           antialias: true,
           alpha: true,
@@ -71,11 +71,10 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({ className = '' }) => {
       >
         <Suspense fallback={null}>
           <CameraController />
-          <ArchitecturalEnvironment />
-          <FurnitureModel interactive={true} />
+          <ResidenceScene />
+          <FurnitureCollectionModels />
         </Suspense>
       </Canvas>
     </div>
   );
 };
-
