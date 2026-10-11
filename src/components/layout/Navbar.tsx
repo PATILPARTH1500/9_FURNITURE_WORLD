@@ -31,8 +31,10 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${
-          scrolled
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+          mobileMenuOpen
+            ? 'bg-charcoal-950 border-b border-white/5 py-4'
+            : scrolled
             ? 'bg-charcoal-950/85 backdrop-blur-md border-b border-white/5 py-4'
             : 'bg-transparent py-6'
         }`}
@@ -102,7 +104,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-30 bg-charcoal-950/98 backdrop-blur-xl md:hidden flex flex-col justify-between p-8 pt-28">
+        <div className="fixed inset-0 z-40 bg-charcoal-950 md:hidden flex flex-col justify-between p-8 pt-28 overflow-y-auto">
           <nav className="flex flex-col space-y-6 text-base tracking-[0.2em] uppercase font-serif text-sand-100">
             {BRAND_CONFIG.navigation.map((item) => (
               <Link

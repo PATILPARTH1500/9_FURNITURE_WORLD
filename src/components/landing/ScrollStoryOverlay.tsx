@@ -6,7 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
 import { WOOD_MATERIALS, UPHOLSTERY_MATERIALS, FLAGSHIP_PRODUCT } from '@/data/catalog';
-import { ArrowDown, Check, Sparkles, Layers, Sliders, Home } from 'lucide-react';
+import { ArrowDown, Check, Layers, Sliders, Home } from 'lucide-react';
 import Link from 'next/link';
 
 export const ScrollStoryOverlay: React.FC = () => {
@@ -25,7 +25,6 @@ export const ScrollStoryOverlay: React.FC = () => {
     setExplodedProgress,
     setSelectedWood,
     setSelectedFabric,
-    isReducedMotion,
   } = useSceneStore();
 
   const { addItem } = useCartStore();
@@ -55,7 +54,6 @@ export const ScrollStoryOverlay: React.FC = () => {
       });
 
       // 3. Scene 1: Engineering / Exploded view
-      // We map the scroll progress within the engineering section directly to explodedProgress
       ScrollTrigger.create({
         trigger: engineeringRef.current,
         start: 'top 80%',
@@ -63,15 +61,13 @@ export const ScrollStoryOverlay: React.FC = () => {
         onEnter: () => setActiveScene(1),
         onEnterBack: () => setActiveScene(1),
         onUpdate: (self) => {
-          // As user scrolls into section, exploded progress scales from 0 to 1 and back smoothly
           const progress = self.progress;
-          // Smooth bell or progression: rises to 1 in middle, reassembles as it exits
-          if (progress < 0.3) {
-            setExplodedProgress(progress / 0.3);
-          } else if (progress < 0.75) {
+          if (progress < 0.28) {
+            setExplodedProgress(progress / 0.28);
+          } else if (progress < 0.72) {
             setExplodedProgress(1.0);
           } else {
-            setExplodedProgress((1 - progress) / 0.25);
+            setExplodedProgress((1 - progress) / 0.28);
           }
         },
         onLeave: () => setExplodedProgress(0),
@@ -101,6 +97,8 @@ export const ScrollStoryOverlay: React.FC = () => {
         onEnter: () => setActiveScene(3),
         onEnterBack: () => setActiveScene(3),
       });
+
+      ScrollTrigger.refresh();
     }, containerRef);
 
     return () => {
@@ -144,15 +142,15 @@ export const ScrollStoryOverlay: React.FC = () => {
       <section
         ref={heroRef}
         id="story"
-        className="min-h-screen flex flex-col justify-between pt-32 pb-16 px-6 md:px-16 max-w-7xl mx-auto"
+        className="min-h-screen flex flex-col justify-between pt-28 sm:pt-32 pb-12 sm:pb-16 px-6 md:px-16 max-w-7xl mx-auto"
       >
-        {/* Top Kicker */}
-        <div className="space-y-3 pointer-events-auto max-w-xl">
+        {/* Top Kicker & Headline (Framed on the left) */}
+        <div className="space-y-3 pointer-events-auto max-w-lg">
           <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
             <span className="w-1.5 h-1.5 bg-accent rounded-full" />
             <span>Monograph No. 01 — {FLAGSHIP_PRODUCT.year}</span>
           </div>
-          <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-ivory font-light leading-[1.05]">
+          <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-ivory font-light leading-[1.05]">
             The Kronos <br />
             <span className="italic font-normal">Lounge Chair</span>
           </h1>
@@ -162,7 +160,7 @@ export const ScrollStoryOverlay: React.FC = () => {
         </div>
 
         {/* Hero Bottom Bar & CTA */}
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 pointer-events-auto pt-12">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 pointer-events-auto pt-8 sm:pt-12">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
             <button
               onClick={handleQuickAdd}
@@ -192,12 +190,12 @@ export const ScrollStoryOverlay: React.FC = () => {
       <section
         ref={engineeringRef}
         id="engineering"
-        className="min-h-[140vh] flex flex-col justify-center px-6 md:px-16 max-w-7xl mx-auto py-24"
+        className="min-h-[140vh] flex flex-col justify-center px-6 md:px-16 max-w-7xl mx-auto py-24 scroll-mt-24"
       >
-        <div className="pointer-events-auto max-w-lg space-y-5 bg-charcoal-950/75 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
+        <div className="pointer-events-auto max-w-md space-y-4 bg-charcoal-950/80 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
           <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
             <Layers className="w-3.5 h-3.5" />
-            <span>02 // Structural Architecture</span>
+            <span>02 · Structural Architecture</span>
           </div>
 
           <h2 className="font-serif text-3xl md:text-4xl text-ivory tracking-wide leading-tight">
@@ -212,7 +210,7 @@ export const ScrollStoryOverlay: React.FC = () => {
           </p>
 
           <div className="pt-2 border-t border-white/10">
-            <p className="text-[10px] uppercase tracking-widest text-sand-400 font-mono">
+            <p className="text-[10px] uppercase tracking-widest text-accent font-mono">
               ✦ Click floating gold markers in 3D scene to inspect joinery specifications
             </p>
           </div>
@@ -225,12 +223,12 @@ export const ScrollStoryOverlay: React.FC = () => {
       <section
         ref={materialsRef}
         id="materials"
-        className="min-h-screen flex flex-col justify-center px-6 md:px-16 max-w-7xl mx-auto py-24"
+        className="min-h-screen flex flex-col justify-center px-6 md:px-16 max-w-7xl mx-auto py-24 scroll-mt-24"
       >
         <div className="pointer-events-auto max-w-md ml-auto space-y-6 bg-charcoal-950/85 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
           <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
             <Sliders className="w-3.5 h-3.5" />
-            <span>03 // Tactile Materiality</span>
+            <span>03 · Tactile Materiality</span>
           </div>
 
           <h2 className="font-serif text-3xl md:text-4xl text-ivory tracking-wide leading-tight">
@@ -314,12 +312,12 @@ export const ScrollStoryOverlay: React.FC = () => {
       <section
         ref={interiorRef}
         id="spaces"
-        className="min-h-screen flex flex-col justify-end px-6 md:px-16 max-w-7xl mx-auto pb-24"
+        className="min-h-screen flex flex-col justify-end px-6 md:px-16 max-w-7xl mx-auto pb-24 scroll-mt-24"
       >
-        <div className="pointer-events-auto max-w-xl space-y-4 bg-charcoal-950/80 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
+        <div className="pointer-events-auto max-w-md space-y-4 bg-charcoal-950/80 backdrop-blur-md p-8 border border-white/10 shadow-2xl">
           <div className="inline-flex items-center space-x-2 text-[10px] tracking-[0.3em] uppercase text-accent font-mono">
             <Home className="w-3.5 h-3.5" />
-            <span>04 // In Situ Equilibrium</span>
+            <span>04 · In Situ Equilibrium</span>
           </div>
 
           <h2 className="font-serif text-3xl md:text-4xl text-ivory tracking-wide leading-tight">

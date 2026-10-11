@@ -1,14 +1,31 @@
 'use client';
 
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import { useSceneStore } from '@/store/useSceneStore';
-import { WOOD_MATERIALS, UPHOLSTERY_MATERIALS, FLAGSHIP_PRODUCT } from '@/data/catalog';
+import { WOOD_MATERIALS, UPHOLSTERY_MATERIALS } from '@/data/catalog';
 
 interface FurnitureModelProps {
   interactive?: boolean;
+}
+
+// Helper to generate rounded rectangle shape with smooth corners
+function createRoundedRectShape(width: number, height: number, radius: number): THREE.Shape {
+  const shape = new THREE.Shape();
+  const x = -width / 2;
+  const y = -height / 2;
+  shape.moveTo(x + radius, y);
+  shape.lineTo(x + width - radius, y);
+  shape.quadraticCurveTo(x + width, y, x + width, y + radius);
+  shape.lineTo(x + width, y + height - radius);
+  shape.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  shape.lineTo(x + radius, y + height);
+  shape.quadraticCurveTo(x, y + height, x, y + height - radius);
+  shape.lineTo(x, y + radius);
+  shape.quadraticCurveTo(x, y, x + radius, y);
+  return shape;
 }
 
 export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = true }) => {
@@ -24,7 +41,6 @@ export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = tr
   const joineryRef = useRef<THREE.Group>(null);
 
   const {
-    scrollProgress,
     activeScene,
     explodedProgress,
     selectedWoodId,
@@ -34,7 +50,9 @@ export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = tr
     isReducedMotion,
   } = useSceneStore();
 
-  // Find active materials
+  const [hoveredAnnotation, setHoveredAnnotation] = useState<string | null>(null);
+
+  // Active materials
   const currentWood = useMemo(
     () => WOOD_MATERIALS.find((m) => m.id === selectedWoodId) || WOOD_MATERIALS[0],
     [selectedWoodId]
@@ -45,13 +63,56 @@ export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = tr
     [selectedFabricId]
   );
 
-  // Reusable PBR Materials with smooth color/roughness transitions
+  // High-Fidelity Beveled Cushion & Backrest Geometries
+  const seatCushionGeo = useMemo(() => {
+    const shape = createRoundedRectShape(0.72, 0.62, 0.08);
+    const geo = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.10,
+      bevelEnabled: true,
+      bevelSegments: 5,
+      steps: 1,
+      bevelSize: 0.032,
+      bevelThickness: 0.032,
+    });
+    geo.center();
+    return geo;
+  }, []);
+
+  const backrestCushionGeo = useMemo(() => {
+    const shape = createRoundedRectShape(0.70, 0.46, 0.07);
+    const geo = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.08,
+      bevelEnabled: true,
+      bevelSegments: 5,
+      steps: 1,
+      bevelSize: 0.028,
+      bevelThickness: 0.028,
+    });
+    geo.center();
+    return geo;
+  }, []);
+
+  const armrestPaddleGeo = useMemo(() => {
+    const shape = createRoundedRectShape(0.08, 0.74, 0.03);
+    const geo = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.038,
+      bevelEnabled: true,
+      bevelSegments: 4,
+      steps: 1,
+      bevelSize: 0.012,
+      bevelThickness: 0.012,
+    });
+    geo.center();
+    return geo;
+  }, []);
+
+  // Reusable PBR Materials
   const woodMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
       color: new THREE.Color(currentWood.colorHex),
       roughness: currentWood.roughness,
       metalness: currentWood.metalness,
-      envMapIntensity: 0.8,
+      envMapIntensity: 0.85,
     });
   }, [currentWood]);
 
@@ -60,81 +121,93 @@ export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = tr
       color: new THREE.Color(currentFabric.colorHex),
       roughness: currentFabric.roughness,
       metalness: currentFabric.metalness,
-      envMapIntensity: 0.5,
+      envMapIntensity: 0.4,
+    });
+  }, [currentFabric]);
+
+  const weltPipingMaterial = useMemo(() => {
+    const c = new THREE.Color(currentFabric.colorHex).multiplyScalar(0.9);
+    return new THREE.MeshStandardMaterial({
+      color: c,
+      roughness: Math.min(1, currentFabric.roughness + 0.05),
+      metalness: currentFabric.metalness,
     });
   }, [currentFabric]);
 
   const brassMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#D19A66'),
-      roughness: 0.28,
-      metalness: 0.88,
-      envMapIntensity: 1.2,
+      color: new THREE.Color('#D69F65'),
+      roughness: 0.22,
+      metalness: 0.92,
+      envMapIntensity: 1.5,
     });
   }, []);
 
-  const steelHardwareMaterial = useMemo(() => {
+  const darkSteelMaterial = useMemo(() => {
     return new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#3A3A3A'),
-      roughness: 0.4,
-      metalness: 0.8,
+      color: new THREE.Color('#2A2927'),
+      roughness: 0.45,
+      metalness: 0.85,
     });
   }, []);
 
-  // Update material colors smoothly on frame
+  // Frame Loop
   useFrame((_, delta) => {
-    const lerpSpeed = Math.min(1, delta * 6);
+    const lerpSpeed = Math.min(1, delta * 5.5);
+
+    // Smooth material transitions
     woodMaterial.color.lerp(new THREE.Color(currentWood.colorHex), lerpSpeed);
     woodMaterial.roughness = THREE.MathUtils.lerp(woodMaterial.roughness, currentWood.roughness, lerpSpeed);
 
     upholsteryMaterial.color.lerp(new THREE.Color(currentFabric.colorHex), lerpSpeed);
     upholsteryMaterial.roughness = THREE.MathUtils.lerp(upholsteryMaterial.roughness, currentFabric.roughness, lerpSpeed);
 
-    // Controlled idle rotation in hero scene (Scene 0)
+    const targetWeltColor = new THREE.Color(currentFabric.colorHex).multiplyScalar(0.9);
+    weltPipingMaterial.color.lerp(targetWeltColor, lerpSpeed);
+
+    // Idle rotation
     if (groupRef.current) {
       if (activeScene === 0 && !isReducedMotion) {
-        groupRef.current.rotation.y = Math.sin(Date.now() * 0.0006) * 0.12;
+        groupRef.current.rotation.y = Math.sin(Date.now() * 0.0006) * 0.06;
       } else if (activeScene === 3) {
-        // Subtle interior perspective angle
-        groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, -0.25, lerpSpeed);
+        groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, -0.15, lerpSpeed);
       } else {
         groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, 0, lerpSpeed);
       }
     }
 
     // Exploded View Transformations
-    // Factor based on explodedProgress (0 = assembled, 1 = exploded)
     const factor = isReducedMotion ? 0 : explodedProgress;
 
-    // 1. Cushion floats upward and slightly forward
+    // 1. Cushion floats upward and forward
     if (cushionRef.current) {
       cushionRef.current.position.y = THREE.MathUtils.lerp(
         cushionRef.current.position.y,
-        0.35 + factor * 0.48,
+        0.33 + factor * 0.52,
         lerpSpeed
       );
       cushionRef.current.position.z = THREE.MathUtils.lerp(
         cushionRef.current.position.z,
-        0.05 + factor * 0.15,
+        0.04 + factor * 0.18,
         lerpSpeed
       );
     }
 
-    // 2. Backrest tilts and floats backward and upward
+    // 2. Backrest tilts and floats rearward & upward
     if (backrestRef.current) {
       backrestRef.current.position.y = THREE.MathUtils.lerp(
         backrestRef.current.position.y,
-        0.68 + factor * 0.42,
+        0.66 + factor * 0.44,
         lerpSpeed
       );
       backrestRef.current.position.z = THREE.MathUtils.lerp(
         backrestRef.current.position.z,
-        -0.28 - factor * 0.35,
+        -0.25 - factor * 0.38,
         lerpSpeed
       );
       backrestRef.current.rotation.x = THREE.MathUtils.lerp(
         backrestRef.current.rotation.x,
-        -0.25 - factor * 0.15,
+        -0.22 - factor * 0.12,
         lerpSpeed
       );
     }
@@ -143,7 +216,7 @@ export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = tr
     if (leftArmRef.current) {
       leftArmRef.current.position.x = THREE.MathUtils.lerp(
         leftArmRef.current.position.x,
-        -0.48 - factor * 0.38,
+        -0.46 - factor * 0.42,
         lerpSpeed
       );
     }
@@ -152,174 +225,210 @@ export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = tr
     if (rightArmRef.current) {
       rightArmRef.current.position.x = THREE.MathUtils.lerp(
         rightArmRef.current.position.x,
-        0.48 + factor * 0.38,
+        0.46 + factor * 0.42,
         lerpSpeed
       );
     }
 
-    // 5. Seat Sub-Frame moves downward slightly
+    // 5. Seat Sub-Frame drops slightly
     if (seatFrameRef.current) {
       seatFrameRef.current.position.y = THREE.MathUtils.lerp(
         seatFrameRef.current.position.y,
-        0.22 - factor * 0.18,
+        0.2 - factor * 0.16,
         lerpSpeed
       );
     }
 
-    // 6. Legs drop down (-Y)
+    // 6. Splayed Legs drop downward
     if (legsRef.current) {
       legsRef.current.position.y = THREE.MathUtils.lerp(
         legsRef.current.position.y,
-        0.0 - factor * 0.35,
+        0.0 - factor * 0.36,
         lerpSpeed
       );
     }
 
-    // 7. Brass Joinery pins push outward to reveal mechanical fasteners
+    // 7. Brass Joinery pins translate outward along assembly axes
     if (joineryRef.current) {
       joineryRef.current.scale.setScalar(
-        THREE.MathUtils.lerp(joineryRef.current.scale.x, 1 + factor * 0.3, lerpSpeed)
+        THREE.MathUtils.lerp(joineryRef.current.scale.x, 1 + factor * 0.28, lerpSpeed)
       );
     }
   });
 
   return (
-    <group ref={groupRef} position={[0, -0.3, 0]} dispose={null}>
+    <group ref={groupRef} position={[0, -0.32, 0]} dispose={null}>
       {/* =========================================================================
-          PART 1: SEAT CUSHION (Upholstered)
+          PART 1: CONTOURED LUXURY SEAT CUSHION (Extruded Rounded Chamfer)
          ========================================================================= */}
-      <group ref={cushionRef} position={[0, 0.35, 0.05]}>
-        {/* Main Seat Cushion */}
-        <mesh castShadow receiveShadow material={upholsteryMaterial}>
-          <boxGeometry args={[0.78, 0.14, 0.68, 6, 4, 6]} />
-        </mesh>
-        {/* Cushion Chamfer / Welt Beading */}
-        <mesh position={[0, 0.06, 0]} material={upholsteryMaterial}>
-          <boxGeometry args={[0.8, 0.02, 0.7]} />
+      <group ref={cushionRef} position={[0, 0.33, 0.04]}>
+        {/* Main Contoured Cushion (Rotated horizontally) */}
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={seatCushionGeo}
+          material={upholsteryMaterial}
+          rotation={[-Math.PI / 2, 0, 0]}
+        />
+
+        {/* Perimeter Welt Piping Cord */}
+        <mesh position={[0, 0.05, 0]} material={weltPipingMaterial}>
+          <boxGeometry args={[0.77, 0.01, 0.65]} />
         </mesh>
 
         {/* 3D Annotation: Cushion */}
-        {interactive && explodedProgress > 0.35 && (
-          <Html
-            position={[0, 0.15, 0.25]}
-            center
-            distanceFactor={5.5}
-            className="pointer-events-auto select-none"
-          >
+        {interactive && explodedProgress > 0.3 && (
+          <Html position={[0, 0.1, 0.26]} center className="pointer-events-auto select-none">
             <div
+              onMouseEnter={() => setHoveredAnnotation('ann-cushion')}
+              onMouseLeave={() => setHoveredAnnotation(null)}
               onClick={() => setActiveAnnotation(activeAnnotationId === 'ann-cushion' ? null : 'ann-cushion')}
-              className="cursor-pointer group flex items-center space-x-2"
+              className="cursor-pointer flex flex-col items-center group"
             >
-              <div className="relative flex items-center justify-center">
-                <span className="w-5 h-5 rounded-full bg-accent/20 animate-ping absolute" />
-                <span className="w-3 h-3 rounded-full bg-accent border border-charcoal-950 flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform" />
+              <div className="flex items-center space-x-1.5 bg-charcoal-950/90 border border-white/20 px-2 py-0.5 shadow-lg group-hover:border-accent transition-colors">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                <span className="text-ivory text-[9px] font-mono tracking-widest whitespace-nowrap">
+                  01 · CORE
+                </span>
               </div>
-              <div className="bg-charcoal-900/90 backdrop-blur-md border border-white/15 px-3 py-1.5 shadow-xl transition-all duration-300">
-                <p className="font-mono text-[9px] uppercase tracking-widest text-accent">01 // CORE</p>
-                <p className="font-serif text-xs text-ivory tracking-wide whitespace-nowrap">Down & Latex Core</p>
-                {activeAnnotationId === 'ann-cushion' && (
-                  <p className="text-[10px] text-sand-300 font-light max-w-[200px] mt-1 pt-1 border-t border-white/10">
-                    Dual-density natural latex wrapped in channeled Hungarian down ticking.
+              {(hoveredAnnotation === 'ann-cushion' || activeAnnotationId === 'ann-cushion') && (
+                <div className="mt-1 bg-charcoal-900/98 border border-accent/50 p-2.5 max-w-[200px] text-left shadow-2xl z-30">
+                  <p className="font-serif text-xs text-ivory">Dual-Density Core</p>
+                  <p className="text-[9px] text-sand-300 font-light mt-0.5 leading-relaxed">
+                    Cold-cured organic latex wrapped in channeled Hungarian goose down.
                   </p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </Html>
         )}
       </group>
 
       {/* =========================================================================
-          PART 2: BACKREST CUSHION (Upholstered, Cantilever Angle)
+          PART 2: CONTOURED BACKREST CRADLE & TIMBER STRUTS
          ========================================================================= */}
-      <group ref={backrestRef} position={[0, 0.68, -0.28]} rotation={[-0.25, 0, 0]}>
-        <mesh castShadow receiveShadow material={upholsteryMaterial}>
-          <boxGeometry args={[0.76, 0.52, 0.12, 6, 6, 4]} />
+      <group ref={backrestRef} position={[0, 0.66, -0.25]} rotation={[-0.22, 0, 0]}>
+        {/* Main Contoured Backrest Cushion */}
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={backrestCushionGeo}
+          material={upholsteryMaterial}
+        />
+
+        {/* Perimeter Welt Piping Cord */}
+        <mesh position={[0, 0, 0.045]} material={weltPipingMaterial}>
+          <boxGeometry args={[0.73, 0.47, 0.008]} />
         </mesh>
-        {/* Rear spine support bar */}
-        <mesh position={[0, -0.05, -0.08]} castShadow material={woodMaterial}>
-          <boxGeometry args={[0.72, 0.04, 0.03]} />
-        </mesh>
+
+        {/* Solid Timber Rear Spine & Cross Stretcher Cradle */}
+        <group position={[0, -0.04, -0.06]}>
+          <mesh castShadow receiveShadow material={woodMaterial}>
+            <boxGeometry args={[0.76, 0.04, 0.035]} />
+          </mesh>
+          {[-0.22, 0.22].map((x, idx) => (
+            <mesh key={idx} position={[x, 0.1, 0]} castShadow material={woodMaterial}>
+              <boxGeometry args={[0.035, 0.26, 0.03]} />
+            </mesh>
+          ))}
+          {[-0.22, 0.22].map((x, idx) => (
+            <mesh key={`b-${idx}`} position={[x, -0.01, -0.02]} rotation={[Math.PI / 2, 0, 0]} material={brassMaterial}>
+              <cylinderGeometry args={[0.009, 0.009, 0.015, 16]} />
+            </mesh>
+          ))}
+        </group>
 
         {/* 3D Annotation: Backrest */}
-        {interactive && explodedProgress > 0.35 && (
-          <Html
-            position={[0, 0.3, 0.1]}
-            center
-            distanceFactor={5.5}
-            className="pointer-events-auto select-none"
-          >
+        {interactive && explodedProgress > 0.3 && (
+          <Html position={[0, 0.18, 0.08]} center className="pointer-events-auto select-none">
             <div
+              onMouseEnter={() => setHoveredAnnotation('ann-backrest')}
+              onMouseLeave={() => setHoveredAnnotation(null)}
               onClick={() => setActiveAnnotation(activeAnnotationId === 'ann-backrest' ? null : 'ann-backrest')}
-              className="cursor-pointer group flex items-center space-x-2"
+              className="cursor-pointer flex flex-col items-center group"
             >
-              <div className="relative flex items-center justify-center">
-                <span className="w-5 h-5 rounded-full bg-accent/20 animate-ping absolute" />
-                <span className="w-3 h-3 rounded-full bg-accent border border-charcoal-950 flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform" />
+              <div className="flex items-center space-x-1.5 bg-charcoal-950/90 border border-white/20 px-2 py-0.5 shadow-lg group-hover:border-accent transition-colors">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                <span className="text-ivory text-[9px] font-mono tracking-widest whitespace-nowrap">
+                  02 · INCLINE
+                </span>
               </div>
-              <div className="bg-charcoal-900/90 backdrop-blur-md border border-white/15 px-3 py-1.5 shadow-xl transition-all duration-300">
-                <p className="font-mono text-[9px] uppercase tracking-widest text-accent">02 // INCLINE</p>
-                <p className="font-serif text-xs text-ivory tracking-wide whitespace-nowrap">112° Thoracic Cradle</p>
-                {activeAnnotationId === 'ann-backrest' && (
-                  <p className="text-[10px] text-sand-300 font-light max-w-[200px] mt-1 pt-1 border-t border-white/10">
-                    Engineered spinal decompression incline ensuring natural ergonomics.
+              {(hoveredAnnotation === 'ann-backrest' || activeAnnotationId === 'ann-backrest') && (
+                <div className="mt-1 bg-charcoal-900/98 border border-accent/50 p-2.5 max-w-[200px] text-left shadow-2xl z-30">
+                  <p className="font-serif text-xs text-ivory">112° Thoracic Cradle</p>
+                  <p className="text-[9px] text-sand-300 font-light mt-0.5 leading-relaxed">
+                    Ergonomic cantilever angle designed for natural spinal decompression.
                   </p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </Html>
         )}
       </group>
 
       {/* =========================================================================
-          PART 3: SCULPTED TIMBER ARMRESTS (Left & Right)
+          PART 3: SCULPTED TIMBER ARMRESTS (Extruded Contoured Paddles)
          ========================================================================= */}
-      {/* Left Armrest */}
-      <group ref={leftArmRef} position={[-0.48, 0.44, -0.02]}>
-        <mesh castShadow receiveShadow material={woodMaterial}>
-          {/* Sculpted continuous horizontal armrest */}
-          <boxGeometry args={[0.08, 0.05, 0.76]} />
+      {/* Left Sculpted Armrest */}
+      <group ref={leftArmRef} position={[-0.46, 0.42, 0]}>
+        <mesh
+          position={[0, 0, 0]}
+          castShadow
+          receiveShadow
+          geometry={armrestPaddleGeo}
+          material={woodMaterial}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        {/* Slanted Rear Stanchion */}
+        <mesh position={[0, 0.11, -0.3]} rotation={[0.15, 0, 0]} castShadow material={woodMaterial}>
+          <boxGeometry args={[0.065, 0.32, 0.05]} />
         </mesh>
-        {/* Vertical rear upright */}
-        <mesh position={[0, 0.14, -0.32]} castShadow material={woodMaterial}>
-          <boxGeometry args={[0.07, 0.36, 0.06]} />
+        {/* Lower Structural Apron Rail */}
+        <mesh position={[0, -0.22, 0]} castShadow material={woodMaterial}>
+          <boxGeometry args={[0.05, 0.05, 0.68]} />
         </mesh>
       </group>
 
-      {/* Right Armrest */}
-      <group ref={rightArmRef} position={[0.48, 0.44, -0.02]}>
-        <mesh castShadow receiveShadow material={woodMaterial}>
-          <boxGeometry args={[0.08, 0.05, 0.76]} />
+      {/* Right Sculpted Armrest */}
+      <group ref={rightArmRef} position={[0.46, 0.42, 0]}>
+        <mesh
+          position={[0, 0, 0]}
+          castShadow
+          receiveShadow
+          geometry={armrestPaddleGeo}
+          material={woodMaterial}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh position={[0, 0.11, -0.3]} rotation={[0.15, 0, 0]} castShadow material={woodMaterial}>
+          <boxGeometry args={[0.065, 0.32, 0.05]} />
         </mesh>
-        {/* Vertical rear upright */}
-        <mesh position={[0, 0.14, -0.32]} castShadow material={woodMaterial}>
-          <boxGeometry args={[0.07, 0.36, 0.06]} />
+        <mesh position={[0, -0.22, 0]} castShadow material={woodMaterial}>
+          <boxGeometry args={[0.05, 0.05, 0.68]} />
         </mesh>
 
-        {/* 3D Annotation: Frame Monolith */}
-        {interactive && explodedProgress > 0.35 && (
-          <Html
-            position={[0.2, 0.1, 0.1]}
-            center
-            distanceFactor={5.5}
-            className="pointer-events-auto select-none"
-          >
+        {/* 3D Annotation: Timber */}
+        {interactive && explodedProgress > 0.3 && (
+          <Html position={[0.12, 0.06, 0.08]} center className="pointer-events-auto select-none">
             <div
+              onMouseEnter={() => setHoveredAnnotation('ann-frame')}
+              onMouseLeave={() => setHoveredAnnotation(null)}
               onClick={() => setActiveAnnotation(activeAnnotationId === 'ann-frame' ? null : 'ann-frame')}
-              className="cursor-pointer group flex items-center space-x-2"
+              className="cursor-pointer flex flex-col items-center group"
             >
-              <div className="relative flex items-center justify-center">
-                <span className="w-5 h-5 rounded-full bg-accent/20 animate-ping absolute" />
-                <span className="w-3 h-3 rounded-full bg-accent border border-charcoal-950 flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform" />
+              <div className="flex items-center space-x-1.5 bg-charcoal-950/90 border border-white/20 px-2 py-0.5 shadow-lg group-hover:border-accent transition-colors">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                <span className="text-ivory text-[9px] font-mono tracking-widest whitespace-nowrap">
+                  03 · TIMBER
+                </span>
               </div>
-              <div className="bg-charcoal-900/90 backdrop-blur-md border border-white/15 px-3 py-1.5 shadow-xl transition-all duration-300">
-                <p className="font-mono text-[9px] uppercase tracking-widest text-accent">03 // TIMBER</p>
-                <p className="font-serif text-xs text-ivory tracking-wide whitespace-nowrap">Solid Timber Armature</p>
-                {activeAnnotationId === 'ann-frame' && (
-                  <p className="text-[10px] text-sand-300 font-light max-w-[200px] mt-1 pt-1 border-t border-white/10">
-                    5-axis CNC-carved single-slab timber hand-finished with organic oil.
+              {(hoveredAnnotation === 'ann-frame' || activeAnnotationId === 'ann-frame') && (
+                <div className="mt-1 bg-charcoal-900/98 border border-accent/50 p-2.5 max-w-[200px] text-left shadow-2xl z-30">
+                  <p className="font-serif text-xs text-ivory">Solid Timber Armature</p>
+                  <p className="text-[9px] text-sand-300 font-light mt-0.5 leading-relaxed">
+                    5-axis CNC sculpted single-slab timber hand-finished with organic oils.
                   </p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </Html>
         )}
@@ -328,144 +437,175 @@ export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = tr
       {/* =========================================================================
           PART 4: SEAT SUBFRAME & CROSS STRETCHERS
          ========================================================================= */}
-      <group ref={seatFrameRef} position={[0, 0.22, 0]}>
-        {/* Front horizontal stretcher */}
-        <mesh position={[0, 0, 0.32]} castShadow receiveShadow material={woodMaterial}>
-          <boxGeometry args={[0.9, 0.05, 0.05]} />
+      <group ref={seatFrameRef} position={[0, 0.2, 0]}>
+        <mesh position={[0, 0, 0.3]} castShadow receiveShadow material={woodMaterial}>
+          <boxGeometry args={[0.88, 0.05, 0.045]} />
         </mesh>
-        {/* Rear horizontal stretcher */}
-        <mesh position={[0, -0.04, -0.3]} castShadow receiveShadow material={woodMaterial}>
-          <boxGeometry args={[0.9, 0.05, 0.05]} />
+        <mesh position={[0, -0.03, -0.28]} castShadow receiveShadow material={woodMaterial}>
+          <boxGeometry args={[0.88, 0.05, 0.045]} />
         </mesh>
-        {/* Structural seat web slats */}
-        {[-0.25, 0, 0.25].map((x, i) => (
-          <mesh key={i} position={[x, -0.01, 0]} material={steelHardwareMaterial}>
-            <boxGeometry args={[0.04, 0.015, 0.6]} />
+        {[-0.26, -0.13, 0, 0.13, 0.26].map((x, i) => (
+          <mesh key={i} position={[x, -0.005, 0.01]} material={darkSteelMaterial}>
+            <boxGeometry args={[0.038, 0.012, 0.58]} />
           </mesh>
         ))}
       </group>
 
       {/* =========================================================================
-          PART 5: STRUCTURAL TAPERED LEGS & BRASS FERRULES
+          PART 5: SPLAYED & TAPERED LEGS WITH SOLID BRASS FERRULES
          ========================================================================= */}
       <group ref={legsRef} position={[0, 0, 0]}>
-        {/* Front Left Leg */}
-        <group position={[-0.44, 0.1, 0.32]} rotation={[0.06, 0, -0.08]}>
+        {/* Front Left Tapered Leg */}
+        <group position={[-0.42, 0.08, 0.28]} rotation={[0.07, 0, -0.09]}>
           <mesh castShadow receiveShadow material={woodMaterial}>
-            <cylinderGeometry args={[0.026, 0.018, 0.42, 16]} />
-          </mesh>
-          {/* Brass Foot ferrule */}
-          <mesh position={[0, -0.19, 0]} material={brassMaterial}>
-            <cylinderGeometry args={[0.019, 0.019, 0.05, 16]} />
-          </mesh>
-        </group>
-
-        {/* Front Right Leg */}
-        <group position={[0.44, 0.1, 0.32]} rotation={[0.06, 0, 0.08]}>
-          <mesh castShadow receiveShadow material={woodMaterial}>
-            <cylinderGeometry args={[0.026, 0.018, 0.42, 16]} />
-          </mesh>
-          <mesh position={[0, -0.19, 0]} material={brassMaterial}>
-            <cylinderGeometry args={[0.019, 0.019, 0.05, 16]} />
-          </mesh>
-        </group>
-
-        {/* Rear Left Leg (Raked angle) */}
-        <group position={[-0.44, 0.08, -0.32]} rotation={[-0.14, 0, -0.06]}>
-          <mesh castShadow receiveShadow material={woodMaterial}>
-            <cylinderGeometry args={[0.028, 0.02, 0.38, 16]} />
+            <cylinderGeometry args={[0.024, 0.016, 0.38, 24]} />
           </mesh>
           <mesh position={[0, -0.17, 0]} material={brassMaterial}>
-            <cylinderGeometry args={[0.021, 0.021, 0.05, 16]} />
+            <cylinderGeometry args={[0.017, 0.017, 0.04, 24]} />
+          </mesh>
+          <mesh position={[0, -0.192, 0]} material={darkSteelMaterial}>
+            <cylinderGeometry args={[0.015, 0.015, 0.006, 16]} />
           </mesh>
         </group>
 
-        {/* Rear Right Leg (Raked angle) */}
-        <group position={[0.44, 0.08, -0.32]} rotation={[-0.14, 0, 0.06]}>
+        {/* Front Right Tapered Leg */}
+        <group position={[0.42, 0.08, 0.28]} rotation={[0.07, 0, 0.09]}>
           <mesh castShadow receiveShadow material={woodMaterial}>
-            <cylinderGeometry args={[0.028, 0.02, 0.38, 16]} />
+            <cylinderGeometry args={[0.024, 0.016, 0.38, 24]} />
           </mesh>
           <mesh position={[0, -0.17, 0]} material={brassMaterial}>
-            <cylinderGeometry args={[0.021, 0.021, 0.05, 16]} />
+            <cylinderGeometry args={[0.017, 0.017, 0.04, 24]} />
+          </mesh>
+          <mesh position={[0, -0.192, 0]} material={darkSteelMaterial}>
+            <cylinderGeometry args={[0.015, 0.015, 0.006, 16]} />
           </mesh>
         </group>
 
-        {/* 3D Annotation: Tapered Stance */}
-        {interactive && explodedProgress > 0.35 && (
-          <Html
-            position={[-0.45, -0.15, 0.35]}
-            center
-            distanceFactor={5.5}
-            className="pointer-events-auto select-none"
-          >
+        {/* Rear Left Raked Leg */}
+        <group position={[-0.42, 0.06, -0.28]} rotation={[-0.18, 0, -0.07]}>
+          <mesh castShadow receiveShadow material={woodMaterial}>
+            <cylinderGeometry args={[0.026, 0.018, 0.36, 24]} />
+          </mesh>
+          <mesh position={[0, -0.16, 0]} material={brassMaterial}>
+            <cylinderGeometry args={[0.019, 0.019, 0.04, 24]} />
+          </mesh>
+          <mesh position={[0, -0.182, 0]} material={darkSteelMaterial}>
+            <cylinderGeometry args={[0.016, 0.016, 0.006, 16]} />
+          </mesh>
+        </group>
+
+        {/* Rear Right Raked Leg */}
+        <group position={[0.42, 0.06, -0.28]} rotation={[-0.18, 0, 0.07]}>
+          <mesh castShadow receiveShadow material={woodMaterial}>
+            <cylinderGeometry args={[0.026, 0.018, 0.36, 24]} />
+          </mesh>
+          <mesh position={[0, -0.16, 0]} material={brassMaterial}>
+            <cylinderGeometry args={[0.019, 0.019, 0.04, 24]} />
+          </mesh>
+          <mesh position={[0, -0.182, 0]} material={darkSteelMaterial}>
+            <cylinderGeometry args={[0.016, 0.016, 0.006, 16]} />
+          </mesh>
+        </group>
+
+        {/* Side Cross Stretchers */}
+        <mesh position={[-0.42, -0.03, 0]} rotation={[0.12, 0, 0]} material={woodMaterial}>
+          <boxGeometry args={[0.025, 0.025, 0.54]} />
+        </mesh>
+        <mesh position={[0.42, -0.03, 0]} rotation={[0.12, 0, 0]} material={woodMaterial}>
+          <boxGeometry args={[0.025, 0.025, 0.54]} />
+        </mesh>
+
+        {/* 3D Annotation: Stance */}
+        {interactive && explodedProgress > 0.3 && (
+          <Html position={[-0.42, -0.14, 0.28]} center className="pointer-events-auto select-none">
             <div
+              onMouseEnter={() => setHoveredAnnotation('ann-legs')}
+              onMouseLeave={() => setHoveredAnnotation(null)}
               onClick={() => setActiveAnnotation(activeAnnotationId === 'ann-legs' ? null : 'ann-legs')}
-              className="cursor-pointer group flex items-center space-x-2"
+              className="cursor-pointer flex flex-col items-center group"
             >
-              <div className="relative flex items-center justify-center">
-                <span className="w-5 h-5 rounded-full bg-accent/20 animate-ping absolute" />
-                <span className="w-3 h-3 rounded-full bg-accent border border-charcoal-950 flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform" />
+              <div className="flex items-center space-x-1.5 bg-charcoal-950/90 border border-white/20 px-2 py-0.5 shadow-lg group-hover:border-accent transition-colors">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                <span className="text-ivory text-[9px] font-mono tracking-widest whitespace-nowrap">
+                  04 · STANCE
+                </span>
               </div>
-              <div className="bg-charcoal-900/90 backdrop-blur-md border border-white/15 px-3 py-1.5 shadow-xl transition-all duration-300">
-                <p className="font-mono text-[9px] uppercase tracking-widest text-accent">04 // STANCE</p>
-                <p className="font-serif text-xs text-ivory tracking-wide whitespace-nowrap">Tapered Gravity Vectors</p>
-                {activeAnnotationId === 'ann-legs' && (
-                  <p className="text-[10px] text-sand-300 font-light max-w-[200px] mt-1 pt-1 border-t border-white/10">
-                    Precision raked angle with solid milled brass architectural ferrules.
+              {(hoveredAnnotation === 'ann-legs' || activeAnnotationId === 'ann-legs') && (
+                <div className="mt-1 bg-charcoal-900/98 border border-accent/50 p-2.5 max-w-[200px] text-left shadow-2xl z-30">
+                  <p className="font-serif text-xs text-ivory">Raked Architectural Stance</p>
+                  <p className="text-[9px] text-sand-300 font-light mt-0.5 leading-relaxed">
+                    18° gravity vector alignment with solid milled brass foot ferrules.
                   </p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </Html>
         )}
       </group>
 
       {/* =========================================================================
-          PART 6: INTERNAL BRASS JOINERY PINS & MECHANICAL HARDWARE
+          PART 6: SOLID MILLED BRASS JOINERY FASTENERS
          ========================================================================= */}
       <group ref={joineryRef}>
-        {/* Left front joinery pin */}
-        <mesh position={[-0.44, 0.38, 0.3]} rotation={[0, 0, Math.PI / 2]} material={brassMaterial}>
-          <cylinderGeometry args={[0.012, 0.012, 0.08, 16]} />
-        </mesh>
-        {/* Right front joinery pin */}
-        <mesh position={[0.44, 0.38, 0.3]} rotation={[0, 0, Math.PI / 2]} material={brassMaterial}>
-          <cylinderGeometry args={[0.012, 0.012, 0.08, 16]} />
-        </mesh>
-        {/* Left rear joinery pin */}
-        <mesh position={[-0.44, 0.36, -0.3]} rotation={[0, 0, Math.PI / 2]} material={brassMaterial}>
-          <cylinderGeometry args={[0.012, 0.012, 0.08, 16]} />
-        </mesh>
-        {/* Right rear joinery pin */}
-        <mesh position={[0.44, 0.36, -0.3]} rotation={[0, 0, Math.PI / 2]} material={brassMaterial}>
-          <cylinderGeometry args={[0.012, 0.012, 0.08, 16]} />
-        </mesh>
+        <group position={[-0.44, 0.36, 0.26]} rotation={[0, 0, Math.PI / 2]}>
+          <mesh material={brassMaterial}>
+            <cylinderGeometry args={[0.012, 0.012, 0.09, 24]} />
+          </mesh>
+          <mesh position={[0, 0.046, 0]} material={brassMaterial}>
+            <cylinderGeometry args={[0.015, 0.015, 0.006, 24]} />
+          </mesh>
+        </group>
+
+        <group position={[0.44, 0.36, 0.26]} rotation={[0, 0, -Math.PI / 2]}>
+          <mesh material={brassMaterial}>
+            <cylinderGeometry args={[0.012, 0.012, 0.09, 24]} />
+          </mesh>
+          <mesh position={[0, 0.046, 0]} material={brassMaterial}>
+            <cylinderGeometry args={[0.015, 0.015, 0.006, 24]} />
+          </mesh>
+        </group>
+
+        <group position={[-0.44, 0.34, -0.26]} rotation={[0, 0, Math.PI / 2]}>
+          <mesh material={brassMaterial}>
+            <cylinderGeometry args={[0.012, 0.012, 0.09, 24]} />
+          </mesh>
+          <mesh position={[0, 0.046, 0]} material={brassMaterial}>
+            <cylinderGeometry args={[0.015, 0.015, 0.006, 24]} />
+          </mesh>
+        </group>
+
+        <group position={[0.44, 0.34, -0.26]} rotation={[0, 0, -Math.PI / 2]}>
+          <mesh material={brassMaterial}>
+            <cylinderGeometry args={[0.012, 0.012, 0.09, 24]} />
+          </mesh>
+          <mesh position={[0, 0.046, 0]} material={brassMaterial}>
+            <cylinderGeometry args={[0.015, 0.015, 0.006, 24]} />
+          </mesh>
+        </group>
 
         {/* 3D Annotation: Kyoto Joinery */}
-        {interactive && explodedProgress > 0.35 && (
-          <Html
-            position={[0.46, 0.38, -0.3]}
-            center
-            distanceFactor={5.5}
-            className="pointer-events-auto select-none"
-          >
+        {interactive && explodedProgress > 0.3 && (
+          <Html position={[0.46, 0.35, -0.26]} center className="pointer-events-auto select-none">
             <div
+              onMouseEnter={() => setHoveredAnnotation('ann-joinery')}
+              onMouseLeave={() => setHoveredAnnotation(null)}
               onClick={() => setActiveAnnotation(activeAnnotationId === 'ann-joinery' ? null : 'ann-joinery')}
-              className="cursor-pointer group flex items-center space-x-2"
+              className="cursor-pointer flex flex-col items-center group"
             >
-              <div className="relative flex items-center justify-center">
-                <span className="w-5 h-5 rounded-full bg-accent/20 animate-ping absolute" />
-                <span className="w-3 h-3 rounded-full bg-accent border border-charcoal-950 flex items-center justify-center shadow-lg group-hover:scale-125 transition-transform" />
+              <div className="flex items-center space-x-1.5 bg-charcoal-950/90 border border-white/20 px-2 py-0.5 shadow-lg group-hover:border-accent transition-colors">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                <span className="text-ivory text-[9px] font-mono tracking-widest whitespace-nowrap">
+                  05 · JOINERY
+                </span>
               </div>
-              <div className="bg-charcoal-900/90 backdrop-blur-md border border-white/15 px-3 py-1.5 shadow-xl transition-all duration-300">
-                <p className="font-mono text-[9px] uppercase tracking-widest text-accent">05 // JOINERY</p>
-                <p className="font-serif text-xs text-ivory tracking-wide whitespace-nowrap">Concealed Brass Fasteners</p>
-                {activeAnnotationId === 'ann-joinery' && (
-                  <p className="text-[10px] text-sand-300 font-light max-w-[200px] mt-1 pt-1 border-t border-white/10">
-                    Interlocking mortise-and-tenon reinforced with knurled brass hardware.
+              {(hoveredAnnotation === 'ann-joinery' || activeAnnotationId === 'ann-joinery') && (
+                <div className="mt-1 bg-charcoal-900/98 border border-accent/50 p-2.5 max-w-[200px] text-left shadow-2xl z-30">
+                  <p className="font-serif text-xs text-ivory">Milled Brass Fasteners</p>
+                  <p className="text-[9px] text-sand-300 font-light mt-0.5 leading-relaxed">
+                    Interlocking mortise-and-tenons locked with knurled solid brass hardware.
                   </p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </Html>
         )}

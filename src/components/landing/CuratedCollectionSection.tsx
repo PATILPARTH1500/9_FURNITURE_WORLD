@@ -27,12 +27,15 @@ export const CuratedCollectionSection: React.FC = () => {
 
   return (
     <section className="relative z-20 bg-charcoal-950 text-sand-100 py-32 border-t border-white/10">
+      {/* Smooth transition from 3D canvas */}
+      <div className="absolute -top-32 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-charcoal-950 pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 pb-8 border-b border-white/10 gap-8">
           <div className="space-y-4 max-w-xl">
             <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-accent">
-              05 // The Permanent Collection
+              05 · The Permanent Collection
             </span>
             <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-ivory font-light tracking-tight">
               Curated Works for <br />
