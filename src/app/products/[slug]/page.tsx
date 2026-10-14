@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Check, ShieldCheck, Truck, RotateCcw, Plus, Minus, Film, Camera } from 'lucide-react';
 import { PRODUCTS_CATALOG, WOOD_MATERIALS, UPHOLSTERY_MATERIALS } from '@/data/catalog';
+import { formatPrice } from '@/config/brand';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
 
@@ -182,7 +183,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               </h1>
               <div className="flex items-baseline space-x-3 pt-2">
                 <span className="font-sans text-3xl text-checkerboard font-bold">
-                  ${product.price.toLocaleString()} {product.currency}
+                  {formatPrice(product.price, true)}
                 </span>
                 <span className="text-xs font-sans text-olive font-semibold bg-olive/10 px-2.5 py-1 rounded-full">
                   In Stock · Free Delivery
@@ -285,7 +286,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                   onClick={handleAddToCart}
                   className="flex-1 bg-tangerine hover:bg-coral text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-bold transition-all duration-300 shadow-warm hover:shadow-lg"
                 >
-                  Add to Bag · ${(product.price * quantity).toLocaleString()}
+                  Add to Bag · {formatPrice(product.price * quantity)}
                 </button>
               </div>
 

@@ -7,6 +7,7 @@ import { X, Check, ArrowUpRight, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
 import { PRODUCTS_CATALOG, WOOD_MATERIALS, UPHOLSTERY_MATERIALS } from '@/data/catalog';
+import { formatPrice } from '@/config/brand';
 
 export const ProductQuickDrawer: React.FC = () => {
   const {
@@ -123,7 +124,7 @@ export const ProductQuickDrawer: React.FC = () => {
                 {product.name}
               </h2>
               <span className="font-sans text-xl text-tangerine font-bold whitespace-nowrap">
-                ${product.price.toLocaleString()}
+                {formatPrice(product.price)}
               </span>
             </div>
             <p className="font-sans text-xs sm:text-sm text-walnut leading-relaxed">

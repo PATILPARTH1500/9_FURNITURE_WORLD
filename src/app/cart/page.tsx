@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Trash2, Plus, Minus, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
-import { BRAND_CONFIG } from '@/config/brand';
+import { BRAND_CONFIG, formatPrice } from '@/config/brand';
 import confetti from 'canvas-confetti';
 
 export default function CartPage() {
@@ -14,7 +14,7 @@ export default function CartPage() {
   const [orderConfirmation, setOrderConfirmation] = useState<string | null>(null);
 
   const subtotal = getSubtotal();
-  const freeShippingThreshold = 5000;
+  const freeShippingThreshold = BRAND_CONFIG.freeShippingThreshold;
   const qualifiesForFreeShipping = subtotal >= freeShippingThreshold;
   const shippingCost = qualifiesForFreeShipping ? 0 : 250;
   const total = subtotal + shippingCost;
@@ -123,7 +123,7 @@ export default function CartPage() {
                           {item.productName}
                         </h3>
                         <span className="font-mono text-base font-bold text-checkerboard">
-                          ${(item.unitPrice * item.quantity).toLocaleString()}
+                          {formatPrice(item.unitPrice * item.quantity)}
                         </span>
                       </div>
                       <p className="text-xs text-checkerboard/60 font-mono mt-1">
@@ -174,22 +174,22 @@ export default function CartPage() {
                 <div className="space-y-3 text-xs">
                   <div className="flex justify-between text-checkerboard/70">
                     <span>Subtotal</span>
-                    <span className="font-mono text-checkerboard font-medium">${subtotal.toLocaleString()}</span>
+                    <span className="font-mono text-checkerboard font-medium">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-checkerboard/70">
                     <span>Delivery</span>
                     <span className="font-mono text-checkerboard font-medium">
-                      {qualifiesForFreeShipping ? 'Free (Orders $5,000+)' : '$250'}
+                      {qualifiesForFreeShipping ? `Free (Orders over ${formatPrice(freeShippingThreshold)})` : formatPrice(shippingCost)}
                     </span>
                   </div>
                   <div className="flex justify-between text-checkerboard/70">
-                    <span>Sales Tax</span>
-                    <span className="font-mono text-checkerboard font-medium">Calculated at checkout</span>
+                    <span>GST (Estimated)</span>
+                    <span className="font-mono text-checkerboard font-medium">Included in product price</span>
                   </div>
                   <div className="flex justify-between text-base pt-4 border-t border-checkerboard/10 font-bold">
                     <span className="font-serif tracking-wide text-checkerboard">Total</span>
                     <span className="font-mono text-tangerine text-xl">
-                      ${total.toLocaleString()} {BRAND_CONFIG.currency}
+                      {formatPrice(total, true)}
                     </span>
                   </div>
                 </div>

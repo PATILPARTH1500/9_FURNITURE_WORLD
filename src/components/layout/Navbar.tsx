@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Menu, X, ArrowUpRight } from 'lucide-react';
+import { ShoppingBag, Menu, X, ArrowUpRight, Play } from 'lucide-react';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
+import { BrandFilmModal } from '@/components/media/BrandFilmModal';
 
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [filmModalOpen, setFilmModalOpen] = useState(false);
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
 
@@ -66,8 +68,16 @@ export const Navbar: React.FC = () => {
           ))}
         </nav>
 
-        {/* Actions: Catalog & Cart */}
-        <div className="flex items-center space-x-4">
+        {/* Actions: Catalog, Watch Film & Cart */}
+        <div className="flex items-center space-x-3 sm:space-x-4">
+          <button
+            onClick={() => setFilmModalOpen(true)}
+            className="hidden lg:inline-flex items-center space-x-1.5 text-xs font-sans tracking-wide uppercase px-3.5 py-2 rounded-full text-checkerboard/80 hover:text-tangerine hover:bg-white/60 border border-transparent hover:border-checkerboard/10 transition-all font-medium"
+          >
+            <Play className="w-3.5 h-3.5 text-tangerine fill-current" />
+            <span>Watch Film</span>
+          </button>
+
           <Link
             href="/collections"
             className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-sans tracking-wide uppercase px-4 py-2 rounded-full border border-checkerboard/20 hover:border-tangerine text-checkerboard hover:text-tangerine font-medium transition-all"
@@ -116,7 +126,18 @@ export const Navbar: React.FC = () => {
             ))}
           </nav>
 
-          <div className="pt-2">
+          <div className="pt-2 space-y-2">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setFilmModalOpen(true);
+              }}
+              className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider border border-checkerboard/20 bg-white text-checkerboard font-medium px-5 py-3 rounded-full shadow-xs"
+            >
+              <Play className="w-3.5 h-3.5 text-tangerine fill-current" />
+              <span>Watch Brand Film</span>
+            </button>
+
             <Link
               href="/collections"
               onClick={() => setMobileMenuOpen(false)}
@@ -128,6 +149,9 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Fullscreen Brand Film Modal */}
+      <BrandFilmModal isOpen={filmModalOpen} onClose={() => setFilmModalOpen(false)} />
     </header>
   );
 };

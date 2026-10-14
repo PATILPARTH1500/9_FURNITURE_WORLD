@@ -16,6 +16,11 @@ const config: Config = {
           light: '#FF6F36',
           dark: '#D03E00',
         },
+        rust: {
+          DEFAULT: '#B84518',
+          dark: '#94320C',
+          light: '#D45A2B',
+        },
         coral: {
           DEFAULT: '#E66B45',
           burnt: '#E66B45',

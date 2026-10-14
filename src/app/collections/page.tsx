@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { PRODUCTS_CATALOG, COLLECTIONS_DATA } from '@/data/catalog';
+import { formatPrice } from '@/config/brand';
 
 type CategoryFilter = 'all' | 'seating' | 'tables' | 'beds' | 'lighting';
 
@@ -126,7 +127,7 @@ export default function CollectionsPage() {
                       {product.name}
                     </h3>
                     <span className="font-sans text-base font-bold text-tangerine">
-                      ${product.price.toLocaleString()}
+                      {formatPrice(product.price)}
                     </span>
                   </div>
                   <p className="text-xs text-walnut mt-1.5 line-clamp-2 leading-relaxed">

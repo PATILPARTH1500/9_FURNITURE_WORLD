@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight, Plus, ShoppingBag } from 'lucide-react';
 import { PRODUCTS_CATALOG, COLLECTIONS_DATA } from '@/data/catalog';
+import { formatPrice } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
 
 export const CuratedCollectionSection: React.FC = () => {
@@ -133,7 +134,7 @@ export const CuratedCollectionSection: React.FC = () => {
                         </h4>
                       </Link>
                       <span className="font-sans text-base text-tangerine font-semibold">
-                        ${product.price.toLocaleString()}
+                        {formatPrice(product.price)}
                       </span>
                     </div>
                     <p className="font-sans text-xs text-walnut mt-1.5 line-clamp-2 leading-relaxed">

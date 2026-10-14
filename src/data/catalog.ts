@@ -89,7 +89,7 @@ export const FLAGSHIP_PRODUCT: Product = {
   architecturalStatement:
     '“Comfort and cheerful colour should live together naturally in every modern living room.”',
   price: 1850,
-  currency: 'USD',
+  currency: 'INR',
   dimensions: {
     widthCm: 84,
     depthCm: 89,
@@ -207,7 +207,7 @@ export const PRODUCTS_CATALOG: Product[] = [
       'A generous 150cm round dining table made from solid European walnut with soft beveled edges and a sculptural pedestal base. Seats six people comfortably with generous legroom all around.',
     architecturalStatement: '“A table made for long dinners, game nights, and morning coffee together.”',
     price: 2450,
-    currency: 'USD',
+    currency: 'INR',
     dimensions: {
       widthCm: 150,
       depthCm: 150,
@@ -255,7 +255,7 @@ export const PRODUCTS_CATALOG: Product[] = [
       'A welcoming curved three-seater sofa wrapped in textured cream bouclé fabric. Featuring deep foam cushioning, solid timber frame, and matching round cushions for relaxing evenings at home.',
     architecturalStatement: '“A sculptural curve that naturally softens living spaces and welcomes family gathering.”',
     price: 2950,
-    currency: 'USD',
+    currency: 'INR',
     dimensions: {
       widthCm: 235,
       depthCm: 105,
@@ -304,7 +304,7 @@ export const PRODUCTS_CATALOG: Product[] = [
       'A statement king bed frame with an upholstered olive green velvet headboard. Comes with solid wooden sprung slats for breathable mattress support and restful sleep.',
     architecturalStatement: '“Deep olive velvet and warm timber create a cozy, grounded bedroom atmosphere.”',
     price: 2150,
-    currency: 'USD',
+    currency: 'INR',
     dimensions: {
       widthCm: 195,
       depthCm: 218,
@@ -352,7 +352,7 @@ export const PRODUCTS_CATALOG: Product[] = [
       'A retro-modern dome pendant lamp in vibrant tangerine orange with a glossy baked-enamel finish. Projects warm, glare-free downward light over dining tables and kitchen islands.',
     architecturalStatement: '“A pop of glossy tangerine that instantly brings warmth and cheer to any room.”',
     price: 480,
-    currency: 'USD',
+    currency: 'INR',
     dimensions: {
       widthCm: 50,
       depthCm: 50,
@@ -400,7 +400,7 @@ export const PRODUCTS_CATALOG: Product[] = [
       'A playful, organic coffee table featuring gentle petal curves, glossy tangerine lacquer, and a sturdy low profile that is kid-friendly and easy to clean.',
     architecturalStatement: '“Soft curves and vibrant glossy colour create an inviting centerpiece in the living room.”',
     price: 890,
-    currency: 'USD',
+    currency: 'INR',
     dimensions: {
       widthCm: 110,
       depthCm: 75,

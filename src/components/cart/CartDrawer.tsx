@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X, Plus, Minus, Trash2, ArrowUpRight, ShieldCheck, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import { BRAND_CONFIG, formatPrice } from '@/config/brand';
 
 export const CartDrawer: React.FC = () => {
   const { isOpen, setIsOpen, items, updateQuantity, removeItem, getSubtotal } = useCartStore();
@@ -14,7 +15,7 @@ export const CartDrawer: React.FC = () => {
   if (!isOpen) return null;
 
   const subtotal = getSubtotal();
-  const freeShippingThreshold = 1500;
+  const freeShippingThreshold = BRAND_CONFIG.freeShippingThreshold;
   const qualifiesForFreeShipping = subtotal >= freeShippingThreshold;
   const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
 
@@ -67,7 +68,7 @@ export const CartDrawer: React.FC = () => {
               <span>
                 Add{' '}
                 <strong className="text-checkerboard font-semibold">
-                  ${remainingForFreeShipping.toLocaleString()}
+                  {formatPrice(remainingForFreeShipping)}
                 </strong>{' '}
                 more to qualify for free room-of-choice delivery
               </span>
@@ -168,7 +169,7 @@ export const CartDrawer: React.FC = () => {
                       </div>
 
                       <span className="font-sans text-sm font-semibold text-checkerboard">
-                        ${(item.unitPrice * item.quantity).toLocaleString()}
+                        {formatPrice(item.unitPrice * item.quantity)}
                       </span>
                     </div>
                   </div>
@@ -183,16 +184,16 @@ export const CartDrawer: React.FC = () => {
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs text-walnut">
                   <span>Subtotal</span>
-                  <span className="font-semibold text-checkerboard">${subtotal.toLocaleString()}</span>
+                  <span className="font-semibold text-checkerboard">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs text-walnut">
                   <span>Delivery</span>
-                  <span>{qualifiesForFreeShipping ? 'FREE' : '$120'}</span>
+                  <span>{qualifiesForFreeShipping ? 'FREE' : formatPrice(250)}</span>
                 </div>
                 <div className="pt-2 border-t border-checkerboard/10 flex items-center justify-between">
                   <span className="font-serif text-lg font-semibold text-checkerboard">Total</span>
                   <span className="font-sans text-lg font-bold text-tangerine">
-                    ${(subtotal + (qualifiesForFreeShipping ? 0 : 120)).toLocaleString()}
+                    {formatPrice(subtotal + (qualifiesForFreeShipping ? 0 : 250), true)}
                   </span>
                 </div>
               </div>

@@ -12,16 +12,20 @@ import {
   ArrowUpRight,
   ArrowDown,
   Check,
+  Play,
 } from 'lucide-react';
 import { CINEMATIC_TOUR_SCENES } from '@/config/cinematicTour';
 import { PRODUCTS_CATALOG } from '@/data/catalog';
+import { formatPrice } from '@/config/brand';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
 import { ProductQuickDrawer } from '@/components/discovery/ProductQuickDrawer';
+import { BrandFilmModal } from '@/components/media/BrandFilmModal';
 
 export const CinematicResidenceTour: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const [brandFilmOpen, setBrandFilmOpen] = useState(false);
   const totalScenes = CINEMATIC_TOUR_SCENES.length;
   const totalScenesPad = totalScenes.toString().padStart(2, '0');
 
@@ -289,9 +293,23 @@ export const CinematicResidenceTour: React.FC = () => {
 
     rafId = requestAnimationFrame(renderLoop);
 
+    const handleResize = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
+
+    const videosToCleanup = videoRefs.current;
+
     return () => {
       cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', handleResize);
       st.kill();
+      videosToCleanup.forEach((v) => {
+        if (v && !v.paused) v.pause();
+      });
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+        audioCtxRef.current.close().catch(() => {});
+      }
     };
   }, [totalScenes, totalScenesPad, setActiveRoomIndex]);
 
@@ -327,11 +345,11 @@ export const CinematicResidenceTour: React.FC = () => {
       <div
         ref={containerRef}
         id="tour"
-        className="relative w-full bg-cream"
+        className="relative w-full bg-cream touch-pan-y"
         style={{ height: `${totalScenes * 105}vh` }}
       >
         {/* Pinned 100vh Viewport */}
-        <div ref={viewportRef} className="sticky top-0 h-screen w-full overflow-hidden select-none bg-cream">
+        <div ref={viewportRef} className="sticky top-0 h-screen w-full overflow-hidden select-none bg-cream touch-pan-y">
           {/* 1. LAYER: Video Scrubbing Stack */}
           <div className="absolute inset-0 w-full h-full bg-cream">
             {CINEMATIC_TOUR_SCENES.map((scene, idx) => {
@@ -354,12 +372,21 @@ export const CinematicResidenceTour: React.FC = () => {
                       videoRefs.current[idx] = el;
                     }}
                     src={scene.videoSrc}
+                    poster={scene.posterSrc}
                     muted
                     loop={false}
                     playsInline
                     preload={idx <= 1 ? 'auto' : 'metadata'}
                     disablePictureInPicture
                     disableRemotePlayback
+                    onError={() => {
+                      // Fallback: mark clip unready so poster stays active
+                      setReadyClips((prev) => {
+                        const next = [...prev];
+                        next[idx] = false;
+                        return next;
+                      });
+                    }}
                     onSeeking={() => {
                       seekTrackersRef.current[idx].isSeeking = true;
                     }}
@@ -398,18 +425,14 @@ export const CinematicResidenceTour: React.FC = () => {
                     className="absolute inset-0 w-full h-full object-cover transform-gpu z-10"
                   />
 
-                  {/* High-Resolution Poster Placeholder */}
-                  <div
-                    className={`absolute inset-0 w-full h-full z-0 transition-opacity duration-700 ${
-                      readyClips[idx] ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                    }`}
-                  >
+                  {/* High-Resolution Poster Placeholder - Always active as a solid backdrop underneath at z-0 */}
+                  <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
                     <Image
                       src={scene.posterSrc}
                       alt={scene.roomTitle}
                       fill
-                      priority={idx === 0}
-                      className="object-cover filter brightness-[0.98] contrast-[1.02]"
+                      priority={idx <= 1}
+                      className="object-cover"
                       sizes="100vw"
                     />
                   </div>
@@ -477,6 +500,13 @@ export const CinematicResidenceTour: React.FC = () => {
                   Colourful living, beautifully made. Explore retro-modern furniture and happy home essentials.
                 </p>
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <button
+                    onClick={() => setBrandFilmOpen(true)}
+                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-checkerboard text-white hover:bg-black font-medium px-8 py-4 rounded-full shadow-retro transition-all duration-300"
+                  >
+                    <Play className="w-4 h-4 text-tangerine fill-current" />
+                    <span>Watch Brand Film</span>
+                  </button>
                   <a
                     href="#collection"
                     className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-8 py-4 rounded-full shadow-warm transition-all duration-300"
@@ -524,7 +554,7 @@ export const CinematicResidenceTour: React.FC = () => {
                     Featured Piece
                   </span>
                   <span className="font-sans text-sm text-tangerine font-semibold">
-                    ${featuredProduct.price.toLocaleString()}
+                    {formatPrice(featuredProduct.price)}
                   </span>
                 </div>
 
@@ -603,6 +633,9 @@ export const CinematicResidenceTour: React.FC = () => {
 
       {/* Shoppable Product Quick Drawer */}
       <ProductQuickDrawer />
+
+      {/* Fullscreen Brand Film Modal */}
+      <BrandFilmModal isOpen={brandFilmOpen} onClose={() => setBrandFilmOpen(false)} />
     </>
   );
 };

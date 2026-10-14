@@ -98,9 +98,14 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-walnut">
-          <p>© {new Date().getFullYear()} {BRAND_CONFIG.name}. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-walnut gap-4">
+          <div className="space-y-1 text-center md:text-left">
+            <p>© {new Date().getFullYear()} {BRAND_CONFIG.name}. All rights reserved.</p>
+            <p className="text-[11px] text-walnut/70">
+              {BRAND_CONFIG.contact.legalEntity} · GSTIN: {BRAND_CONFIG.contact.gstin}
+            </p>
+          </div>
+          <div className="flex space-x-6">
             <span className="hover:text-tangerine cursor-pointer transition-colors">Quality Guarantee</span>
             <span className="hover:text-tangerine cursor-pointer transition-colors">Care Guide</span>
             <span className="hover:text-tangerine cursor-pointer transition-colors">Privacy Policy</span>

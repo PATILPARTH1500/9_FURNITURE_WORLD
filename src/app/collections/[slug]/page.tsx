@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { COLLECTIONS_DATA, PRODUCTS_CATALOG } from '@/data/catalog';
+import { formatPrice } from '@/config/brand';
 
 interface CollectionPageProps {
   params: {
@@ -109,7 +110,7 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
                       {product.name}
                     </h3>
                     <span className="font-sans text-base font-bold text-tangerine">
-                      ${product.price.toLocaleString()}
+                      {formatPrice(product.price)}
                     </span>
                   </div>
                   <p className="text-xs text-walnut mt-1.5 line-clamp-2 leading-relaxed">

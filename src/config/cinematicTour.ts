@@ -20,9 +20,23 @@ export interface TourSceneConfig {
 }
 
 /**
+ * Optional CDN base URL for production video delivery (e.g. Supabase, Vercel Blob, Cloudflare R2).
+ * Falls back to local public directory paths if not configured.
+ */
+const VIDEO_CDN_BASE = (process.env.NEXT_PUBLIC_VIDEO_CDN_URL || '').replace(/\/$/, '');
+export const resolveVideoUrl = (path: string): string =>
+  VIDEO_CDN_BASE ? `${VIDEO_CDN_BASE}${path}` : path;
+
+/**
  * SOURCE OF TRUTH: 7-Scene Production Video Tour for Furniture Village
- * Encoded from Google Flow 1080p footage with high-frequency intra-frame GOPs (-g 2)
- * for instantaneous 60 FPS bidirectional scroll scrubbing.
+ * Mapped to the 7 new Google Flow 1080p footage files:
+ * 1. Grand_living_room_reveal -> scene-1-living.mp4
+ * 2. Camera_tracking_dining_room -> scene-2-dining.mp4
+ * 3. Camera_tilting_down_in_kitchen -> scene-3-kitchen.mp4
+ * 4. Children_racing_toy_cars -> scene-4-lounge.mp4
+ * 5. Camera_pushes_into_bedroom -> scene-5-bedroom.mp4
+ * 6. Macro_shots_of_luxury_furniture -> scene-6-craft.mp4
+ * 7. Furniture_Village_brand_reveal -> scene-7-outro.mp4
  */
 export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
   {
@@ -39,7 +53,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Accent Table', value: 'Glossy Tangerine Petal Lacquer' },
       { label: 'Chairs', value: 'Deep Olive Velvet Lounge Chairs' },
     ],
-    videoSrc: '/videos/scenes/scene-1-living.mp4',
+    videoSrc: resolveVideoUrl('/videos/scenes/scene-1-living.mp4'),
     posterSrc: '/videos/scenes/posters/scene-1-living.jpg',
     duration: 10.0,
     featuredProductId: 'prod-003',
@@ -64,7 +78,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Lighting', value: 'Twin Tangerine Gloss Pendant Domes' },
       { label: 'Seating', value: 'Olive Green & Dusty Coral Velvet Chairs' },
     ],
-    videoSrc: '/videos/scenes/scene-2-dining.mp4',
+    videoSrc: resolveVideoUrl('/videos/scenes/scene-2-dining.mp4'),
     posterSrc: '/videos/scenes/posters/scene-2-dining.jpg',
     duration: 10.0,
     featuredProductId: 'prod-002',
@@ -89,7 +103,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Shelving', value: 'Solid Walnut Open Display Ledges' },
       { label: 'Cabinetry', value: 'Olive Green Shaker Millwork with Brass Knobs' },
     ],
-    videoSrc: '/videos/scenes/scene-3-kitchen.mp4',
+    videoSrc: resolveVideoUrl('/videos/scenes/scene-3-kitchen.mp4'),
     posterSrc: '/videos/scenes/posters/scene-3-kitchen.jpg',
     duration: 10.0,
     featuredProductId: 'prod-006',
@@ -114,7 +128,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Atmosphere', value: 'Wide Open Sunlit Family Play Space' },
       { label: 'Living', value: 'Comfortable Modular Family Seating' },
     ],
-    videoSrc: '/videos/scenes/scene-4-lounge.mp4',
+    videoSrc: resolveVideoUrl('/videos/scenes/scene-4-lounge.mp4'),
     posterSrc: '/videos/scenes/posters/scene-4-lounge.jpg',
     duration: 10.0,
     featuredProductId: 'prod-001',
@@ -139,7 +153,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Bedding', value: 'Washed Pure Linen in Dusty Peach & Coral' },
       { label: 'Bedside Table', value: 'Fluted Navona Travertine Pedestal' },
     ],
-    videoSrc: '/videos/scenes/scene-5-bedroom.mp4',
+    videoSrc: resolveVideoUrl('/videos/scenes/scene-5-bedroom.mp4'),
     posterSrc: '/videos/scenes/posters/scene-5-bedroom.jpg',
     duration: 10.0,
     featuredProductId: 'prod-004',
@@ -164,7 +178,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Timber Surface', value: 'Hand-Finished Solid European Walnut' },
       { label: 'Joinery', value: 'Durable Precision Mortise & Tenon Assembly' },
     ],
-    videoSrc: '/videos/scenes/scene-6-craft.mp4',
+    videoSrc: resolveVideoUrl('/videos/scenes/scene-6-craft.mp4'),
     posterSrc: '/videos/scenes/posters/scene-6-craft.jpg',
     duration: 10.0,
     featuredProductId: 'prod-001',
@@ -189,7 +203,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Design Language', value: 'Warm Retro-Modern with Playful Color' },
       { label: 'Craftsmanship', value: 'Handcrafted Solid Wood & Lifetime Care' },
     ],
-    videoSrc: '/videos/scenes/scene-7-outro.mp4',
+    videoSrc: resolveVideoUrl('/videos/scenes/scene-7-outro.mp4'),
     posterSrc: '/videos/scenes/posters/scene-7-outro.jpg',
     duration: 10.0,
     featuredProductId: 'prod-001',
