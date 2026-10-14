@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, Sparkles, Compass } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowUpRight, Compass } from 'lucide-react';
 
 interface RoomData {
   id: string;
@@ -108,19 +110,97 @@ const ROOM_OPTIONS: RoomData[] = [
 
 export const RoomDiscoverySection: React.FC = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string>('living');
+  const sectionRef = useRef<HTMLElement>(null);
+  const showcaseRef = useRef<HTMLDivElement>(null);
 
   const currentRoom =
     ROOM_OPTIONS.find((r) => r.id === selectedRoomId) || ROOM_OPTIONS[0];
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.room-header',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.room-tabs-bar',
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: 'power3.out',
+          delay: 0.1,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 75%',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        showcaseRef.current,
+        { opacity: 0, y: 35, scale: 0.99 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.85,
+          ease: 'power3.out',
+          delay: 0.15,
+          scrollTrigger: {
+            trigger: showcaseRef.current,
+            start: 'top 80%',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleSelectRoom = (roomId: string) => {
+    if (roomId === selectedRoomId) return;
+    setSelectedRoomId(roomId);
+    if (showcaseRef.current) {
+      gsap.fromTo(
+        showcaseRef.current,
+        { opacity: 0.6, y: 8 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      );
+    }
+  };
+
   return (
-    <section id="room-discovery" className="relative z-20 bg-cream py-24 sm:py-32 border-t border-checkerboard/10 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <section
+      id="room-discovery"
+      ref={sectionRef}
+      className="relative z-20 bg-[#FAF5EC] py-24 sm:py-32 border-t border-checkerboard/12 overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-8 border-b border-checkerboard/15 gap-8">
+        <div className="room-header flex flex-col md:flex-row md:items-end justify-between mb-12 pb-8 border-b border-checkerboard/15 gap-8">
           <div className="space-y-4 max-w-xl">
-            <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/80 px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-flex items-center space-x-1.5 shadow-2xs">
+            <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-flex items-center space-x-1.5 shadow-2xs">
               <Compass className="w-3.5 h-3.5 text-tangerine" />
-              <span>Room Exploration</span>
+              <span>Room Exploration · Architecture</span>
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]">
               Find Your Room&apos;s <br />
@@ -132,19 +212,19 @@ export const RoomDiscoverySection: React.FC = () => {
           </p>
         </div>
 
-        {/* Room Tab Selector Bar */}
-        <div className="flex items-center space-x-2 sm:space-x-3 overflow-x-auto pb-4 mb-12 scrollbar-none">
+        {/* Room Tab Selector Bar with Active Pill Indicator */}
+        <div className="room-tabs-bar flex items-center space-x-2 sm:space-x-3 overflow-x-auto pb-4 mb-12 scrollbar-none">
           {ROOM_OPTIONS.map((room) => {
             const isSelected = room.id === selectedRoomId;
             return (
               <button
                 key={room.id}
                 data-room-id={room.id}
-                onClick={() => setSelectedRoomId(room.id)}
+                onClick={() => handleSelectRoom(room.id)}
                 className={`px-5 py-3 rounded-full text-xs font-sans uppercase tracking-wider font-semibold whitespace-nowrap transition-all duration-300 ${
                   isSelected
                     ? 'bg-tangerine text-white shadow-warm scale-102 ring-2 ring-tangerine/30'
-                    : 'bg-white text-checkerboard/80 hover:text-checkerboard border border-checkerboard/15 hover:border-checkerboard/30 shadow-2xs'
+                    : 'bg-white hover:bg-cream text-checkerboard/80 hover:text-checkerboard border border-checkerboard/15 hover:border-checkerboard/30 shadow-2xs'
                 }`}
                 aria-pressed={isSelected}
               >
@@ -155,19 +235,22 @@ export const RoomDiscoverySection: React.FC = () => {
         </div>
 
         {/* Interactive Room Showcase Panel */}
-        <div className="bg-white rounded-3xl border border-checkerboard/15 p-6 sm:p-10 lg:p-12 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div
+          ref={showcaseRef}
+          className="bg-white rounded-3xl border border-checkerboard/15 p-6 sm:p-10 lg:p-12 shadow-[0_16px_40px_rgba(41,37,31,0.06)] grid grid-cols-1 lg:grid-cols-12 gap-10 items-center transition-all duration-300"
+        >
           {/* Room Image with Smooth Crossfade */}
-          <div className="lg:col-span-7 relative aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream-dark">
+          <div className="lg:col-span-7 relative aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream-dark group">
             <Image
               key={currentRoom.id}
               src={currentRoom.image}
               alt={currentRoom.headline}
               fill
-              className="object-cover transition-opacity duration-700 animate-in fade-in"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-104 animate-in fade-in"
               sizes="(max-width: 1024px) 100vw, 60vw"
               priority
             />
-            <div className="absolute top-4 left-4 bg-cream/90 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold text-checkerboard border border-checkerboard/15 shadow-2xs">
+            <div className="absolute top-4 left-4 bg-white/92 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold text-checkerboard border border-checkerboard/15 shadow-2xs">
               {currentRoom.roomTag}
             </div>
           </div>
@@ -205,14 +288,14 @@ export const RoomDiscoverySection: React.FC = () => {
               </ul>
             </div>
 
-            {/* CTA Link to Scene */}
+            {/* CTA Links to Residence Scene */}
             <div className="pt-4 border-t border-checkerboard/10 flex flex-col sm:flex-row gap-3">
               <Link
                 href={currentRoom.linkHref}
-                className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-6 py-3.5 rounded-full shadow-warm transition-all duration-300"
+                className="group inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-6 py-3.5 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg active:scale-98"
               >
                 <span>{currentRoom.ctaText}</span>
-                <ArrowUpRight className="w-4 h-4" />
+                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
 
               <Link

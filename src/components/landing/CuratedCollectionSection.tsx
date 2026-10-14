@@ -1,15 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, Plus, ShoppingBag } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowUpRight, ShoppingBag, Check } from 'lucide-react';
 import { PRODUCTS_CATALOG, COLLECTIONS_DATA } from '@/data/catalog';
 import { formatPrice } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
 
 export const CuratedCollectionSection: React.FC = () => {
   const { addItem, setIsOpen } = useCartStore();
+  const [addedProductId, setAddedProductId] = useState<string | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const handleQuickAdd = (product: (typeof PRODUCTS_CATALOG)[0]) => {
     const variant = product.variants[0];
@@ -24,16 +28,93 @@ export const CuratedCollectionSection: React.FC = () => {
       quantity: 1,
       image: product.images.hero,
     });
-    setIsOpen(true);
+
+    setAddedProductId(product.id);
+    setTimeout(() => {
+      setAddedProductId(null);
+      setIsOpen(true);
+    }, 600);
   };
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      // Header
+      gsap.fromTo(
+        '.collection-header',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // 3 Collection Cards
+      gsap.fromTo(
+        '.collection-banner-card',
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.12,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.collection-banners-grid',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // Product Cards
+      gsap.fromTo(
+        '.product-grid-card',
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.products-grid-container',
+            start: 'top 80%',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="collection" className="relative z-20 bg-cream text-checkerboard py-28 border-t border-checkerboard/10">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <section
+      id="collection"
+      ref={sectionRef}
+      className="relative z-20 bg-gradient-to-b from-[#F4E9D8] via-[#FAF7F2] to-[#FAF7F2] text-checkerboard py-28 border-t border-checkerboard/10 overflow-hidden"
+    >
+      {/* Subtle Warm Ambient Lighting */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-96 bg-[radial-gradient(ellipse_at_top,rgba(244,81,11,0.04),transparent_70%)] pointer-events-none"
+        aria-hidden="true"
+      />
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
+        <div className="collection-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
           <div className="space-y-3 max-w-xl">
-            <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/80 px-3 py-1 rounded-full border border-tangerine/20 inline-block shadow-2xs">
+            <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white px-3 py-1 rounded-full border border-tangerine/20 inline-block shadow-2xs">
               Furniture Collections
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]">
@@ -47,27 +128,27 @@ export const CuratedCollectionSection: React.FC = () => {
             </p>
             <Link
               href="/collections"
-              className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider text-tangerine hover:text-coral font-semibold transition-colors"
+              className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider text-tangerine hover:text-coral font-semibold transition-colors group"
             >
               <span>Explore All Furniture</span>
-              <ArrowUpRight className="w-4 h-4" />
+              <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </div>
         </div>
 
         {/* Collections Overview Banner */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
+        <div className="collection-banners-grid grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
           {COLLECTIONS_DATA.map((col) => (
             <Link
               key={col.id}
               href={`/collections/${col.slug}`}
-              className="group relative h-[380px] rounded-2xl overflow-hidden border border-checkerboard/15 flex flex-col justify-end p-8 transition-all duration-300 hover:border-tangerine shadow-retro hover:shadow-warm"
+              className="collection-banner-card group relative h-[380px] rounded-2xl overflow-hidden border border-checkerboard/15 flex flex-col justify-end p-8 transition-all duration-500 hover:border-tangerine shadow-retro hover:shadow-warm hover:-translate-y-1.5"
             >
               <Image
                 src={col.coverImage}
                 alt={col.title}
                 fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter brightness-[0.75] group-hover:brightness-[0.85]"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-106 filter brightness-[0.75] group-hover:brightness-[0.88]"
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-checkerboard/90 via-checkerboard/40 to-transparent" />
@@ -99,11 +180,11 @@ export const CuratedCollectionSection: React.FC = () => {
             <span className="font-sans text-xs text-tangerine font-semibold tracking-wide">06 Selected Pieces</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="products-grid-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {PRODUCTS_CATALOG.map((product) => (
               <div
                 key={product.id}
-                className="group flex flex-col bg-white rounded-2xl border border-checkerboard/10 overflow-hidden hover:border-tangerine/50 transition-all duration-300 shadow-retro hover:shadow-warm"
+                className="product-grid-card group flex flex-col bg-white rounded-3xl border border-checkerboard/10 overflow-hidden hover:border-tangerine/50 transition-all duration-400 shadow-retro hover:shadow-warm hover:-translate-y-1.5"
               >
                 {/* Product Image */}
                 <Link
@@ -114,11 +195,11 @@ export const CuratedCollectionSection: React.FC = () => {
                     src={product.images.hero}
                     alt={product.name}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-106"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute top-4 left-4">
-                    <span className="bg-cream/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-[11px] uppercase font-sans font-semibold tracking-wider text-checkerboard shadow-2xs capitalize">
+                    <span className="bg-white/92 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-[11px] uppercase font-sans font-semibold tracking-wider text-checkerboard shadow-2xs capitalize">
                       {product.category}
                     </span>
                   </div>
@@ -148,16 +229,29 @@ export const CuratedCollectionSection: React.FC = () => {
                       className="font-sans uppercase tracking-wider text-xs text-checkerboard hover:text-tangerine flex items-center space-x-1 font-semibold transition-colors"
                     >
                       <span>View Details</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
+                      <ArrowUpRight className="w-3.5 h-3.5 text-tangerine transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </Link>
 
                     <button
                       onClick={() => handleQuickAdd(product)}
-                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-tangerine hover:bg-coral text-white font-medium text-xs shadow-xs transition-colors"
+                      className={`inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full font-medium text-xs shadow-xs transition-all duration-300 active:scale-95 ${
+                        addedProductId === product.id
+                          ? 'bg-olive text-white'
+                          : 'bg-tangerine hover:bg-coral text-white'
+                      }`}
                       aria-label={`Add ${product.name} to bag`}
                     >
-                      <ShoppingBag className="w-3.5 h-3.5" />
-                      <span>Add</span>
+                      {addedProductId === product.id ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                          <span>Added</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBag className="w-3.5 h-3.5" />
+                          <span>Add</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -169,7 +263,7 @@ export const CuratedCollectionSection: React.FC = () => {
         {/* Brand Promise Banner */}
         <div className="mt-28 p-10 md:p-16 rounded-3xl bg-cream-dark border border-checkerboard/15 relative overflow-hidden shadow-retro">
           <div className="max-w-2xl space-y-4 relative z-10">
-            <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/80 px-3 py-1 rounded-full border border-tangerine/20 inline-block shadow-2xs">
+            <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/90 px-3 py-1 rounded-full border border-tangerine/20 inline-block shadow-2xs">
               Made for Real Homes
             </span>
             <blockquote className="font-serif text-2xl sm:text-3xl md:text-4xl text-checkerboard leading-snug font-medium">

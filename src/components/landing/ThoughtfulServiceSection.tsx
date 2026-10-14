@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Truck, ShieldCheck, Wrench, MapPin, Phone, Mail, Clock, ArrowUpRight } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Truck, ShieldCheck, Wrench, MapPin, Phone, Mail, ArrowUpRight } from 'lucide-react';
 import { BRAND_CONFIG } from '@/config/brand';
 
 interface ServiceItem {
@@ -49,13 +51,77 @@ const CONFIRMED_SERVICES: ServiceItem[] = [
 ];
 
 export const ThoughtfulServiceSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.service-header',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.service-card',
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.service-cards-grid',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.service-cta-banner',
+        { opacity: 0, y: 30, scale: 0.99 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.service-cta-banner',
+            start: 'top 85%',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="relative z-20 bg-cream-dark py-24 sm:py-32 border-t border-checkerboard/15">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <section
+      ref={sectionRef}
+      className="relative z-20 bg-[#EEE5D8] py-24 sm:py-32 border-t border-checkerboard/15 overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
+        <div className="service-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
           <div className="space-y-4 max-w-xl">
-            <span className="font-sans text-xs tracking-wider uppercase text-olive font-semibold bg-white/80 px-3.5 py-1.5 rounded-full border border-olive/20 inline-flex items-center space-x-1.5 shadow-2xs">
+            <span className="font-sans text-xs tracking-wider uppercase text-olive font-semibold bg-white px-3.5 py-1.5 rounded-full border border-olive/20 inline-flex items-center space-x-1.5 shadow-2xs">
               <ShieldCheck className="w-3.5 h-3.5 text-olive" />
               <span>Customer Care & Confidence</span>
             </span>
@@ -69,24 +135,24 @@ export const ThoughtfulServiceSection: React.FC = () => {
           </p>
         </div>
 
-        {/* 4 Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        {/* 4 Services Grid with Distinctive Cards */}
+        <div className="service-cards-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {CONFIRMED_SERVICES.map((srv) => {
             const Icon = srv.icon;
             return (
               <div
                 key={srv.id}
-                className="bg-white rounded-3xl border border-checkerboard/10 p-7 flex flex-col justify-between space-y-5 shadow-xs hover:shadow-warm transition-all duration-300 hover:-translate-y-1"
+                className="service-card group bg-white/95 rounded-3xl border border-checkerboard/12 p-7 flex flex-col justify-between space-y-6 shadow-xs hover:shadow-warm transition-all duration-400 hover:-translate-y-1.5"
               >
                 <div className="space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-cream flex items-center justify-center text-tangerine border border-checkerboard/10">
+                  <div className="w-12 h-12 rounded-2xl bg-[#F4E9D8] flex items-center justify-center text-tangerine border border-checkerboard/10 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
                     <Icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-xl text-checkerboard font-semibold leading-snug">
+                    <h3 className="font-serif text-xl text-checkerboard font-semibold leading-snug group-hover:text-tangerine transition-colors">
                       {srv.title}
                     </h3>
-                    <p className="text-xs font-sans text-tangerine font-medium mt-0.5">
+                    <p className="text-xs font-sans text-tangerine font-medium mt-1">
                       {srv.subtitle}
                     </p>
                   </div>
@@ -95,70 +161,63 @@ export const ThoughtfulServiceSection: React.FC = () => {
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-checkerboard/5 text-[11px] font-sans font-semibold text-olive uppercase tracking-wider">
-                  Guaranteed Included
+                <div className="pt-3 border-t border-checkerboard/8 text-[11px] font-sans font-semibold text-olive uppercase tracking-wider flex items-center space-x-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-olive" />
+                  <span>Guaranteed Included</span>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Showroom & Consultation Banner */}
-        <div className="bg-white rounded-3xl border border-checkerboard/15 p-8 sm:p-12 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-8 space-y-4">
-            <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold block">
-              Flagship Experience Store · Indiranagar
+        {/* Strong Closing Consultation Banner */}
+        <div className="service-cta-banner bg-[#2A311B] text-white rounded-3xl p-8 sm:p-12 border border-white/12 shadow-[0_16px_40px_rgba(0,0,0,0.2)] flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="space-y-3 max-w-2xl text-center lg:text-left">
+            <span className="font-sans text-xs uppercase tracking-wider text-[#D8E6A6] font-semibold bg-white/10 px-3 py-1 rounded-full border border-white/15 inline-block">
+              Showroom & Consultation
             </span>
-            <h3 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold">
-              Need Help Sizing Your Room or Choosing Fabrics?
+            <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#FAF5EE] font-semibold leading-tight">
+              Experience the Craftsmanship in Person
             </h3>
-            <p className="font-sans text-sm text-walnut leading-relaxed max-w-2xl font-normal">
-              Our interior specialists are on hand to check dimensions, review room floorplans, and recommend the best timber and upholstery combinations for your lifestyle.
+            <p className="font-sans text-sm text-[#D0C4B4] leading-relaxed">
+              Touch genuine timber finishes, test sofa seat cushions, and consult with our interior specialists at our flagship store.
             </p>
-
-            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs font-sans text-walnut">
-              <a
-                href={`tel:${BRAND_CONFIG.contact.phone.replace(/\s+/g, '')}`}
-                className="inline-flex items-center space-x-2 font-medium text-checkerboard hover:text-tangerine transition-colors"
-              >
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2 text-xs font-sans text-[#E7D8BF]">
+              <span className="inline-flex items-center space-x-1.5">
+                <MapPin className="w-4 h-4 text-tangerine" />
+                <span>100-Ft Road, Indiranagar, Bengaluru</span>
+              </span>
+              <span className="hidden sm:inline text-white/30">·</span>
+              <span className="inline-flex items-center space-x-1.5">
                 <Phone className="w-4 h-4 text-tangerine" />
-                <span>{BRAND_CONFIG.contact.phone}</span>
-              </a>
-
-              <a
-                href={`mailto:${BRAND_CONFIG.contact.email}`}
-                className="inline-flex items-center space-x-2 font-medium text-checkerboard hover:text-tangerine transition-colors"
-              >
+                <span>+91 80 4000 8879</span>
+              </span>
+              <span className="hidden sm:inline text-white/30">·</span>
+              <span className="inline-flex items-center space-x-1.5">
                 <Mail className="w-4 h-4 text-tangerine" />
-                <span>{BRAND_CONFIG.contact.email}</span>
-              </a>
-
-              <div className="inline-flex items-center space-x-2 text-walnut/80">
-                <Clock className="w-4 h-4 text-tangerine" />
-                <span>{BRAND_CONFIG.contact.hours}</span>
-              </div>
+                <span>care@furniturevillage.com</span>
+              </span>
             </div>
           </div>
 
-          <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0">
+            <a
+              href="tel:+918040008879"
+              className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg active:scale-98"
+            >
+              <Phone className="w-4 h-4" />
+              <span>Call Concierge</span>
+            </a>
             <Link
               href="/collections"
-              className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-6 py-4 rounded-full shadow-warm transition-all duration-300 text-center"
+              className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF5EE] font-medium px-6 py-4 rounded-full transition-all duration-300"
             >
-              <span>Explore All Furniture</span>
+              <span>Explore Collection</span>
               <ArrowUpRight className="w-4 h-4" />
             </Link>
-
-            <a
-              href={`mailto:${BRAND_CONFIG.contact.email}?subject=Room%20Consultation%20Inquiry`}
-              className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-6 py-4 rounded-full shadow-2xs transition-all duration-300 text-center"
-            >
-              <span>Book Design Consultation</span>
-            </a>
           </div>
         </div>
       </div>
     </section>
   );
 };
-

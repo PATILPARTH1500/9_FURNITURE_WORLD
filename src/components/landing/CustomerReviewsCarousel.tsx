@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight, Pause, Play, Quote, Sparkles } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ChevronLeft, ChevronRight, Quote, Sparkles } from 'lucide-react';
 
 interface ReviewItem {
   id: string;
@@ -71,6 +73,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const totalReviews = CUSTOMER_REVIEWS.length;
 
@@ -82,7 +85,52 @@ export const CustomerReviewsCarousel: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + totalReviews) % totalReviews);
   }, [totalReviews]);
 
-  // Autoplay with pause-on-hover & reduced motion check
+  // GSAP Entrance Animation
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.reviews-header',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.reviews-viewport',
+        { opacity: 0, y: 40, scale: 0.98 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.9,
+          ease: 'power3.out',
+          delay: 0.15,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 75%',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // Continuous automatic rotation with pause-on-hover & reduced motion check
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -90,7 +138,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
 
     const interval = setInterval(() => {
       nextSlide();
-    }, 6000);
+    }, 5500);
 
     return () => clearInterval(interval);
   }, [isPaused, nextSlide]);
@@ -118,16 +166,28 @@ export const CustomerReviewsCarousel: React.FC = () => {
   return (
     <section
       id="customer-reviews"
-      className="relative z-20 bg-cream py-24 sm:py-32 border-t border-checkerboard/10 overflow-hidden"
+      ref={sectionRef}
+      className="relative z-20 bg-gradient-to-b from-[#F7EFE4] via-[#F4E8D8] to-[#F7EFE4] py-24 sm:py-32 border-t border-checkerboard/10 overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
       onKeyDown={handleKeyDown}
       tabIndex={0}
       aria-label="Customer stories and reviews carousel"
+      aria-roledescription="carousel"
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      {/* Decorative Oversized Quotation Mark in Background */}
+      <div
+        className="absolute -right-6 top-6 sm:top-10 font-serif text-[180px] sm:text-[280px] leading-none text-tangerine/[0.07] select-none pointer-events-none -scale-x-100 hidden md:block"
+        aria-hidden="true"
+      >
+        “
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Header with Controls */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
+        <div className="reviews-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
           <div className="space-y-4 max-w-xl">
             <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/80 px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-flex items-center space-x-1.5 shadow-2xs">
               <Sparkles className="w-3.5 h-3.5 text-tangerine" />
@@ -140,23 +200,15 @@ export const CustomerReviewsCarousel: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <p className="hidden lg:block text-xs font-sans text-walnut/70">
+            <p className="hidden lg:block text-xs font-sans text-walnut/75">
               Community feedback from flagship showroom visitors and home deliveries.
             </p>
 
+            {/* Unobtrusive Previous & Next Controls (No Play/Pause Button) */}
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => setIsPaused(!isPaused)}
-                className="p-2.5 rounded-full border border-checkerboard/15 bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-colors shadow-2xs"
-                aria-label={isPaused ? 'Resume review carousel' : 'Pause review carousel'}
-                title={isPaused ? 'Resume review carousel' : 'Pause review carousel'}
-              >
-                {isPaused ? <Play className="w-3.5 h-3.5 fill-current" /> : <Pause className="w-3.5 h-3.5" />}
-              </button>
-
-              <button
                 onClick={prevSlide}
-                className="p-2.5 rounded-full border border-checkerboard/15 bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-colors shadow-2xs"
+                className="p-2.5 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs hover:scale-105 active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
                 aria-label="Previous customer story"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -164,7 +216,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
 
               <button
                 onClick={nextSlide}
-                className="p-2.5 rounded-full border border-checkerboard/15 bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-colors shadow-2xs"
+                className="p-2.5 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs hover:scale-105 active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
                 aria-label="Next customer story"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -176,12 +228,13 @@ export const CustomerReviewsCarousel: React.FC = () => {
         {/* Carousel Viewport Container */}
         <div
           ref={containerRef}
-          className="relative overflow-hidden cursor-grab active:cursor-grabbing"
+          className="reviews-viewport relative overflow-hidden cursor-grab active:cursor-grabbing"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
+          aria-live="polite"
         >
           <div
-            className="flex transition-transform duration-500 ease-out"
+            className="flex transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
             style={{
               transform: `translateX(-${currentIndex * 100}%)`,
             }}
@@ -192,14 +245,14 @@ export const CustomerReviewsCarousel: React.FC = () => {
                 className="w-full shrink-0 px-2 sm:px-4"
                 aria-hidden={idx !== currentIndex}
               >
-                <div className="bg-white rounded-3xl border border-checkerboard/15 p-8 sm:p-12 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div className="group bg-white/95 backdrop-blur-xs rounded-3xl border border-checkerboard/12 p-8 sm:p-12 shadow-[0_16px_40px_rgba(41,37,31,0.06)] hover:shadow-[0_24px_50px_rgba(41,37,31,0.12)] transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                   {/* Left Column: Room Photograph */}
                   <div className="lg:col-span-5 relative aspect-[4/3] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream">
                     <Image
                       src={review.roomPhoto}
                       alt={`${review.author}'s ${review.itemPurchased}`}
                       fill
-                      className="object-cover"
+                      className="object-cover transition-transform duration-700 group-hover:scale-104"
                       sizes="(max-width: 1024px) 100vw, 40vw"
                     />
                     <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-[11px] font-sans font-semibold text-checkerboard border border-checkerboard/10 shadow-2xs">
@@ -209,7 +262,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
 
                   {/* Right Column: Review Text & Attribution */}
                   <div className="lg:col-span-7 space-y-6">
-                    <Quote className="w-10 h-10 text-tangerine/30 -mb-2" />
+                    <Quote className="w-10 h-10 text-tangerine/30 -mb-2 transition-transform duration-300 group-hover:translate-x-1" />
                     <blockquote
                       data-testid="customer-review-quote"
                       className="font-serif text-xl sm:text-2xl text-checkerboard leading-snug font-medium"
@@ -242,7 +295,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
 
         {/* Dots Indicators & Transparent Disclaimer */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[11px] font-sans text-walnut/70">
+          <p className="text-[11px] font-sans text-walnut/75">
             * Curated customer impressions & styling stories from Furniture Village preview patrons.
           </p>
 

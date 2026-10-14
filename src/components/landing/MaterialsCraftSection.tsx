@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { Sparkles, Layers, ShieldCheck, Check } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Layers, ShieldCheck, Check } from 'lucide-react';
 
 interface MaterialStory {
   id: string;
@@ -75,19 +77,80 @@ const MATERIALS_STORIES: MaterialStory[] = [
 
 export const MaterialsCraftSection: React.FC = () => {
   const [activeMaterial, setActiveMaterial] = useState<string>(MATERIALS_STORIES[0].id);
+  const sectionRef = useRef<HTMLElement>(null);
+  const detailPanelRef = useRef<HTMLDivElement>(null);
 
   const selectedMaterial =
     MATERIALS_STORIES.find((m) => m.id === activeMaterial) || MATERIALS_STORIES[0];
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '.materials-header',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.material-card',
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          stagger: 0.1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.materials-cards-grid',
+            start: 'top 80%',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  // Animate detail panel transition on tab change
+  const handleSelectMaterial = (id: string) => {
+    if (id === activeMaterial) return;
+    setActiveMaterial(id);
+    if (detailPanelRef.current) {
+      gsap.fromTo(
+        detailPanelRef.current,
+        { opacity: 0.4, y: 10 },
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+      );
+    }
+  };
+
   return (
-    <section className="relative z-20 bg-cream-dark py-24 sm:py-32 border-t border-checkerboard/15 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <section
+      ref={sectionRef}
+      className="relative z-20 bg-[#F3EFE6] py-24 sm:py-32 border-t border-checkerboard/15 overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
+        <div className="materials-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
           <div className="space-y-4 max-w-xl">
-            <span className="font-sans text-xs tracking-wider uppercase text-rust font-semibold bg-white/80 px-3.5 py-1.5 rounded-full border border-rust/20 inline-flex items-center space-x-1.5 shadow-2xs">
+            <span className="font-sans text-xs tracking-wider uppercase text-[#5E3C26] font-semibold bg-white px-3.5 py-1.5 rounded-full border border-[#5E3C26]/20 inline-flex items-center space-x-1.5 shadow-2xs">
               <Layers className="w-3.5 h-3.5 text-rust" />
-              <span>Tactile Craftsmanship</span>
+              <span>Tactile Craftsmanship · Real Materials</span>
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]">
               Materials That Tell a Story <br />
@@ -99,98 +162,116 @@ export const MaterialsCraftSection: React.FC = () => {
           </p>
         </div>
 
-        {/* 4 Materials Staggered Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {MATERIALS_STORIES.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveMaterial(item.id)}
-              className={`group text-left p-4 rounded-3xl border transition-all duration-300 flex flex-col justify-between ${
-                activeMaterial === item.id
-                  ? 'bg-white border-tangerine shadow-warm ring-1 ring-tangerine/30 -translate-y-1'
-                  : 'bg-white/70 border-checkerboard/10 hover:border-checkerboard/25 hover:bg-white shadow-2xs'
-              }`}
-            >
-              <div className="space-y-4 w-full">
-                <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-cream">
+        {/* 4 Clickable Material Cards Grid */}
+        <div className="materials-cards-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {MATERIALS_STORIES.map((mat) => {
+            const isSelected = mat.id === activeMaterial;
+            return (
+              <button
+                key={mat.id}
+                onClick={() => handleSelectMaterial(mat.id)}
+                className={`material-card group text-left rounded-3xl p-5 border transition-all duration-400 flex flex-col justify-between space-y-4 ${
+                  isSelected
+                    ? 'bg-white border-tangerine shadow-warm ring-2 ring-tangerine/30 -translate-y-1.5'
+                    : 'bg-white/70 hover:bg-white border-checkerboard/12 hover:border-[#805438]/40 shadow-xs hover:-translate-y-1'
+                }`}
+                aria-pressed={isSelected}
+              >
+                <div className="relative aspect-[16/11] w-full rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream">
                   <Image
-                    src={item.image}
-                    alt={item.name}
+                    src={mat.image}
+                    alt={mat.name}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 group-hover:scale-106"
                     sizes="(max-width: 768px) 100vw, 25vw"
                   />
-                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-sans font-semibold text-checkerboard border border-checkerboard/10">
-                    {item.category}
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-xs text-white px-2.5 py-1 rounded-full text-[10px] font-sans font-medium uppercase tracking-wider">
+                    {mat.category}
                   </div>
                 </div>
 
-                <div>
-                  <span className="text-[11px] font-sans font-semibold text-tangerine uppercase tracking-wider block">
-                    {item.materialType}
+                <div className="space-y-1.5">
+                  <span className="text-[11px] font-sans uppercase tracking-wider text-rust font-semibold block">
+                    {mat.materialType}
                   </span>
                   <h3 className="font-serif text-lg text-checkerboard font-semibold leading-snug group-hover:text-tangerine transition-colors">
-                    {item.name}
+                    {mat.name}
                   </h3>
                 </div>
-              </div>
 
-              <div className="pt-3 mt-3 border-t border-checkerboard/5 flex items-center justify-between text-xs font-sans text-walnut w-full">
-                <span className="text-[11px]">View Details</span>
-                <span className={`w-2 h-2 rounded-full ${activeMaterial === item.id ? 'bg-tangerine' : 'bg-checkerboard/20'}`} />
-              </div>
-            </button>
-          ))}
+                <div className="pt-2 border-t border-checkerboard/10 flex items-center justify-between text-xs font-sans">
+                  <span className={isSelected ? 'text-tangerine font-semibold' : 'text-walnut/70'}>
+                    {isSelected ? 'Currently Viewing' : 'Click to Inspect'}
+                  </span>
+                  <div
+                    className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
+                      isSelected
+                        ? 'bg-tangerine text-white scale-110'
+                        : 'bg-checkerboard/10 text-checkerboard/40 group-hover:bg-tangerine/10 group-hover:text-tangerine'
+                    }`}
+                  >
+                    <Check className="w-3 h-3 stroke-[2.5]" />
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Featured Material Detailed Showcase Card */}
-        <div className="bg-white rounded-3xl border border-checkerboard/15 p-8 sm:p-12 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        {/* Selected Material Spotlight Panel */}
+        <div
+          ref={detailPanelRef}
+          className="bg-white rounded-3xl border border-checkerboard/15 p-8 sm:p-12 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
+        >
+          {/* Close-up Macro Photo with Zoom Hint */}
           <div className="lg:col-span-6 relative aspect-[16/10] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream-dark">
             <Image
               src={selectedMaterial.image}
               alt={selectedMaterial.name}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 animate-in fade-in"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
-            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-sans font-semibold text-checkerboard border border-checkerboard/10 shadow-2xs">
-              Macro Detail: {selectedMaterial.category}
+            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold text-[#5E3C26] border border-checkerboard/15 shadow-2xs">
+              Natural Texture · Macro Inspection
             </div>
           </div>
 
+          {/* Editorial Specs & Features */}
           <div className="lg:col-span-6 space-y-6">
-            <div>
-              <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold">
-                {selectedMaterial.materialType}
+            <div className="space-y-2">
+              <span className="font-sans text-xs uppercase tracking-wider text-rust font-semibold block">
+                {selectedMaterial.category} · {selectedMaterial.materialType}
               </span>
-              <h3 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold mt-1">
+              <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-checkerboard font-semibold leading-tight">
                 {selectedMaterial.name}
               </h3>
             </div>
 
-            <p className="font-sans text-sm sm:text-base text-walnut leading-relaxed font-normal">
+            <p className="font-sans text-sm sm:text-base text-checkerboard/85 leading-relaxed font-normal">
               {selectedMaterial.description}
             </p>
 
-            <div className="space-y-3 pt-2">
-              <p className="font-sans text-xs uppercase tracking-wider text-checkerboard font-semibold">
-                Craftsmanship Highlights:
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {/* Quality Checklist */}
+            <div className="space-y-3 pt-3 border-t border-checkerboard/10">
+              <span className="font-sans text-xs uppercase tracking-wider text-checkerboard font-semibold block">
+                Confirmed Specifications:
+              </span>
+              <ul className="space-y-2.5">
                 {selectedMaterial.attributes.map((attr, aIdx) => (
-                  <div key={aIdx} className="flex items-center space-x-2 text-xs font-sans text-walnut">
-                    <span className="w-4 h-4 rounded-full bg-olive/15 text-olive flex items-center justify-center shrink-0">
-                      <Check className="w-2.5 h-2.5 stroke-[3]" />
+                  <li key={aIdx} className="flex items-center space-x-3 text-xs sm:text-sm font-sans text-walnut">
+                    <span className="w-5 h-5 rounded-full bg-olive/15 text-olive flex items-center justify-center shrink-0">
+                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                     </span>
-                    <span>{attr}</span>
-                  </div>
+                    <span className="font-medium text-checkerboard">{attr}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
 
-            <div className="pt-4 border-t border-checkerboard/10 flex items-center justify-between text-xs text-walnut">
-              <span>Experience these materials in our Indiranagar showroom</span>
-              <span className="font-semibold text-tangerine">Free Swatches by Request</span>
+            <div className="pt-2 flex items-center space-x-2 text-xs font-sans text-walnut/80">
+              <ShieldCheck className="w-4 h-4 text-olive" />
+              <span>Tested for everyday family resistance and generational structural longevity.</span>
             </div>
           </div>
         </div>
@@ -198,4 +279,3 @@ export const MaterialsCraftSection: React.FC = () => {
     </section>
   );
 };
-
