@@ -10,59 +10,102 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#0F0E0D',
-        foreground: '#FAF8F5',
+        // Primary brand palette from new Google Flow video interiors
+        tangerine: {
+          DEFAULT: '#F4510B',
+          light: '#FF6F36',
+          dark: '#D03E00',
+        },
+        coral: {
+          DEFAULT: '#E66B45',
+          burnt: '#E66B45',
+          dusty: '#D9877A',
+          light: '#F5A89A',
+        },
+        mustard: {
+          DEFAULT: '#F4B82E',
+          light: '#FFCB57',
+          dark: '#D89C19',
+        },
+        olive: {
+          DEFAULT: '#626B3D',
+          light: '#7B864E',
+          dark: '#4B522E',
+        },
+        moss: {
+          DEFAULT: '#35452C',
+          light: '#485C3C',
+          dark: '#242F1E',
+        },
+        cream: {
+          DEFAULT: '#F4E9D8',
+          light: '#FAF4EB',
+          dark: '#E7D8BF',
+        },
+        peach: {
+          DEFAULT: '#F0B49A',
+          light: '#FBE0D5',
+          dark: '#DE9475',
+        },
+        walnut: {
+          DEFAULT: '#805438',
+          light: '#9E6A49',
+          dark: '#5E3C26',
+        },
+        checkerboard: {
+          DEFAULT: '#29251F',
+          black: '#29251F',
+        },
+        leaf: {
+          DEFAULT: '#477A48',
+          light: '#5E9A60',
+          dark: '#355C36',
+        },
+        // Semantic and legacy compat
+        background: '#F4E9D8',
+        foreground: '#29251F',
+        accent: {
+          DEFAULT: '#F4510B',
+          light: '#FF6F36',
+          dark: '#D03E00',
+        },
         ivory: {
           DEFAULT: '#FAF8F5',
-          light: '#FDFBF9',
-          dark: '#F0ECE4',
+          light: '#FFFFFF',
+          dark: '#F4E9D8',
         },
         sand: {
           50: '#FAF8F5',
-          100: '#F5F1E8',
-          200: '#EBE4D5',
-          300: '#DDD2BD',
-          400: '#C7B79D',
-          500: '#AE997B',
+          100: '#F4E9D8',
+          200: '#E8D8BF',
+          300: '#D5BE9E',
+          400: '#B89B77',
+          500: '#805438',
         },
         charcoal: {
-          50: '#F5F5F5',
-          100: '#E6E5E3',
-          200: '#C8C6C1',
-          400: '#7B7770',
-          600: '#46433D',
-          700: '#32302B',
-          800: '#22201C',
-          900: '#161513',
-          950: '#0C0B0A',
-        },
-        wood: {
-          oak: '#D3BA9B',
-          walnut: '#5C4334',
-          ash: '#1C1B1A',
-        },
-        accent: {
-          DEFAULT: '#D19A66',
-          light: '#E2B88D',
-          dark: '#A67342',
+          50: '#F7F6F5',
+          100: '#EAE8E5',
+          200: '#D5D2CD',
+          400: '#8A857D',
+          600: '#524D45',
+          700: '#3D3830',
+          800: '#29251F',
+          900: '#1E1B17',
+          950: '#141210',
         },
       },
       fontFamily: {
-        serif: ['var(--font-cormorant)', 'Cormorant Garamond', 'Didot', 'Bodoni MT', 'Cinzel', 'Georgia', 'serif'],
-        sans: ['var(--font-inter)', 'Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        mono: ['var(--font-space-mono)', 'Space Mono', 'monospace'],
+        serif: ['var(--font-cormorant)', 'Cormorant Garamond', 'Georgia', 'serif'],
+        sans: ['var(--font-inter)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       letterSpacing: {
-        tightest: '-0.04em',
-        widest: '0.25em',
-        ultra: '0.35em',
+        tightest: '-0.03em',
+        widest: '0.15em',
+        ultra: '0.25em',
       },
       boxShadow: {
-        editorial: '0 20px 40px -15px rgba(0, 0, 0, 0.5)',
-        glow: '0 0 50px -10px rgba(209, 154, 102, 0.15)',
-      },
-      animation: {
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        retro: '0 10px 30px -10px rgba(41, 37, 31, 0.15)',
+        warm: '0 15px 35px -5px rgba(244, 81, 11, 0.2)',
       },
     },
   },
@@ -70,4 +113,3 @@ const config: Config = {
 };
 
 export default config;
-

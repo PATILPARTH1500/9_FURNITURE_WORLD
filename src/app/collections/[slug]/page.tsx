@@ -32,52 +32,55 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
   });
 
   return (
-    <main className="min-h-screen bg-charcoal-950 text-sand-100 pt-28 pb-24">
+    <main className="min-h-screen bg-cream text-checkerboard pt-28 pb-24">
       {/* Hero Header */}
-      <div className="relative h-[55vh] min-h-[420px] w-full border-b border-white/10 overflow-hidden flex items-end">
+      <div className="relative h-[50vh] min-h-[400px] w-full border-b border-checkerboard/15 overflow-hidden flex items-end">
         <Image
           src={collection.coverImage}
           alt={collection.title}
           fill
-          className="object-cover brightness-[0.55]"
+          className="object-cover brightness-[0.7]"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal-950 via-charcoal-950/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-checkerboard/90 via-checkerboard/40 to-transparent" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pb-16 w-full space-y-4">
           <Link
             href="/collections"
-            className="inline-flex items-center space-x-2 text-xs uppercase tracking-widest text-sand-400 hover:text-white transition-colors"
+            className="inline-flex items-center space-x-2 text-xs uppercase tracking-wider text-mustard hover:text-white font-semibold transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <ArrowLeft className="w-4 h-4" />
             <span>All Collections</span>
           </Link>
-          <h1 className="font-serif text-5xl md:text-7xl text-ivory font-light tracking-tight">
+          <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl text-white font-semibold tracking-tight">
             {collection.title}
           </h1>
-          <p className="text-sm md:text-base text-sand-300 font-light max-w-2xl leading-relaxed">
+          <p className="text-sm md:text-base text-cream-light font-normal max-w-2xl leading-relaxed">
             {collection.description}
           </p>
         </div>
       </div>
 
       {/* Curator Statement */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 border-b border-white/10">
-        <div className="max-w-2xl bg-charcoal-900/60 border-l-2 border-accent p-6 md:p-8">
-          <p className="font-serif text-lg md:text-xl text-sand-200 italic font-light leading-relaxed">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-14 border-b border-checkerboard/10">
+        <div className="max-w-2xl bg-white p-6 md:p-8 rounded-2xl border-l-4 border-tangerine shadow-retro">
+          <p className="font-serif text-lg md:text-xl text-checkerboard italic font-medium leading-relaxed">
             {collection.curatorNote}
           </p>
-          <span className="text-[10px] uppercase font-mono tracking-widest text-accent block mt-3">
-            Atelier Curatorial Direction
+          <span className="text-xs uppercase font-sans tracking-wider text-tangerine font-semibold block mt-3">
+            Design Note · Furniture Village Studio
           </span>
         </div>
       </div>
 
       {/* Series Pieces Grid */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-16">
-        <div className="flex items-center justify-between mb-12">
-          <h2 className="font-serif text-3xl text-ivory">Editions in this Series</h2>
-          <span className="font-mono text-xs text-sand-400">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-14">
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <h2 className="font-serif text-3xl text-checkerboard font-semibold">Furniture in this Collection</h2>
+            <p className="text-xs text-walnut mt-1">Comfortable, durable designs tested for everyday life</p>
+          </div>
+          <span className="font-sans text-xs text-tangerine font-semibold">
             {collectionProducts.length} Pieces
           </span>
         </div>
@@ -87,9 +90,9 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
             <Link
               key={product.id}
               href={`/products/${product.slug}`}
-              className="group flex flex-col border border-white/5 hover:border-white/20 transition-all duration-300 bg-charcoal-900/40"
+              className="group flex flex-col rounded-2xl border border-checkerboard/10 bg-white overflow-hidden hover:border-tangerine/50 transition-all duration-300 shadow-retro hover:shadow-warm"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-charcoal-900">
+              <div className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
                 <Image
                   src={product.images.hero}
                   alt={product.name}
@@ -102,25 +105,25 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div>
                   <div className="flex items-baseline justify-between">
-                    <h3 className="font-serif text-lg text-ivory group-hover:text-accent transition-colors">
+                    <h3 className="font-serif text-xl text-checkerboard group-hover:text-tangerine transition-colors font-medium">
                       {product.name}
                     </h3>
-                    <span className="font-mono text-sm text-sand-200">
+                    <span className="font-sans text-base font-bold text-tangerine">
                       ${product.price.toLocaleString()}
                     </span>
                   </div>
-                  <p className="text-xs text-sand-400 font-light mt-1 line-clamp-2">
+                  <p className="text-xs text-walnut mt-1.5 line-clamp-2 leading-relaxed">
                     {product.subtitle}
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs">
-                  <span className="uppercase tracking-widest text-[11px] text-sand-300 group-hover:text-white flex items-center space-x-1">
-                    <span>Explore Edition</span>
-                    <ArrowUpRight className="w-3 h-3" />
+                <div className="pt-4 border-t border-checkerboard/10 flex items-center justify-between text-xs">
+                  <span className="uppercase tracking-wider text-xs font-semibold text-checkerboard group-hover:text-tangerine flex items-center space-x-1 transition-colors">
+                    <span>Discover Details</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
                   </span>
-                  <span className="text-[10px] font-mono text-sand-500">
-                    {product.dimensions.widthCm}×{product.dimensions.depthCm} cm
+                  <span className="text-xs text-walnut">
+                    {product.materials.woodOptions[0]?.name || 'Solid Wood'}
                   </span>
                 </div>
               </div>
@@ -131,4 +134,3 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
     </main>
   );
 }
-

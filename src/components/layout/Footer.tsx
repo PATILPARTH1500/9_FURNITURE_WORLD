@@ -1,61 +1,61 @@
 import React from 'react';
 import Link from 'next/link';
 import { BRAND_CONFIG } from '@/config/brand';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Phone, Mail, MapPin } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-charcoal-950 text-sand-200 border-t border-white/10 pt-20 pb-12 relative overflow-hidden">
-      {/* Background architectural watermark */}
-      <div className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.02] text-[18vw] font-serif leading-none tracking-tight font-light">
-        ARCHETYP
+    <footer className="bg-cream-dark text-checkerboard border-t border-checkerboard/15 pt-20 pb-12 relative overflow-hidden">
+      {/* Background brand watermark */}
+      <div className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.03] text-[12vw] font-serif leading-none tracking-tight font-bold text-checkerboard">
+        FURNITURE VILLAGE
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-checkerboard/10">
           {/* Brand Column */}
-          <div className="md:col-span-5 space-y-6">
-            <h3 className="font-serif text-3xl tracking-[0.2em] text-ivory uppercase">
+          <div className="md:col-span-5 space-y-5">
+            <h3 className="font-serif text-3xl sm:text-4xl tracking-tight text-checkerboard font-semibold">
               {BRAND_CONFIG.name}
             </h3>
-            <p className="text-sand-400 text-sm leading-relaxed max-w-md font-light">
+            <p className="text-walnut text-sm sm:text-base leading-relaxed max-w-md font-normal">
               {BRAND_CONFIG.subtext}
             </p>
             <div className="pt-2">
-              <span className="inline-block text-[11px] uppercase tracking-[0.25em] text-accent border-b border-accent/40 pb-0.5">
+              <span className="inline-block text-xs uppercase tracking-wider text-tangerine font-semibold bg-white/70 px-3.5 py-1.5 rounded-full border border-tangerine/20 shadow-2xs">
                 {BRAND_CONFIG.announcement}
               </span>
             </div>
           </div>
 
           {/* Showrooms Column */}
-          <div className="md:col-span-3 space-y-4 text-xs tracking-wider">
-            <h4 className="text-[11px] uppercase tracking-[0.25em] text-ivory font-mono">
-              Showrooms & Ateliers
+          <div className="md:col-span-3 space-y-4 text-xs">
+            <h4 className="text-xs uppercase tracking-wider text-checkerboard font-semibold">
+              Flagship Stores
             </h4>
-            <div className="space-y-4 text-sand-400">
+            <div className="space-y-4 text-walnut">
               <div>
-                <p className="text-sand-200 uppercase font-medium">Copenhagen Atelier</p>
-                <p className="text-sand-400 font-light">{BRAND_CONFIG.contact.address}</p>
+                <p className="text-checkerboard font-semibold">London Flagship</p>
+                <p className="font-normal">{BRAND_CONFIG.contact.showroom}</p>
               </div>
               <div>
-                <p className="text-sand-200 uppercase font-medium">Tokyo Gallery</p>
-                <p className="text-sand-400 font-light">{BRAND_CONFIG.contact.showroom}</p>
+                <p className="text-checkerboard font-semibold">Main Office</p>
+                <p className="font-normal">{BRAND_CONFIG.contact.address}</p>
               </div>
             </div>
           </div>
 
           {/* Navigation Column */}
-          <div className="md:col-span-2 space-y-4 text-xs tracking-wider">
-            <h4 className="text-[11px] uppercase tracking-[0.25em] text-ivory font-mono">
-              Navigation
+          <div className="md:col-span-2 space-y-4 text-xs">
+            <h4 className="text-xs uppercase tracking-wider text-checkerboard font-semibold">
+              Explore
             </h4>
-            <ul className="space-y-2.5 text-sand-400">
+            <ul className="space-y-2.5 text-walnut">
               {BRAND_CONFIG.navigation.map((item) => (
                 <li key={item.label}>
                   <Link
                     href={item.href}
-                    className="hover:text-white transition-colors duration-200"
+                    className="hover:text-tangerine transition-colors duration-200"
                   >
                     {item.label}
                   </Link>
@@ -64,43 +64,49 @@ export const Footer: React.FC = () => {
               <li>
                 <Link
                   href="/collections"
-                  className="hover:text-white transition-colors duration-200 flex items-center space-x-1 text-accent"
+                  className="hover:text-tangerine transition-colors duration-200 inline-flex items-center space-x-1 text-tangerine font-medium"
                 >
-                  <span>All Works</span>
+                  <span>All Furniture</span>
                   <ArrowUpRight className="w-3 h-3" />
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Inquiries */}
-          <div className="md:col-span-2 space-y-4 text-xs tracking-wider">
-            <h4 className="text-[11px] uppercase tracking-[0.25em] text-ivory font-mono">
-              Concierge
+          {/* Customer Care */}
+          <div className="md:col-span-2 space-y-4 text-xs">
+            <h4 className="text-xs uppercase tracking-wider text-checkerboard font-semibold">
+              Help & Support
             </h4>
-            <div className="space-y-2 text-sand-400">
-              <p className="hover:text-white transition-colors cursor-pointer">
-                {BRAND_CONFIG.contact.email}
+            <div className="space-y-2.5 text-walnut">
+              <a
+                href={`mailto:${BRAND_CONFIG.contact.email}`}
+                className="hover:text-tangerine transition-colors flex items-center space-x-1.5"
+              >
+                <Mail className="w-3.5 h-3.5 text-tangerine" />
+                <span>{BRAND_CONFIG.contact.email}</span>
+              </a>
+              <p className="flex items-center space-x-1.5">
+                <Phone className="w-3.5 h-3.5 text-tangerine" />
+                <span>{BRAND_CONFIG.contact.phone}</span>
               </p>
-              <p>{BRAND_CONFIG.contact.phone}</p>
-              <p className="text-[10px] text-sand-500 pt-2">
-                Monday — Saturday: 09:00 - 18:00 CET
+              <p className="text-[11px] text-walnut/80 pt-1">
+                Mon — Sat: 9:00 AM – 6:00 PM
               </p>
             </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] text-sand-500 tracking-widest font-mono">
-          <p>© {new Date().getFullYear()} {BRAND_CONFIG.name}. ALL RIGHTS RESERVED.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0 uppercase">
-            <span className="hover:text-sand-300 cursor-pointer">Material Provenance</span>
-            <span className="hover:text-sand-300 cursor-pointer">Architectural Trade</span>
-            <span className="hover:text-sand-300 cursor-pointer">Privacy</span>
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-walnut">
+          <p>© {new Date().getFullYear()} {BRAND_CONFIG.name}. All rights reserved.</p>
+          <div className="flex space-x-6 mt-4 md:mt-0">
+            <span className="hover:text-tangerine cursor-pointer transition-colors">Quality Guarantee</span>
+            <span className="hover:text-tangerine cursor-pointer transition-colors">Care Guide</span>
+            <span className="hover:text-tangerine cursor-pointer transition-colors">Privacy Policy</span>
           </div>
         </div>
       </div>
     </footer>
   );
 };
-

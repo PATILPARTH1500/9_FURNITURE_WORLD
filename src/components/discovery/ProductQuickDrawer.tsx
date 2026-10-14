@@ -63,14 +63,18 @@ export const ProductQuickDrawer: React.FC = () => {
     });
 
     setAddedFeedback(true);
-    setTimeout(() => setAddedFeedback(false), 2400);
+    setTimeout(() => {
+      setAddedFeedback(false);
+      setQuickDrawerOpen(false);
+      setCartOpen(true);
+    }, 900);
   };
 
   return (
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-xs transition-opacity animate-fadeIn"
+        className="fixed inset-0 z-40 bg-checkerboard/60 backdrop-blur-xs transition-opacity duration-300"
         onClick={() => setQuickDrawerOpen(false)}
       />
 
@@ -78,28 +82,27 @@ export const ProductQuickDrawer: React.FC = () => {
       <aside
         role="dialog"
         aria-modal="true"
-        aria-label={`Product quick dossier: ${product.name}`}
-        className="fixed top-0 right-0 h-full w-full max-w-md z-50 bg-charcoal-950/98 backdrop-blur-2xl border-l border-white/10 flex flex-col justify-between shadow-2xl animate-slideLeft overflow-y-auto"
+        aria-label={`Product quick view: ${product.name}`}
+        className="fixed top-0 right-0 h-full w-full max-w-md z-50 bg-cream text-checkerboard border-l border-checkerboard/15 flex flex-col justify-between shadow-2xl overflow-y-auto"
       >
         {/* Header */}
-        <div className="p-6 md:p-8 border-b border-white/10 flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-[0.25em] text-accent">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-            <span>Focal Product Dossier</span>
+        <div className="p-6 md:p-8 border-b border-checkerboard/10 flex items-center justify-between bg-white">
+          <div className="flex items-center space-x-2 text-xs font-sans uppercase tracking-wider text-tangerine font-semibold">
+            <span>Quick Product View</span>
           </div>
           <button
             onClick={() => setQuickDrawerOpen(false)}
-            className="p-1.5 text-sand-400 hover:text-white transition-colors"
-            aria-label="Close product dossier drawer"
+            className="p-1.5 rounded-full hover:bg-cream text-walnut hover:text-checkerboard transition-colors"
+            aria-label="Close product view"
           >
             <X className="w-5 h-5 stroke-[1.5]" />
           </button>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 md:p-8 space-y-6 flex-1">
+        <div className="p-6 md:p-8 space-y-6 flex-1 bg-cream">
           {/* Hero Thumbnail Preview */}
-          <div className="relative aspect-[4/3] w-full border border-white/10 bg-charcoal-900 overflow-hidden">
+          <div className="relative aspect-[4/3] w-full rounded-xl border border-checkerboard/10 bg-cream-dark overflow-hidden">
             <Image
               src={product.images.hero}
               alt={product.name}
@@ -108,49 +111,49 @@ export const ProductQuickDrawer: React.FC = () => {
               sizes="(max-width: 768px) 100vw, 400px"
               priority
             />
-            <div className="absolute top-3 left-3 bg-charcoal-950/85 backdrop-blur-sm border border-white/10 px-2 py-0.5 text-[9px] font-mono uppercase tracking-widest text-sand-300">
-              {product.category} · {product.year}
+            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-xs font-sans font-semibold tracking-wide text-checkerboard shadow-2xs">
+              {product.category}
             </div>
           </div>
 
           {/* Titles & Price */}
           <div className="space-y-2">
             <div className="flex items-baseline justify-between gap-4">
-              <h2 className="font-serif text-2xl md:text-3xl text-ivory font-light">
+              <h2 className="font-serif text-2xl md:text-3xl text-checkerboard font-semibold">
                 {product.name}
               </h2>
-              <span className="font-mono text-base text-accent font-semibold whitespace-nowrap">
+              <span className="font-sans text-xl text-tangerine font-bold whitespace-nowrap">
                 ${product.price.toLocaleString()}
               </span>
             </div>
-            <p className="text-xs text-sand-300 font-light leading-relaxed">
+            <p className="font-sans text-xs sm:text-sm text-walnut leading-relaxed">
               {product.description}
             </p>
           </div>
 
           {/* Timber Finishes (if applicable) */}
           {product.materials.woodOptions.length > 0 && (
-            <div className="space-y-3 pt-3 border-t border-white/5">
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <span className="uppercase tracking-widest text-sand-400">Timber Finish</span>
-                <span className="text-ivory">{woodObj.name}</span>
+            <div className="space-y-3 pt-3 border-t border-checkerboard/10">
+              <div className="flex items-center justify-between text-xs font-sans">
+                <span className="uppercase tracking-wider text-walnut font-medium">Timber Finish</span>
+                <span className="text-checkerboard font-semibold">{woodObj.name}</span>
               </div>
               <div className="grid grid-cols-3 gap-2">
                 {WOOD_MATERIALS.map((wood) => (
                   <button
                     key={wood.id}
                     onClick={() => setSelectedWood(wood.id)}
-                    className={`p-2 border text-left transition-all ${
+                    className={`p-2.5 rounded-lg border text-left transition-all ${
                       selectedWoodId === wood.id
-                        ? 'border-accent bg-accent/10'
-                        : 'border-white/5 bg-charcoal-900/60 hover:border-white/20'
+                        ? 'border-tangerine bg-white shadow-xs'
+                        : 'border-checkerboard/10 bg-white/50 hover:bg-white'
                     }`}
                   >
                     <div className="flex items-center space-x-1.5 mb-1">
-                      <span className={`w-2.5 h-2.5 rounded-full ${wood.swatchTone}`} />
-                      {selectedWoodId === wood.id && <Check className="w-2.5 h-2.5 text-accent" />}
+                      <span className={`w-3 h-3 rounded-full ${wood.swatchTone} border border-checkerboard/20`} />
+                      {selectedWoodId === wood.id && <Check className="w-3 h-3 text-tangerine" />}
                     </div>
-                    <p className="text-[10px] text-sand-200 line-clamp-1">{wood.name}</p>
+                    <p className="font-sans text-xs text-checkerboard line-clamp-1 font-medium">{wood.name}</p>
                   </button>
                 ))}
               </div>
@@ -159,65 +162,65 @@ export const ProductQuickDrawer: React.FC = () => {
 
           {/* Upholstery Finishes (if applicable) */}
           {product.materials.upholsteryOptions.length > 0 && (
-            <div className="space-y-3 pt-3 border-t border-white/5">
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <span className="uppercase tracking-widest text-sand-400">Upholstery</span>
-                <span className="text-ivory">{fabricObj.name}</span>
+            <div className="space-y-3 pt-3 border-t border-checkerboard/10">
+              <div className="flex items-center justify-between text-xs font-sans">
+                <span className="uppercase tracking-wider text-walnut font-medium">Upholstery Fabric</span>
+                <span className="text-checkerboard font-semibold">{fabricObj.name}</span>
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {UPHOLSTERY_MATERIALS.map((fabric) => (
                   <button
                     key={fabric.id}
                     onClick={() => setSelectedFabric(fabric.id)}
-                    className={`p-2 border text-left transition-all ${
+                    className={`p-2.5 rounded-lg border text-left transition-all ${
                       selectedFabricId === fabric.id
-                        ? 'border-accent bg-accent/10'
-                        : 'border-white/5 bg-charcoal-900/60 hover:border-white/20'
+                        ? 'border-tangerine bg-white shadow-xs'
+                        : 'border-checkerboard/10 bg-white/50 hover:bg-white'
                     }`}
                   >
                     <div className="flex items-center space-x-1.5 mb-1">
-                      <span className={`w-2.5 h-2.5 rounded-full ${fabric.swatchTone}`} />
-                      {selectedFabricId === fabric.id && <Check className="w-2.5 h-2.5 text-accent" />}
+                      <span className={`w-3 h-3 rounded-full ${fabric.swatchTone} border border-checkerboard/20`} />
+                      {selectedFabricId === fabric.id && <Check className="w-3 h-3 text-tangerine" />}
                     </div>
-                    <p className="text-[10px] text-sand-200 line-clamp-1">{fabric.name}</p>
+                    <p className="font-sans text-xs text-checkerboard line-clamp-1 font-medium">{fabric.name}</p>
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Architectural Dimensions */}
-          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5 text-center font-mono text-[10px]">
-            <div className="bg-charcoal-900/40 p-2 border border-white/5">
-              <span className="text-sand-500 uppercase block">Width</span>
-              <span className="text-sand-200 font-semibold">{product.dimensions.widthCm} cm</span>
+          {/* Product Dimensions */}
+          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-checkerboard/10 text-center font-sans text-xs">
+            <div className="bg-white p-2.5 rounded-lg border border-checkerboard/10">
+              <span className="text-walnut uppercase tracking-wider text-[10px] block font-medium">Width</span>
+              <span className="text-checkerboard font-bold">{product.dimensions.widthCm} cm</span>
             </div>
-            <div className="bg-charcoal-900/40 p-2 border border-white/5">
-              <span className="text-sand-500 uppercase block">Depth</span>
-              <span className="text-sand-200 font-semibold">{product.dimensions.depthCm} cm</span>
+            <div className="bg-white p-2.5 rounded-lg border border-checkerboard/10">
+              <span className="text-walnut uppercase tracking-wider text-[10px] block font-medium">Depth</span>
+              <span className="text-checkerboard font-bold">{product.dimensions.depthCm} cm</span>
             </div>
-            <div className="bg-charcoal-900/40 p-2 border border-white/5">
-              <span className="text-sand-500 uppercase block">Height</span>
-              <span className="text-sand-200 font-semibold">{product.dimensions.heightCm} cm</span>
+            <div className="bg-white p-2.5 rounded-lg border border-checkerboard/10">
+              <span className="text-walnut uppercase tracking-wider text-[10px] block font-medium">Height</span>
+              <span className="text-checkerboard font-bold">{product.dimensions.heightCm} cm</span>
             </div>
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="p-6 md:p-8 border-t border-white/10 bg-charcoal-950 space-y-4">
+        <div className="p-6 md:p-8 border-t border-checkerboard/10 bg-white space-y-4">
           <div className="flex items-center space-x-4">
-            <div className="flex items-center border border-white/15 bg-charcoal-900">
+            <div className="flex items-center border border-checkerboard/15 bg-cream rounded-lg">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="p-3 text-sand-400 hover:text-white transition-colors"
+                className="p-3 text-walnut hover:text-checkerboard transition-colors"
                 aria-label="Decrease quantity"
               >
                 <Minus className="w-3.5 h-3.5" />
               </button>
-              <span className="px-4 text-xs font-mono text-ivory font-semibold">{quantity}</span>
+              <span className="px-4 text-xs font-sans text-checkerboard font-bold">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="p-3 text-sand-400 hover:text-white transition-colors"
+                className="p-3 text-walnut hover:text-checkerboard transition-colors"
                 aria-label="Increase quantity"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -226,29 +229,29 @@ export const ProductQuickDrawer: React.FC = () => {
 
             <button
               onClick={handleAddToCart}
-              className="flex-1 bg-ivory hover:bg-white text-charcoal-950 py-3.5 px-6 uppercase tracking-[0.25em] text-xs font-semibold transition-all duration-300 shadow-xl flex items-center justify-center space-x-2"
+              className="flex-1 bg-tangerine hover:bg-coral text-white py-3.5 px-6 uppercase tracking-wider text-xs font-semibold rounded-full transition-all duration-300 shadow-warm flex items-center justify-center space-x-2"
             >
               {addedFeedback ? (
                 <>
-                  <Check className="w-4 h-4 text-emerald-600" />
-                  <span>Added to Dossier</span>
+                  <Check className="w-4 h-4" />
+                  <span>Added to Bag!</span>
                 </>
               ) : (
                 <>
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Acquire Edition</span>
+                  <span>Add to Bag</span>
                 </>
               )}
             </button>
           </div>
 
-          <div className="flex items-center justify-between text-xs font-mono pt-1">
+          <div className="flex items-center justify-between text-xs font-sans pt-1">
             <Link
               href={`/products/${product.slug}`}
-              className="text-sand-400 hover:text-accent inline-flex items-center space-x-1.5 uppercase tracking-widest text-[11px] transition-colors"
+              className="text-walnut hover:text-tangerine inline-flex items-center space-x-1.5 font-medium transition-colors"
             >
-              <span>Inspect Full 3D Dossier</span>
-              <ArrowUpRight className="w-3 h-3" />
+              <span>View Full Details & 3D</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
             </Link>
 
             <button
@@ -256,7 +259,7 @@ export const ProductQuickDrawer: React.FC = () => {
                 setQuickDrawerOpen(false);
                 setCartOpen(true);
               }}
-              className="text-accent hover:text-white uppercase tracking-widest text-[11px] transition-colors"
+              className="text-tangerine hover:text-coral font-medium transition-colors"
             >
               Open Bag →
             </button>

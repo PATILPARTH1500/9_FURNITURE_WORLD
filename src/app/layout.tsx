@@ -9,12 +9,13 @@ export const metadata: Metadata = {
   title: `${BRAND_CONFIG.name} — ${BRAND_CONFIG.tagline}`,
   description: BRAND_CONFIG.subtext,
   keywords: [
-    'Architectural Furniture',
-    'Scandinavian Design',
-    'Japanese Joinery',
-    'Luxury Furniture',
-    'Lounge Chair',
-    'Craftsmanship',
+    'Furniture Village',
+    'Retro Modern Furniture',
+    'Curved Bouclé Sofa',
+    'Solid Walnut Dining Table',
+    'Olive Velvet Bed',
+    'Orange Pendant Lighting',
+    'Playful Home Design',
   ],
   authors: [{ name: BRAND_CONFIG.name }],
   openGraph: {
@@ -32,14 +33,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-charcoal-950 text-foreground antialiased selection:bg-accent selection:text-charcoal-950">
+    <html lang="en">
+      <body className="bg-cream text-checkerboard antialiased selection:bg-tangerine selection:text-white min-h-screen flex flex-col">
         <Navbar />
         <CartDrawer />
-        {children}
+        <div className="grow">{children}</div>
         <Footer />
       </body>
     </html>
   );
 }
-

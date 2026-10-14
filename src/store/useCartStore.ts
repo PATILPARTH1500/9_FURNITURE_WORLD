@@ -70,7 +70,7 @@ export const useCartStore = create<CartState>()(
       },
     }),
     {
-      name: 'archetyp-cart-storage',
+      name: 'furniture-village-cart',
       partialize: (state) => ({ items: state.items }),
     }
   )

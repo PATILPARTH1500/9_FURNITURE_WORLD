@@ -583,7 +583,7 @@ export const FurnitureModel: React.FC<FurnitureModelProps> = ({ interactive = tr
           </mesh>
         </group>
 
-        {/* 3D Annotation: Kyoto Joinery */}
+        {/* 3D Annotation: Precision Joinery */}
         {interactive && explodedProgress > 0.3 && (
           <Html position={[0.46, 0.35, -0.26]} center className="pointer-events-auto select-none">
             <div

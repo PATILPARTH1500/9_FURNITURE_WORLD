@@ -2,15 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Menu, X, ArrowUpRight, Play } from 'lucide-react';
+import { ShoppingBag, Menu, X, ArrowUpRight } from 'lucide-react';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
-import { BrandFilmModal } from '@/components/media/BrandFilmModal';
 
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [filmModalOpen, setFilmModalOpen] = useState(false);
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
 
@@ -31,132 +29,105 @@ export const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
-          mobileMenuOpen
-            ? 'bg-charcoal-950 border-b border-white/5 py-4'
-            : scrolled
-            ? 'bg-charcoal-950/85 backdrop-blur-md border-b border-white/5 py-4'
-            : 'bg-transparent py-6'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-          {/* Brand Logo */}
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        mobileMenuOpen
+          ? 'bg-cream/95 backdrop-blur-md border-b border-checkerboard/10 py-4 shadow-sm'
+          : scrolled
+          ? 'bg-cream/90 backdrop-blur-md border-b border-checkerboard/10 py-3.5 shadow-sm'
+          : 'bg-transparent py-5'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        {/* Brand Logo */}
+        <Link
+          href="/"
+          className="group flex flex-col text-left focus:outline-hidden"
+        >
+          <span className="font-serif text-xl sm:text-2xl tracking-wider text-checkerboard group-hover:text-tangerine transition-colors duration-200 font-semibold">
+            {BRAND_CONFIG.name}
+          </span>
+          <span className="text-[10px] tracking-widest text-walnut uppercase -mt-0.5 font-medium">
+            Colourful Living
+          </span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-7 text-xs font-sans tracking-wide uppercase text-checkerboard/80 font-medium">
+          {BRAND_CONFIG.navigation.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className="hover:text-tangerine transition-colors duration-200 py-1 relative group"
+            >
+              {item.label}
+              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-tangerine transition-all duration-200 group-hover:w-full" />
+            </Link>
+          ))}
+        </nav>
+
+        {/* Actions: Catalog & Cart */}
+        <div className="flex items-center space-x-4">
           <Link
-            href="/"
-            className="group flex flex-col tracking-widest text-left"
+            href="/collections"
+            className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-sans tracking-wide uppercase px-4 py-2 rounded-full border border-checkerboard/20 hover:border-tangerine text-checkerboard hover:text-tangerine font-medium transition-all"
           >
-            <span className="font-serif text-xl md:text-2xl tracking-[0.25em] text-ivory uppercase group-hover:text-accent transition-colors duration-300">
-              {BRAND_CONFIG.shortName}
-            </span>
-            <span className="text-[9px] tracking-[0.3em] text-sand-400 uppercase -mt-0.5">
-              ATELIER COPENHAGEN
-            </span>
+            <span>Explore Furniture</span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8 text-xs tracking-widest uppercase text-sand-200">
-            {BRAND_CONFIG.navigation.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="hover:text-white transition-colors duration-200 py-1 relative group"
-              >
-                {item.label}
-                <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-accent transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
-          </nav>
+          <button
+            onClick={() => setIsOpen(true)}
+            className="relative p-2.5 rounded-full bg-cream-light hover:bg-white text-checkerboard border border-checkerboard/15 shadow-xs transition-colors"
+            aria-label={`Shopping bag with ${cartCount} items`}
+          >
+            <ShoppingBag className="w-4 h-4 text-checkerboard" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-tangerine text-white text-[10px] font-sans font-bold flex items-center justify-center shadow-xs">
+                {cartCount}
+              </span>
+            )}
+          </button>
 
-          {/* Actions: Cart & Mobile Menu */}
-          <div className="flex items-center space-x-6">
-            <button
-              onClick={() => setFilmModalOpen(true)}
-              className="hidden lg:inline-flex items-center space-x-1.5 text-[11px] uppercase tracking-widest text-accent hover:text-white border border-accent/40 hover:border-accent px-3 py-1.5 rounded-none transition-all duration-200"
-            >
-              <Play className="w-2.5 h-2.5 fill-current" />
-              <span>Film</span>
-            </button>
-
-            <Link
-              href="/collections"
-              className="hidden lg:inline-flex items-center space-x-1.5 text-[11px] uppercase tracking-widest text-sand-300 hover:text-white border border-white/10 px-3.5 py-1.5 rounded-none transition-all duration-200 hover:border-white/30"
-            >
-              <span>Catalog</span>
-              <ArrowUpRight className="w-3 h-3" />
-            </Link>
-
-            <button
-              onClick={() => setIsOpen(true)}
-              className="relative p-2 text-ivory hover:text-accent transition-colors duration-200"
-              aria-label={`Shopping bag with ${cartCount} items`}
-            >
-              <ShoppingBag className="w-5 h-5 stroke-[1.25]" />
-              {cartCount > 0 && (
-                <span className="absolute top-1 right-0 w-4 h-4 rounded-full bg-accent text-charcoal-950 font-mono text-[10px] font-semibold flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-
-            {/* Mobile Hamburger */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-ivory"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6 stroke-[1.5]" /> : <Menu className="w-6 h-6 stroke-[1.5]" />}
-            </button>
-          </div>
+          {/* Mobile menu hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-checkerboard hover:text-tangerine transition-colors"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
-      </header>
+      </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-charcoal-950 md:hidden flex flex-col justify-between p-8 pt-28 overflow-y-auto">
-          <nav className="flex flex-col space-y-6 text-base tracking-[0.2em] uppercase font-serif text-sand-100">
+        <div className="md:hidden bg-cream border-b border-checkerboard/10 px-6 py-6 space-y-4 animate-in fade-in duration-200 shadow-md">
+          <nav className="flex flex-col space-y-3">
             {BRAND_CONFIG.navigation.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2 border-b border-white/5 hover:text-accent transition-colors"
+                className="text-sm font-sans tracking-wide uppercase text-checkerboard hover:text-tangerine font-medium py-1.5 border-b border-checkerboard/5"
               >
                 {item.label}
               </Link>
             ))}
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                setFilmModalOpen(true);
-              }}
-              className="py-2 border-b border-white/5 hover:text-accent transition-colors text-accent flex items-center space-x-2 text-left"
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Watch Brand Film</span>
-            </button>
+          </nav>
+
+          <div className="pt-2">
             <Link
               href="/collections"
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 border-b border-white/5 hover:text-accent transition-colors text-sand-300"
+              className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine text-white font-medium px-5 py-3 rounded-full shadow-sm"
             >
-              All Collections →
+              <span>Explore All Furniture</span>
+              <ArrowUpRight className="w-4 h-4" />
             </Link>
-          </nav>
-
-          <div className="border-t border-white/10 pt-6 text-xs text-sand-400 space-y-2">
-            <p className="font-serif italic">{BRAND_CONFIG.tagline}</p>
-            <p className="tracking-widest uppercase text-[10px] text-sand-500">
-              {BRAND_CONFIG.contact.showroom}
-            </p>
           </div>
         </div>
       )}
-
-      {/* Brand Film Cinema Modal */}
-      <BrandFilmModal isOpen={filmModalOpen} onClose={() => setFilmModalOpen(false)} />
-    </>
+    </header>
   );
 };
-

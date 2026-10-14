@@ -1,15 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #0f0e0d;
-  --foreground: #faf8f5;
-  --font-cormorant: 'Cormorant Garamond', 'Didot', 'Bodoni MT', 'Cinzel', Georgia, serif;
+  --background: #F4E9D8;
+  --foreground: #29251F;
+  --font-cormorant: 'Cormorant Garamond', 'Georgia', serif;
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-space-mono: 'Space Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 @layer base {
@@ -19,47 +18,54 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: #0f0e0d;
-    color: #faf8f5;
+    background-color: #F4E9D8;
+    color: #29251F;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     min-height: 100vh;
-    background-color: #0f0e0d;
-    color: #faf8f5;
+    background-color: #F4E9D8;
+    color: #29251F;
     font-family: var(--font-inter);
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   ::selection {
-    background-color: #d19a66;
-    color: #0c0b0a;
+    background-color: #F4510B;
+    color: #FFFFFF;
   }
 }
 
-/* Subtle Film Grain */
-.bg-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+/* Subtle Retro Checkerboard Pattern */
+.bg-checkerboard-pattern {
+  background-color: #F4E9D8;
+  background-image: 
+    linear-gradient(45deg, #29251F 25%, transparent 25%), 
+    linear-gradient(-45deg, #29251F 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #29251F 75%), 
+    linear-gradient(-45deg, transparent 75%, #29251F 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
 }
 
-/* Custom Minimal Scrollbar */
+/* Custom Warm Scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f0e0d;
+  background: #F4E9D8;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #32302b;
-  border-radius: 2px;
+  background: #805438;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #7b756c;
+  background: #F4510B;
 }
 
 /* 3D Canvas Container */
@@ -69,13 +75,3 @@
   height: 100%;
   touch-action: none;
 }
-
-/* Architectural Lines */
-.border-subtle {
-  border-color: rgba(250, 248, 245, 0.08);
-}
-
-.border-subtle-light {
-  border-color: rgba(250, 248, 245, 0.15);
-}
-

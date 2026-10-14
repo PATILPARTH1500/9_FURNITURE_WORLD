@@ -29,7 +29,7 @@ export const ProductStudioViewer: React.FC<ProductStudioViewerProps> = () => {
   };
 
   return (
-    <div className="relative w-full h-[550px] lg:h-[700px] bg-charcoal-900 border border-white/10 overflow-hidden">
+    <div className="relative w-full h-[550px] lg:h-[700px] bg-white border border-checkerboard/10 rounded-2xl shadow-sm overflow-hidden">
       {/* 3D Canvas */}
       <Canvas
         shadows
@@ -38,24 +38,24 @@ export const ProductStudioViewer: React.FC<ProductStudioViewerProps> = () => {
         dpr={[1, 1.5]}
       >
         <Suspense fallback={null}>
-          <ambientLight intensity={0.8} color="#FFF8F0" />
+          <ambientLight intensity={0.9} color="#FFF8F0" />
           <directionalLight
             position={[4, 5, 4]}
-            intensity={1.6}
-            color="#FFEED9"
+            intensity={1.8}
+            color="#FFF2E0"
             castShadow
             shadow-mapSize={[1024, 1024]}
           />
-          <directionalLight position={[-3, 2, -3]} intensity={0.5} color="#DDE4EC" />
-          <pointLight position={[0, 3, -2]} intensity={0.6} color="#D19A66" />
+          <directionalLight position={[-3, 2, -3]} intensity={0.6} color="#E8EEF5" />
+          <pointLight position={[0, 3, -2]} intensity={0.6} color="#F4510B" />
 
           <ContactShadows
             position={[0, -0.305, 0]}
-            opacity={0.65}
+            opacity={0.35}
             scale={5}
-            blur={2}
+            blur={1.8}
             far={2}
-            color="#080706"
+            color="#29251F"
           />
 
           <FurnitureModel interactive={true} />
@@ -73,31 +73,31 @@ export const ProductStudioViewer: React.FC<ProductStudioViewerProps> = () => {
 
       {/* Floating Controls Overlay (Top) */}
       <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none z-10">
-        <div className="bg-charcoal-950/80 backdrop-blur-md border border-white/10 px-3.5 py-1.5 pointer-events-auto">
-          <span className="text-[10px] uppercase font-mono tracking-widest text-sand-300">
-            3D Studio Viewer · Drag to Orbit
+        <div className="bg-checkerboard/90 backdrop-blur-md text-white border border-white/10 px-4 py-2 rounded-lg pointer-events-auto shadow-md">
+          <span className="text-[11px] uppercase font-mono tracking-wider text-cream">
+            Interactive 3D Studio · Drag to Spin
           </span>
         </div>
 
         <button
           onClick={handleToggleExploded}
-          className={`pointer-events-auto flex items-center space-x-2 text-xs uppercase tracking-widest px-4 py-2 border transition-all ${
+          className={`pointer-events-auto flex items-center space-x-2 text-xs uppercase tracking-wider px-4 py-2 rounded-lg border transition-all shadow-md ${
             exploded
-              ? 'bg-accent text-charcoal-950 border-accent font-semibold'
-              : 'bg-charcoal-950/80 backdrop-blur-md text-sand-200 border-white/15 hover:border-white/30'
+              ? 'bg-tangerine text-white border-tangerine font-semibold'
+              : 'bg-white/95 backdrop-blur-md text-checkerboard border-checkerboard/15 hover:border-checkerboard/30'
           }`}
         >
           <Layers className="w-3.5 h-3.5" />
-          <span>{exploded ? 'Reassemble View' : 'Exploded Anatomy'}</span>
+          <span>{exploded ? 'Assemble View' : 'Exploded View'}</span>
         </button>
       </div>
 
       {/* Floating Finish Selector (Bottom) */}
       <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pointer-events-none z-10">
-        <div className="pointer-events-auto bg-charcoal-950/85 backdrop-blur-md p-3 border border-white/10 flex items-center space-x-4">
+        <div className="pointer-events-auto bg-white/95 backdrop-blur-md p-3.5 rounded-xl border border-checkerboard/10 shadow-lg flex items-center space-x-4">
           {/* Wood Finishes */}
           <div className="flex items-center space-x-2">
-            <span className="text-[9px] uppercase font-mono tracking-widest text-sand-400">Timber:</span>
+            <span className="text-[10px] uppercase font-mono tracking-wider text-checkerboard/60">Wood:</span>
             <div className="flex space-x-1.5">
               {WOOD_MATERIALS.map((wood) => (
                 <button
@@ -106,8 +106,8 @@ export const ProductStudioViewer: React.FC<ProductStudioViewerProps> = () => {
                   title={wood.name}
                   className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all ${
                     selectedWoodId === wood.id
-                      ? 'border-accent scale-110 shadow-md ring-2 ring-accent/30'
-                      : 'border-white/20 hover:scale-105'
+                      ? 'border-tangerine scale-110 shadow-md ring-2 ring-tangerine/30'
+                      : 'border-black/10 hover:scale-105'
                   }`}
                   style={{ backgroundColor: wood.colorHex }}
                 >
@@ -117,11 +117,11 @@ export const ProductStudioViewer: React.FC<ProductStudioViewerProps> = () => {
             </div>
           </div>
 
-          <span className="text-white/20">|</span>
+          <span className="text-checkerboard/20">|</span>
 
           {/* Fabric Finishes */}
           <div className="flex items-center space-x-2">
-            <span className="text-[9px] uppercase font-mono tracking-widest text-sand-400">Upholstery:</span>
+            <span className="text-[10px] uppercase font-mono tracking-wider text-checkerboard/60">Fabric:</span>
             <div className="flex space-x-1.5">
               {UPHOLSTERY_MATERIALS.map((fab) => (
                 <button
@@ -130,20 +130,20 @@ export const ProductStudioViewer: React.FC<ProductStudioViewerProps> = () => {
                   title={fab.name}
                   className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all ${
                     selectedFabricId === fab.id
-                      ? 'border-accent scale-110 shadow-md ring-2 ring-accent/30'
-                      : 'border-white/20 hover:scale-105'
+                      ? 'border-tangerine scale-110 shadow-md ring-2 ring-tangerine/30'
+                      : 'border-black/10 hover:scale-105'
                   }`}
                   style={{ backgroundColor: fab.colorHex }}
                 >
-                  {selectedFabricId === fab.id && <Check className="w-3 h-3 text-black drop-shadow" />}
+                  {selectedFabricId === fab.id && <Check className="w-3 h-3 text-white drop-shadow" />}
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="pointer-events-auto hidden md:block text-[10px] font-mono text-sand-500 uppercase tracking-widest bg-charcoal-950/80 px-3 py-1.5 border border-white/10">
-          Scroll Wheel: Zoom · Left Click: Orbit
+        <div className="pointer-events-auto hidden md:block text-[10px] font-mono text-checkerboard/70 uppercase tracking-wider bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-lg border border-checkerboard/10 shadow-md">
+          Scroll: Zoom · Drag: Rotate
         </div>
       </div>
     </div>
