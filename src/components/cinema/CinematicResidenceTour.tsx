@@ -13,6 +13,8 @@ import {
   ArrowDown,
   Check,
   Play,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 import { CINEMATIC_TOUR_SCENES } from '@/config/cinematicTour';
 import { PRODUCTS_CATALOG } from '@/data/catalog';
@@ -45,6 +47,11 @@ export const CinematicResidenceTour: React.FC = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [hasInteractedAudio, setHasInteractedAudio] = useState(false);
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
+  const [isMobileProductExpanded, setIsMobileProductExpanded] = useState(false);
+
+  useEffect(() => {
+    setIsMobileProductExpanded(false);
+  }, [activeSceneIndex]);
 
   const { setActiveProduct, setActiveRoomIndex } = useSceneStore();
   const { addItem, setIsOpen: setCartOpen } = useCartStore();
@@ -500,80 +507,82 @@ export const CinematicResidenceTour: React.FC = () => {
           )}
 
           {/* 3. LAYER: Ambient Sound Toggle (Top-Right) */}
-          <div className="absolute top-24 right-6 md:right-12 z-30 pointer-events-none">
+          <div className="absolute top-20 sm:top-24 right-3 sm:right-6 md:right-12 z-30 pointer-events-none">
             <button
               onClick={toggleAudio}
-              className="p-3 rounded-full bg-cream/90 backdrop-blur-md border border-checkerboard/15 text-checkerboard hover:text-tangerine hover:border-tangerine/50 shadow-retro transition-all pointer-events-auto"
+              className="p-2 sm:p-3 rounded-full bg-cream/90 backdrop-blur-md border border-checkerboard/15 text-checkerboard hover:text-tangerine hover:border-tangerine/50 shadow-retro transition-all pointer-events-auto active:scale-95"
               aria-label={isMuted ? 'Turn on subtle ambient sound' : 'Mute sound'}
             >
-              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-tangerine" />}
+              {isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine" />}
             </button>
           </div>
 
           {/* 4. LAYER: Room Narrative OR Brand Outro */}
           {isFinalOutroScene ? (
             /* BRAND OUTRO: Centered Wordmark Presentation */
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-6 text-center pointer-events-auto bg-cream/40 backdrop-blur-[2px]">
-              <div className="max-w-xl mx-auto space-y-6">
-                <span className="inline-block text-xs font-sans tracking-[0.25em] uppercase text-tangerine font-semibold bg-white/80 px-4 py-1.5 rounded-full border border-tangerine/20 shadow-xs">
+            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 sm:p-6 text-center pointer-events-auto bg-cream/45 backdrop-blur-[2px]">
+              <div className="max-w-xl mx-auto space-y-4 sm:space-y-6">
+                <span className="inline-block text-[10px] sm:text-xs font-sans tracking-[0.25em] uppercase text-tangerine font-semibold bg-white/80 px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full border border-tangerine/20 shadow-xs">
                   Welcome to the Village
                 </span>
-                <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-checkerboard font-normal tracking-tight drop-shadow-sm">
+                <h1 className="font-serif text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-checkerboard font-normal tracking-tight drop-shadow-sm">
                   FURNITURE VILLAGE
                 </h1>
-                <p className="font-sans text-base sm:text-lg text-walnut font-normal max-w-md mx-auto leading-relaxed">
+                <p className="font-sans text-xs sm:text-base md:text-lg text-walnut font-normal max-w-md mx-auto leading-relaxed">
                   Colourful living, beautifully made. Explore retro-modern furniture and happy home essentials.
                 </p>
-                <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 w-full max-w-xs sm:max-w-none mx-auto">
                   <button
                     onClick={() => setBrandFilmOpen(true)}
-                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-checkerboard text-white hover:bg-black font-medium px-8 py-4 rounded-full shadow-retro transition-all duration-300"
+                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-checkerboard text-white hover:bg-black font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
                   >
-                    <Play className="w-4 h-4 text-tangerine fill-current" />
+                    <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine fill-current" />
                     <span>Watch Brand Film</span>
                   </button>
                   <a
                     href="#collection"
-                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-8 py-4 rounded-full shadow-warm transition-all duration-300"
+                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300"
                   >
                     <span>Explore Furniture</span>
-                    <ArrowDown className="w-4 h-4" />
+                    <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </a>
                   <Link
                     href="/collections"
-                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-8 py-4 rounded-full shadow-retro transition-all duration-300"
+                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
                   >
                     <span>Shop the Collection</span>
-                    <ArrowUpRight className="w-4 h-4 text-tangerine" />
+                    <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine" />
                   </Link>
                 </div>
               </div>
             </div>
           ) : (
             /* Standard Room Narrative (Bottom-Left) */
-            <div className="absolute bottom-52 sm:bottom-14 md:bottom-16 left-6 md:left-12 z-30 max-w-[calc(100%-3rem)] sm:max-w-xl pointer-events-none transition-all duration-500">
-              <div className="space-y-2 sm:space-y-3 bg-checkerboard/40 sm:bg-transparent backdrop-blur-xs sm:backdrop-blur-none p-4 sm:p-0 rounded-xl sm:rounded-none">
+            <div className="absolute bottom-28 sm:bottom-32 md:bottom-16 left-3 sm:left-6 md:left-12 z-30 max-w-[calc(100%-1.5rem)] sm:max-w-xl pointer-events-none transition-all duration-500">
+              <div className="space-y-1 sm:space-y-2 md:space-y-3">
                 <div className="flex items-center space-x-2">
-                  <span className="font-sans text-[11px] tracking-wider uppercase text-mustard font-semibold bg-checkerboard/60 px-2.5 py-1 rounded-sm">
+                  <span className="font-sans text-[10px] sm:text-[11px] tracking-wider uppercase text-mustard font-semibold bg-black/45 backdrop-blur-xs px-2.5 py-0.5 sm:py-1 rounded-full sm:rounded-sm border border-white/10 sm:border-none shadow-xs">
                     {activeScene.roomNumber} / {totalScenesPad} · {activeScene.roomSubtitle}
                   </span>
                 </div>
 
-                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white font-normal tracking-tight leading-[1.08] drop-shadow-md">
+                <h2 className="font-serif text-[22px] sm:text-3xl md:text-5xl lg:text-6xl text-white font-normal tracking-tight leading-[1.1] drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] cinematic-room-title">
                   {activeScene.roomTitle}
                 </h2>
 
-                <p className="font-sans text-xs sm:text-sm text-cream-light font-light max-w-md leading-relaxed drop-shadow-md line-clamp-2 sm:line-clamp-none">
+                {/* Hide long room description on small screens (<md) so footage is not obscured, shown on desktop */}
+                <p className="hidden md:block font-sans text-xs sm:text-sm text-cream-light font-light max-w-md leading-relaxed drop-shadow-md">
                   {activeScene.description}
                 </p>
               </div>
             </div>
           )}
 
-          {/* 5. LAYER: Floating Product Card (Bottom-Right, Hidden on Outro) */}
+          {/* 5. LAYER: Featured Product Card (Bottom-Right on Desktop, Compact Collapsible Strip on Mobile) */}
           {!isFinalOutroScene && (
-            <div className="absolute bottom-10 sm:bottom-14 md:bottom-16 right-6 md:right-12 z-30 w-[calc(100%-3rem)] sm:w-80 pointer-events-auto">
-              <div className="bg-cream/95 backdrop-blur-md border border-checkerboard/15 p-4 rounded-xl shadow-retro transition-all duration-300 hover:border-tangerine/40">
+            <div className="absolute bottom-7 sm:bottom-9 md:bottom-16 left-3 right-3 sm:left-6 sm:right-6 md:left-auto md:right-12 z-30 md:w-80 pointer-events-auto transition-all duration-300">
+              {/* DESKTOP VIEW (md: and above) — Preserves 100% of the original desktop presentation */}
+              <div className="hidden md:block bg-cream/95 backdrop-blur-md border border-checkerboard/15 p-4 rounded-xl shadow-retro transition-all duration-300 hover:border-tangerine/40">
                 <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-checkerboard/10">
                   <span className="font-sans text-[11px] uppercase tracking-wider text-walnut font-medium">
                     Featured Piece
@@ -594,8 +603,12 @@ export const CinematicResidenceTour: React.FC = () => {
                     />
                   </div>
                   <div className="space-y-0.5 min-w-0">
-                    <h3 className="font-serif text-base text-checkerboard truncate font-medium">{featuredProduct.name}</h3>
-                    <p className="font-sans text-xs text-walnut line-clamp-1">{featuredProduct.subtitle}</p>
+                    <h3 className="font-serif text-base text-checkerboard truncate font-medium">
+                      {featuredProduct.name}
+                    </h3>
+                    <p className="font-sans text-xs text-walnut line-clamp-1">
+                      {featuredProduct.subtitle}
+                    </p>
                   </div>
                 </div>
 
@@ -603,7 +616,7 @@ export const CinematicResidenceTour: React.FC = () => {
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => setActiveProduct(featuredProduct.id)}
-                    className="inline-flex items-center justify-center space-x-1 text-xs font-sans font-medium py-2 px-3 border border-checkerboard/20 text-checkerboard hover:bg-checkerboard/5 rounded-lg transition-colors"
+                    className="inline-flex items-center justify-center space-x-1 text-xs font-sans font-medium py-2 px-3 border border-checkerboard/20 text-checkerboard hover:bg-checkerboard/5 rounded-lg transition-colors active:scale-97"
                   >
                     <span>Details</span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-walnut" />
@@ -612,7 +625,7 @@ export const CinematicResidenceTour: React.FC = () => {
                   <button
                     onClick={() => handleQuickAdd(featuredProduct)}
                     disabled={addedProductId === featuredProduct.id}
-                    className="inline-flex items-center justify-center space-x-1 text-xs font-sans font-medium py-2 px-3 bg-tangerine hover:bg-coral text-white rounded-lg shadow-sm transition-colors"
+                    className="inline-flex items-center justify-center space-x-1 text-xs font-sans font-medium py-2 px-3 bg-tangerine hover:bg-coral text-white rounded-lg shadow-sm transition-colors active:scale-97"
                   >
                     {addedProductId === featuredProduct.id ? (
                       <>
@@ -627,20 +640,157 @@ export const CinematicResidenceTour: React.FC = () => {
                     )}
                   </button>
                 </div>
+              </div>
 
+              {/* MOBILE VIEW (< md) — Compact, translucent, collapsible bottom strip */}
+              <div className="md:hidden bg-[#FAF6F0]/92 backdrop-blur-md border border-checkerboard/15 shadow-[0_8px_24px_rgba(41,37,31,0.12)] rounded-2xl transition-all duration-300">
+                {isMobileProductExpanded ? (
+                  /* Expanded Mobile State */
+                  <div className="p-3.5 sm:p-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-checkerboard/10">
+                      <span className="font-sans text-[10px] uppercase tracking-wider text-walnut font-medium">
+                        Featured Piece
+                      </span>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-sans text-xs font-semibold text-tangerine">
+                          {formatPrice(featuredProduct.price)}
+                        </span>
+                        <button
+                          onClick={() => setIsMobileProductExpanded(false)}
+                          className="p-1 text-walnut/70 hover:text-checkerboard hover:bg-black/5 rounded-md transition-colors"
+                          aria-label="Collapse product details"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
 
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="relative w-12 h-12 shrink-0 rounded-xl overflow-hidden bg-cream-dark border border-checkerboard/10">
+                        <Image
+                          src={featuredProduct.images.hero}
+                          alt={featuredProduct.name}
+                          fill
+                          className="object-cover"
+                          sizes="48px"
+                        />
+                      </div>
+                      <div className="space-y-0.5 min-w-0 flex-1">
+                        <h3 className="font-serif text-sm text-checkerboard truncate font-medium">
+                          {featuredProduct.name}
+                        </h3>
+                        <p className="font-sans text-[11px] text-walnut line-clamp-1">
+                          {featuredProduct.subtitle}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => setActiveProduct(featuredProduct.id)}
+                        className="inline-flex items-center justify-center space-x-1 text-xs font-sans font-medium py-2 px-3 border border-checkerboard/20 bg-white/70 text-checkerboard hover:bg-white rounded-lg transition-colors active:scale-97"
+                      >
+                        <span>Details</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-walnut" />
+                      </button>
+
+                      <button
+                        onClick={() => handleQuickAdd(featuredProduct)}
+                        disabled={addedProductId === featuredProduct.id}
+                        className="inline-flex items-center justify-center space-x-1 text-xs font-sans font-medium py-2 px-3 bg-tangerine hover:bg-coral text-white rounded-lg shadow-sm transition-colors active:scale-97"
+                      >
+                        {addedProductId === featuredProduct.id ? (
+                          <>
+                            <Check className="w-3.5 h-3.5" />
+                            <span>Added</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag className="w-3.5 h-3.5" />
+                            <span>Add to Bag</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Minimized Mobile State (Default): Single row ~64-70px */
+                  <div className="flex items-center justify-between p-2 sm:p-2.5 gap-2">
+                    {/* Thumbnail */}
+                    <div className="relative w-11 h-11 shrink-0 rounded-xl overflow-hidden bg-cream-dark border border-checkerboard/10">
+                      <Image
+                        src={featuredProduct.images.hero}
+                        alt={featuredProduct.name}
+                        fill
+                        className="object-cover"
+                        sizes="44px"
+                      />
+                    </div>
+
+                    {/* Title & Price */}
+                    <div className="min-w-0 flex-1 pl-0.5">
+                      <h3 className="font-serif text-xs sm:text-[13px] text-checkerboard truncate font-semibold leading-tight">
+                        {featuredProduct.name}
+                      </h3>
+                      <p className="font-sans text-[11px] sm:text-xs text-tangerine font-semibold mt-0.5">
+                        {formatPrice(featuredProduct.price)}
+                      </p>
+                    </div>
+
+                    {/* Compact Side-by-Side Actions */}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => setActiveProduct(featuredProduct.id)}
+                        className="inline-flex items-center space-x-1 text-[11px] font-sans font-medium py-1.5 px-2.5 bg-white/80 hover:bg-white border border-checkerboard/15 text-checkerboard rounded-lg transition-colors active:scale-97"
+                        aria-label={`View ${featuredProduct.name} details`}
+                      >
+                        <span>Details</span>
+                        <ArrowUpRight className="w-3 h-3 text-walnut" />
+                      </button>
+
+                      <button
+                        onClick={() => handleQuickAdd(featuredProduct)}
+                        disabled={addedProductId === featuredProduct.id}
+                        className="inline-flex items-center space-x-1 text-[11px] font-sans font-medium py-1.5 px-2.5 bg-tangerine hover:bg-coral text-white rounded-lg shadow-2xs transition-colors active:scale-97"
+                        aria-label={`Add ${featuredProduct.name} to bag`}
+                      >
+                        {addedProductId === featuredProduct.id ? (
+                          <>
+                            <Check className="w-3 h-3" />
+                            <span>Added</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag className="w-3 h-3" />
+                            <span>Add</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => setIsMobileProductExpanded(true)}
+                        className="p-1.5 text-walnut/70 hover:text-checkerboard hover:bg-black/5 rounded-lg transition-colors"
+                        aria-label="Expand product info"
+                        title="Expand"
+                      >
+                        <ChevronUp className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
           {/* 6. LAYER: Bottom Hairline Progress Indicator */}
-          <div className="absolute bottom-4 left-0 right-0 z-30 px-6 md:px-12 pointer-events-none">
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
-              <span className="font-sans text-[11px] tracking-wider uppercase text-white/90 drop-shadow-sm font-medium">
-                Scroll to explore the home
+          <div className="absolute bottom-1.5 sm:bottom-4 left-0 right-0 z-30 px-3 sm:px-6 md:px-12 pointer-events-none">
+            <div className="max-w-7xl mx-auto flex items-center justify-between text-white/90 drop-shadow-sm font-medium">
+              <span className="font-sans text-[10px] sm:text-[11px] tracking-wider uppercase">
+                <span className="hidden sm:inline">Scroll to explore the home</span>
+                <span className="inline sm:hidden">Scroll to explore</span>
               </span>
 
-              <div className="w-36 sm:w-56 h-[3px] bg-white/30 rounded-full relative overflow-hidden backdrop-blur-xs">
+              <div className="w-24 sm:w-56 h-[2px] sm:h-[3px] bg-white/30 rounded-full relative overflow-hidden backdrop-blur-xs">
                 <div
                   ref={progressBarRef}
                   className="absolute left-0 top-0 bottom-0 bg-tangerine rounded-full transition-all duration-75 ease-out"
@@ -648,7 +798,7 @@ export const CinematicResidenceTour: React.FC = () => {
                 />
               </div>
 
-              <span ref={progressTextRef} className="font-sans text-[11px] tracking-wider uppercase text-white/90 drop-shadow-sm font-medium">
+              <span ref={progressTextRef} className="font-sans text-[10px] sm:text-[11px] tracking-wider uppercase">
                 01 / {totalScenesPad}
               </span>
             </div>
