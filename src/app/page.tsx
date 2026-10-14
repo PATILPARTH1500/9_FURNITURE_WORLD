@@ -5,10 +5,16 @@ import Link from 'next/link';
 import { ArrowUpRight, Compass, Sparkles, ShieldCheck, Truck, Clock } from 'lucide-react';
 import { CinematicResidenceTour } from '@/components/cinema/CinematicResidenceTour';
 import { CuratedCollectionSection } from '@/components/landing/CuratedCollectionSection';
+import { ArtOfLivingSection } from '@/components/landing/ArtOfLivingSection';
+import { DesignPhilosophySection } from '@/components/landing/DesignPhilosophySection';
+import { CustomerReviewsCarousel } from '@/components/landing/CustomerReviewsCarousel';
+import { MaterialsCraftSection } from '@/components/landing/MaterialsCraftSection';
+import { RoomDiscoverySection } from '@/components/landing/RoomDiscoverySection';
+import { ThoughtfulServiceSection } from '@/components/landing/ThoughtfulServiceSection';
 
 export default function HomePage() {
   return (
-    <main className="relative min-h-screen bg-cream text-checkerboard">
+    <main className="relative min-h-screen bg-cream text-checkerboard overflow-x-hidden w-full">
       {/* 1. Cinematic Scroll-Driven 7-Scene Home Tour */}
       <CinematicResidenceTour />
 
@@ -90,6 +96,24 @@ export default function HomePage() {
 
       {/* 3. Permanent Collection & Discovery Section */}
       <CuratedCollectionSection />
+
+      {/* 4. Section A — The Art of Living (Editorial Brand Story) */}
+      <ArtOfLivingSection />
+
+      {/* 5. Section B — Designed with Intention (Design Philosophy) */}
+      <DesignPhilosophySection />
+
+      {/* 6. Section C — Loved in Real Homes (Customer Reviews Carousel) */}
+      <CustomerReviewsCarousel />
+
+      {/* 7. Section D — Materials That Tell a Story (Materials & Tactile Craft) */}
+      <MaterialsCraftSection />
+
+      {/* 8. Section E — Find Your Room's Personality (Interactive Room Discovery) */}
+      <RoomDiscoverySection />
+
+      {/* 9. Section F — Thoughtful Service (Customer Care & Confidence) */}
+      <ThoughtfulServiceSection />
     </main>
   );
 }

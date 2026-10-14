@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-cream text-checkerboard antialiased selection:bg-tangerine selection:text-white min-h-screen flex flex-col">
+      <body className="bg-cream text-checkerboard antialiased selection:bg-tangerine selection:text-white min-h-screen flex flex-col overflow-x-hidden">
         <Navbar />
         <CartDrawer />
         <div className="grow">{children}</div>
