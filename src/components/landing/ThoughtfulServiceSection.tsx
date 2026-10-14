@@ -63,47 +63,53 @@ export const ThoughtfulServiceSection: React.FC = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.service-header',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
 
       gsap.fromTo(
         '.service-card',
-        { opacity: 0, y: 35 },
+        { opacity: 0, y: 24 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.75,
-          stagger: 0.1,
-          ease: 'power3.out',
+          duration: 0.4,
+          stagger: 0.06,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.service-cards-grid',
-            start: 'top 80%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
 
       gsap.fromTo(
         '.service-cta-banner',
-        { opacity: 0, y: 30, scale: 0.99 },
+        { opacity: 0, y: 20, scale: 0.99 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.service-cta-banner',
-            start: 'top 85%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
@@ -114,6 +120,7 @@ export const ThoughtfulServiceSection: React.FC = () => {
 
   return (
     <section
+      id="thoughtful-service"
       ref={sectionRef}
       className="relative z-20 bg-[#EEE5D8] py-24 sm:py-32 border-t border-checkerboard/15 overflow-hidden"
     >

@@ -47,15 +47,17 @@ export const CuratedCollectionSection: React.FC = () => {
       // Header
       gsap.fromTo(
         '.collection-header',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top 92%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
@@ -63,16 +65,18 @@ export const CuratedCollectionSection: React.FC = () => {
       // 3 Collection Cards
       gsap.fromTo(
         '.collection-banner-card',
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 24 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: 'power3.out',
+          duration: 0.45,
+          stagger: 0.07,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.collection-banners-grid',
-            start: 'top 80%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
@@ -80,16 +84,18 @@ export const CuratedCollectionSection: React.FC = () => {
       // Product Cards
       gsap.fromTo(
         '.product-grid-card',
-        { opacity: 0, y: 35 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.75,
-          stagger: 0.08,
-          ease: 'power3.out',
+          duration: 0.4,
+          stagger: 0.05,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.products-grid-container',
-            start: 'top 80%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );

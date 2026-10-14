@@ -100,8 +100,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ['var(--font-cormorant)', 'Cormorant Garamond', 'Georgia', 'serif'],
-        sans: ['var(--font-inter)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'var(--font-cormorant)', 'Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
+        sans: ['var(--font-dm-sans)', 'var(--font-inter)', 'DM Sans', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       letterSpacing: {
         tightest: '-0.03em',

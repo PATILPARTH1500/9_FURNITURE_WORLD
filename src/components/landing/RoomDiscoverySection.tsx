@@ -126,48 +126,52 @@ export const RoomDiscoverySection: React.FC = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.room-header',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top 92%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
 
       gsap.fromTo(
         '.room-tabs-bar',
-        { opacity: 0, y: 20 },
+        { opacity: 0, y: 15 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
-          ease: 'power3.out',
-          delay: 0.1,
+          duration: 0.4,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 75%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
 
       gsap.fromTo(
         showcaseRef.current,
-        { opacity: 0, y: 35, scale: 0.99 },
+        { opacity: 0, y: 24, scale: 0.99 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.85,
-          ease: 'power3.out',
-          delay: 0.15,
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: showcaseRef.current,
-            start: 'top 80%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
@@ -182,8 +186,8 @@ export const RoomDiscoverySection: React.FC = () => {
     if (showcaseRef.current) {
       gsap.fromTo(
         showcaseRef.current,
-        { opacity: 0.6, y: 8 },
-        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+        { opacity: 0.6, y: 6 },
+        { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }
       );
     }
   };
@@ -246,9 +250,8 @@ export const RoomDiscoverySection: React.FC = () => {
               src={currentRoom.image}
               alt={currentRoom.headline}
               fill
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-104 animate-in fade-in"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-104"
               sizes="(max-width: 1024px) 100vw, 60vw"
-              priority
             />
             <div className="absolute top-4 left-4 bg-white/92 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold text-checkerboard border border-checkerboard/15 shadow-2xs">
               {currentRoom.roomTag}

@@ -93,31 +93,35 @@ export const MaterialsCraftSection: React.FC = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.materials-header',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top 92%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
 
       gsap.fromTo(
         '.material-card',
-        { opacity: 0, y: 35 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.75,
-          stagger: 0.1,
-          ease: 'power3.out',
+          duration: 0.4,
+          stagger: 0.06,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.materials-cards-grid',
-            start: 'top 80%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
@@ -133,14 +137,15 @@ export const MaterialsCraftSection: React.FC = () => {
     if (detailPanelRef.current) {
       gsap.fromTo(
         detailPanelRef.current,
-        { opacity: 0.4, y: 10 },
-        { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }
+        { opacity: 0.5, y: 8 },
+        { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }
       );
     }
   };
 
   return (
     <section
+      id="materials-craft"
       ref={sectionRef}
       className="relative z-20 bg-[#F3EFE6] py-24 sm:py-32 border-t border-checkerboard/15 overflow-hidden"
     >
@@ -229,7 +234,7 @@ export const MaterialsCraftSection: React.FC = () => {
               src={selectedMaterial.image}
               alt={selectedMaterial.name}
               fill
-              className="object-cover transition-transform duration-700 animate-in fade-in"
+              className="object-cover transition-transform duration-700"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
             <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold text-[#5E3C26] border border-checkerboard/15 shadow-2xs">

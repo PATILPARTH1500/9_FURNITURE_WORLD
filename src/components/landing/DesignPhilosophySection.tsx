@@ -77,31 +77,35 @@ export const DesignPhilosophySection: React.FC = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.philosophy-header',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top 92%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
 
       gsap.fromTo(
         '.philosophy-card',
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 24 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          stagger: 0.12,
-          ease: 'power3.out',
+          duration: 0.45,
+          stagger: 0.07,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 75%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
@@ -112,6 +116,7 @@ export const DesignPhilosophySection: React.FC = () => {
 
   return (
     <section
+      id="design-philosophy"
       ref={sectionRef}
       className="relative z-20 bg-[#282F19] text-[#F4E9D8] py-24 sm:py-32 border-t border-checkerboard/30 overflow-hidden"
     >

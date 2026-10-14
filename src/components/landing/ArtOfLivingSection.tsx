@@ -22,15 +22,17 @@ export const ArtOfLivingSection: React.FC = () => {
       // Heading & text reveal
       gsap.fromTo(
         '.art-narrative',
-        { opacity: 0, y: 35 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.85,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top 92%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
@@ -38,16 +40,18 @@ export const ArtOfLivingSection: React.FC = () => {
       // Staggered pillars entrance
       gsap.fromTo(
         '.art-pillar',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 16 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.75,
-          stagger: 0.12,
-          ease: 'power3.out',
+          duration: 0.4,
+          stagger: 0.06,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.art-pillars-grid',
-            start: 'top 85%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
@@ -56,15 +60,17 @@ export const ArtOfLivingSection: React.FC = () => {
       if (imageWrapperRef.current) {
         gsap.fromTo(
           imageWrapperRef.current,
-          { scale: 1.06, y: 20 },
+          { scale: 1.04, y: 15 },
           {
             scale: 1,
             y: 0,
-            duration: 1.2,
+            duration: 0.55,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: imageWrapperRef.current,
-              start: 'top 85%',
+              start: 'top 90%',
+              once: true,
+              fastScrollEnd: true,
             },
           }
         );
@@ -76,6 +82,7 @@ export const ArtOfLivingSection: React.FC = () => {
 
   return (
     <section
+      id="art-of-living"
       ref={sectionRef}
       className="relative z-20 bg-[#FAF5ED] py-24 sm:py-32 border-t border-checkerboard/10 overflow-hidden"
     >

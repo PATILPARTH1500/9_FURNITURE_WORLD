@@ -298,11 +298,36 @@ export const CinematicResidenceTour: React.FC = () => {
     };
     window.addEventListener('resize', handleResize, { passive: true });
 
+    // Direct anchor navigation for room links (#living, #dining, #kitchen, #lounge, #bedroom, #craft)
+    const roomHashMap: Record<string, number> = {
+      '#living': 0,
+      '#dining': 1,
+      '#kitchen': 2,
+      '#lounge': 3,
+      '#bedroom': 4,
+      '#craft': 5,
+    };
+    const handleRoomHash = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash in roomHashMap && containerRef.current) {
+        const roomIdx = roomHashMap[hash];
+        const containerTop = containerRef.current.offsetTop;
+        const totalHeight = containerRef.current.offsetHeight - window.innerHeight;
+        const targetScroll = containerTop + (roomIdx / (totalScenes - 1)) * totalHeight;
+        window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      }
+    };
+    window.addEventListener('hashchange', handleRoomHash);
+    if (window.location.hash) {
+      setTimeout(handleRoomHash, 400);
+    }
+
     const videosToCleanup = videoRefs.current;
 
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('hashchange', handleRoomHash);
       st.kill();
       videosToCleanup.forEach((v) => {
         if (v && !v.paused) v.pause();

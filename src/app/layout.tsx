@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { playfair, dmSans } from './fonts';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
@@ -33,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-cream text-checkerboard antialiased selection:bg-tangerine selection:text-white min-h-screen flex flex-col overflow-x-hidden">
+    <html lang="en" className={`${playfair.variable} ${dmSans.variable}`}>
+      <body className="font-sans bg-cream text-checkerboard antialiased selection:bg-tangerine selection:text-white min-h-screen flex flex-col overflow-x-hidden">
         <Navbar />
         <CartDrawer />
         <div className="grow">{children}</div>

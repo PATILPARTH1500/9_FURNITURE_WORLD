@@ -96,32 +96,35 @@ export const CustomerReviewsCarousel: React.FC = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.reviews-header',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top 92%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
 
       gsap.fromTo(
         '.reviews-viewport',
-        { opacity: 0, y: 40, scale: 0.98 },
+        { opacity: 0, y: 20, scale: 0.99 },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.9,
-          ease: 'power3.out',
-          delay: 0.15,
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 75%',
+            start: 'top 90%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );

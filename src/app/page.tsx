@@ -27,37 +27,50 @@ export default function HomePage() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.promise-content',
-        { opacity: 0, y: 30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 0.45,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: promiseSectionRef.current,
-            start: 'top 80%',
+            start: 'top 92%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
 
       gsap.fromTo(
         '.promise-highlight-card',
-        { opacity: 0, y: 25 },
+        { opacity: 0, y: 16 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.7,
-          stagger: 0.1,
-          ease: 'power3.out',
+          duration: 0.4,
+          stagger: 0.06,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.promise-highlights-grid',
-            start: 'top 85%',
+            start: 'top 92%',
+            once: true,
+            fastScrollEnd: true,
           },
         }
       );
     }, promiseSectionRef);
 
-    return () => ctx.revert();
+    // Refresh ScrollTrigger on direct anchor navigation
+    const handleHash = () => {
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener('hashchange', handleHash);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      ctx.revert();
+    };
   }, []);
 
   return (
