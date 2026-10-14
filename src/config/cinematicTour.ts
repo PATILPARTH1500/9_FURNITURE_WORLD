@@ -187,7 +187,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
     architecturalDetails: [
       { label: 'Collections', value: 'Living, Dining, Bedroom & Accents' },
       { label: 'Design Language', value: 'Warm Retro-Modern with Playful Color' },
-      { label: 'Interactive', value: 'Real-Time 3D WebGL Product Inspection' },
+      { label: 'Craftsmanship', value: 'Handcrafted Solid Wood & Lifetime Care' },
     ],
     videoSrc: '/videos/scenes/scene-7-outro.mp4',
     posterSrc: '/videos/scenes/posters/scene-7-outro.jpg',

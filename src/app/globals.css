@@ -67,11 +67,3 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #F4510B;
 }
-
-/* 3D Canvas Container */
-.canvas-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  touch-action: none;
-}

@@ -50,7 +50,7 @@ export interface Product {
   name: string;
   designer: string;
   year: number;
-  category: 'seating' | 'tables' | 'storage' | 'lighting' | 'objects';
+  category: 'seating' | 'tables' | 'storage' | 'lighting' | 'objects' | 'beds';
   subtitle: string;
   description: string;
   architecturalStatement: string;
@@ -96,17 +96,5 @@ export interface CartItem {
   unitPrice: number;
   quantity: number;
   image: string;
-}
-
-export interface Scene3DState {
-  scrollProgress: number;
-  activeScene: number; // 0: Hero, 1: Exploded, 2: Materials, 3: Interior, 4: Collection
-  explodedProgress: number; // 0 = assembled, 1 = exploded
-  selectedWoodId: string;
-  selectedFabricId: string;
-  cameraPosition: [number, number, number];
-  cameraTarget: [number, number, number];
-  activeAnnotationId: string | null;
-  isReducedMotion: boolean;
 }
 

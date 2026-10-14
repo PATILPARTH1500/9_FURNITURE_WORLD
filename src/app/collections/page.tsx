@@ -6,7 +6,15 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { PRODUCTS_CATALOG, COLLECTIONS_DATA } from '@/data/catalog';
 
-type CategoryFilter = 'all' | 'seating' | 'tables' | 'lighting';
+type CategoryFilter = 'all' | 'seating' | 'tables' | 'beds' | 'lighting';
+
+const CATEGORY_TABS: { id: CategoryFilter; label: string }[] = [
+  { id: 'all', label: 'All Pieces' },
+  { id: 'seating', label: 'Sofas & Seating' },
+  { id: 'tables', label: 'Dining & Coffee Tables' },
+  { id: 'beds', label: 'Beds' },
+  { id: 'lighting', label: 'Lighting' },
+];
 
 export default function CollectionsPage() {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
@@ -67,18 +75,18 @@ export default function CollectionsPage() {
 
         {/* Category Filter Tabs */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-12 border-b border-checkerboard/15">
-          <div className="flex items-center space-x-2 md:space-x-4 text-xs font-sans uppercase tracking-wider font-semibold">
-            {(['all', 'seating', 'tables', 'lighting'] as CategoryFilter[]).map((cat) => (
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs font-sans uppercase tracking-wider font-semibold">
+            {CATEGORY_TABS.map((tab) => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
+                key={tab.id}
+                onClick={() => setActiveCategory(tab.id)}
                 className={`py-2 px-4 rounded-full transition-all ${
-                  activeCategory === cat
+                  activeCategory === tab.id
                     ? 'text-white bg-tangerine shadow-xs'
                     : 'text-walnut bg-white/70 hover:bg-white border border-checkerboard/10'
                 }`}
               >
-                {cat === 'all' ? 'All Pieces' : cat}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -105,7 +113,7 @@ export default function CollectionsPage() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute top-4 left-4">
-                  <span className="bg-cream/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-xs font-sans font-semibold tracking-wider text-checkerboard shadow-2xs">
+                  <span className="bg-cream/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-xs font-sans font-semibold tracking-wider text-checkerboard shadow-2xs capitalize">
                     {product.category}
                   </span>
                 </div>
@@ -128,7 +136,7 @@ export default function CollectionsPage() {
 
                 <div className="pt-4 border-t border-checkerboard/10 flex items-center justify-between text-xs">
                   <span className="uppercase tracking-wider text-xs font-semibold text-checkerboard group-hover:text-tangerine flex items-center space-x-1 transition-colors">
-                    <span>Discover Details</span>
+                    <span>View Details</span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
                   </span>
                   <span className="text-xs text-walnut">

@@ -117,7 +117,7 @@ export const CuratedCollectionSection: React.FC = () => {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute top-4 left-4">
-                    <span className="bg-cream/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-[11px] uppercase font-sans font-semibold tracking-wider text-checkerboard shadow-2xs">
+                    <span className="bg-cream/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-[11px] uppercase font-sans font-semibold tracking-wider text-checkerboard shadow-2xs capitalize">
                       {product.category}
                     </span>
                   </div>
@@ -146,7 +146,7 @@ export const CuratedCollectionSection: React.FC = () => {
                       href={`/products/${product.slug}`}
                       className="font-sans uppercase tracking-wider text-xs text-checkerboard hover:text-tangerine flex items-center space-x-1 font-semibold transition-colors"
                     >
-                      <span>Discover Details</span>
+                      <span>View Details</span>
                       <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
                     </Link>
 

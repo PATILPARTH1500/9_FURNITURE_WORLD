@@ -298,7 +298,7 @@ export const PRODUCTS_CATALOG: Product[] = [
     name: 'Nordica Olive Velvet Bed',
     designer: 'Furniture Village Studio',
     year: 2024,
-    category: 'seating',
+    category: 'beds',
     subtitle: 'King Bed with Channel-Tufted Olive Headboard',
     description:
       'A statement king bed frame with an upholstered olive green velvet headboard. Comes with solid wooden sprung slats for breathable mattress support and restful sleep.',

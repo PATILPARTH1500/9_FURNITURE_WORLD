@@ -31,16 +31,16 @@ export const Footer: React.FC = () => {
           {/* Showrooms Column */}
           <div className="md:col-span-3 space-y-4 text-xs">
             <h4 className="text-xs uppercase tracking-wider text-checkerboard font-semibold">
-              Flagship Stores
+              Experience Stores
             </h4>
             <div className="space-y-4 text-walnut">
               <div>
-                <p className="text-checkerboard font-semibold">London Flagship</p>
-                <p className="font-normal">{BRAND_CONFIG.contact.showroom}</p>
+                <p className="text-checkerboard font-semibold">Bengaluru Flagship</p>
+                <p className="font-normal">{BRAND_CONFIG.contact.address}</p>
               </div>
               <div>
-                <p className="text-checkerboard font-semibold">Main Office</p>
-                <p className="font-normal">{BRAND_CONFIG.contact.address}</p>
+                <p className="text-checkerboard font-semibold">Customer Experience</p>
+                <p className="font-normal">Walk-in consultations, wood samples, and fabric swatches available.</p>
               </div>
             </div>
           </div>
@@ -91,7 +91,7 @@ export const Footer: React.FC = () => {
                 <span>{BRAND_CONFIG.contact.phone}</span>
               </p>
               <p className="text-[11px] text-walnut/80 pt-1">
-                Mon — Sat: 9:00 AM – 6:00 PM
+                Mon — Sat: 9:30 AM – 6:30 PM IST
               </p>
             </div>
           </div>

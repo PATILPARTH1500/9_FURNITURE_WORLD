@@ -135,7 +135,7 @@ export const ProductQuickDrawer: React.FC = () => {
           {product.materials.woodOptions.length > 0 && (
             <div className="space-y-3 pt-3 border-t border-checkerboard/10">
               <div className="flex items-center justify-between text-xs font-sans">
-                <span className="uppercase tracking-wider text-walnut font-medium">Timber Finish</span>
+                <span className="uppercase tracking-wider text-walnut font-medium">Wood Finish</span>
                 <span className="text-checkerboard font-semibold">{woodObj.name}</span>
               </div>
               <div className="grid grid-cols-3 gap-2">
@@ -250,7 +250,7 @@ export const ProductQuickDrawer: React.FC = () => {
               href={`/products/${product.slug}`}
               className="text-walnut hover:text-tangerine inline-flex items-center space-x-1.5 font-medium transition-colors"
             >
-              <span>View Full Details & 3D</span>
+              <span>View Full Details</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
             </Link>
 

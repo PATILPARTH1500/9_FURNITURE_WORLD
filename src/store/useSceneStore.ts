@@ -11,8 +11,6 @@ export interface SceneStoreState {
   activeProductId: string | null;
   isQuickDrawerOpen: boolean;
   isReducedMotion: boolean;
-  isModelReady: boolean;
-  hasWebGLError: boolean;
   manualMaterialOverride: boolean;
 
   setScrollProgress: (progress: number) => void;
@@ -25,8 +23,6 @@ export interface SceneStoreState {
   setActiveProduct: (productId: string | null) => void;
   setQuickDrawerOpen: (open: boolean) => void;
   setReducedMotion: (reduced: boolean) => void;
-  setModelReady: (ready: boolean) => void;
-  setWebGLError: (error: boolean) => void;
   resetScene: () => void;
 }
 
@@ -41,8 +37,6 @@ export const useSceneStore = create<SceneStoreState>((set) => ({
   activeProductId: null,
   isQuickDrawerOpen: false,
   isReducedMotion: false,
-  isModelReady: false,
-  hasWebGLError: false,
   manualMaterialOverride: false,
 
   setScrollProgress: (progress) => set({ scrollProgress: progress }),
@@ -63,8 +57,6 @@ export const useSceneStore = create<SceneStoreState>((set) => ({
       activeProductId: open ? state.activeProductId : null,
     })),
   setReducedMotion: (reduced) => set({ isReducedMotion: reduced }),
-  setModelReady: (ready) => set({ isModelReady: ready }),
-  setWebGLError: (error) => set({ hasWebGLError: error }),
   resetScene: () =>
     set({
       scrollProgress: 0,

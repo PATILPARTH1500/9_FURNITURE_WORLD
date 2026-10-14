@@ -48,7 +48,7 @@ export const Navbar: React.FC = () => {
             {BRAND_CONFIG.name}
           </span>
           <span className="text-[10px] tracking-widest text-walnut uppercase -mt-0.5 font-medium">
-            Colourful Living
+            Handcrafted Furniture
           </span>
         </Link>
 
@@ -72,7 +72,7 @@ export const Navbar: React.FC = () => {
             href="/collections"
             className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-sans tracking-wide uppercase px-4 py-2 rounded-full border border-checkerboard/20 hover:border-tangerine text-checkerboard hover:text-tangerine font-medium transition-all"
           >
-            <span>Explore Furniture</span>
+            <span>Shop Furniture</span>
             <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
           </Link>
 
@@ -122,7 +122,7 @@ export const Navbar: React.FC = () => {
               onClick={() => setMobileMenuOpen(false)}
               className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine text-white font-medium px-5 py-3 rounded-full shadow-sm"
             >
-              <span>Explore All Furniture</span>
+              <span>Shop All Furniture</span>
               <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>

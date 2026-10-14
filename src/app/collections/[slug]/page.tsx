@@ -119,7 +119,7 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
 
                 <div className="pt-4 border-t border-checkerboard/10 flex items-center justify-between text-xs">
                   <span className="uppercase tracking-wider text-xs font-semibold text-checkerboard group-hover:text-tangerine flex items-center space-x-1 transition-colors">
-                    <span>Discover Details</span>
+                    <span>View Details</span>
                     <ArrowUpRight className="w-3.5 h-3.5 text-tangerine" />
                   </span>
                   <span className="text-xs text-walnut">

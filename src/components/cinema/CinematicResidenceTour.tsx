@@ -11,7 +11,6 @@ import {
   ShoppingBag,
   ArrowUpRight,
   ArrowDown,
-  Box,
   Check,
 } from 'lucide-react';
 import { CINEMATIC_TOUR_SCENES } from '@/config/cinematicTour';
@@ -112,6 +111,12 @@ export const CinematicResidenceTour: React.FC = () => {
     });
   }, [hasInteractedAudio, initAmbientAudio]);
 
+  // Non-blocking seek tracker per scene to prevent decoder queue stalls
+  const seekTrackersRef = useRef<{ isSeeking: boolean; pendingTime: number | null; lastTargetTime: number }[]>(
+    Array.from({ length: totalScenes }, () => ({ isSeeking: false, pendingTime: null, lastTargetTime: -1 }))
+  );
+  const lastTimeRef = useRef<number>(typeof performance !== 'undefined' ? performance.now() : 0);
+
   // Main GSAP ScrollTrigger & Continuous Frame Synchronization Engine
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -120,8 +125,8 @@ export const CinematicResidenceTour: React.FC = () => {
     const numScenes = CINEMATIC_TOUR_SCENES.length;
     if (numScenes === 0) return;
 
-    // Transition overlap window (14% of room scroll distance)
-    const TRANS_WINDOW = 0.14;
+    // Transition overlap window (16% of room scroll distance)
+    const TRANS_WINDOW = 0.16;
 
     // Check reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -134,33 +139,39 @@ export const CinematicResidenceTour: React.FC = () => {
       end: 'bottom bottom',
       scrub: true,
       anticipatePin: 1,
+      fastScrollEnd: true,
       onUpdate: (self) => {
         targetProgressRef.current = Math.max(0, Math.min(0.9999, self.progress));
       },
     });
 
-    // Prime all videos in paused state
-    videoRefs.current.forEach((video) => {
+    // Prime all videos in paused state and reset trackers
+    videoRefs.current.forEach((video, i) => {
       if (video) {
         video.pause();
         video.currentTime = 0;
       }
+      seekTrackersRef.current[i] = { isSeeking: false, pendingTime: null, lastTargetTime: -1 };
     });
 
     let rafId: number;
     let lastSceneIdx = -1;
+    lastTimeRef.current = performance.now();
 
-    // 60 FPS physically-grounded continuous render loop
-    const renderLoop = () => {
+    // 60-120 FPS frame-rate independent continuous render loop
+    const renderLoop = (timeNow: number) => {
+      const dt = Math.min(0.05, Math.max(0.001, (timeNow - lastTimeRef.current) / 1000));
+      lastTimeRef.current = timeNow;
+
       const target = targetProgressRef.current;
       let curr = currentProgressRef.current;
 
-      // Physically plausible damping: immediate tactile response without floatiness
+      // Exponential physically-grounded smoothing: tactile follow without floatiness
       const delta = target - curr;
-      const dampingFactor = prefersReducedMotion ? 0.9 : 0.42;
-      curr += delta * dampingFactor;
+      const lambda = prefersReducedMotion ? 28.0 : 13.5;
+      curr += delta * (1 - Math.exp(-lambda * dt));
 
-      if (Math.abs(delta) < 0.00015) {
+      if (Math.abs(delta) < 0.00008) {
         curr = target;
       }
       currentProgressRef.current = curr;
@@ -184,19 +195,25 @@ export const CinematicResidenceTour: React.FC = () => {
         setActiveSceneIndex(discreteIdx);
         setActiveRoomIndex(discreteIdx);
 
-        // Preload upcoming scene ahead of time
-        if (discreteIdx + 1 < numScenes) {
-          const nextVid = videoRefs.current[discreteIdx + 1];
-          if (nextVid && nextVid.preload !== 'auto') {
-            nextVid.preload = 'auto';
+        // Intelligent decoder lifecycle: manage buffer for adjacent scenes
+        for (let j = 0; j < numScenes; j++) {
+          const isNear = Math.abs(j - discreteIdx) <= 1;
+          const vid = videoRefs.current[j];
+          if (vid) {
+            if (isNear) {
+              if (vid.preload !== 'auto') vid.preload = 'auto';
+            } else {
+              if (!vid.paused) vid.pause();
+            }
           }
         }
       }
 
-      // Continuous Multi-Track Scrubbing & Equal-Power Crossfade
+      // Continuous Multi-Track Scrubbing & Zero-Leak Crossfade
       for (let k = 0; k < numScenes; k++) {
         const wrapper = videoWrapperRefs.current[k];
         const video = videoRefs.current[k];
+        const tracker = seekTrackersRef.current[k];
         const sceneDuration = CINEMATIC_TOUR_SCENES[k].duration;
         const actualDuration = video && video.duration && !isNaN(video.duration) ? video.duration : sceneDuration;
 
@@ -210,41 +227,56 @@ export const CinematicResidenceTour: React.FC = () => {
         let zIndex = 2;
 
         if (s >= sIn && s <= sOut) {
-          // 1. Calculate Continuous Timestamp (NO FREEZES OR STALLS)
+          // 1. Precise Video Scrubbing with Non-Blocking Hardware Decoder Queues
           const span = sOut - sIn;
           const normProgress = Math.max(0, Math.min(1, (s - sIn) / span));
           const targetTime = normProgress * Math.max(0, actualDuration - 0.04);
 
           if (video && video.readyState >= 1) {
-            if (!video.seeking || Math.abs(video.currentTime - targetTime) > 0.06) {
-              if (Math.abs(video.currentTime - targetTime) > 0.015) {
-                video.currentTime = targetTime;
+            if (Math.abs(video.currentTime - targetTime) > 0.015) {
+              if (!tracker.isSeeking) {
+                tracker.isSeeking = true;
+                tracker.lastTargetTime = targetTime;
+                if ('fastSeek' in video && typeof (video as unknown as { fastSeek: (t: number) => void }).fastSeek === 'function') {
+                  (video as unknown as { fastSeek: (t: number) => void }).fastSeek(targetTime);
+                } else {
+                  video.currentTime = targetTime;
+                }
+              } else {
+                // Video decoder is busy: store pending target to execute immediately on seeked
+                tracker.pendingTime = targetTime;
               }
             }
           }
 
-          // 2. Equal-Power Dissolve Opacity
+          // 2. Zero-Leak Crossfade: Outgoing scene stays 100% opaque underneath while incoming dissolves on top
           if (k > 0 && s < sFullStart) {
-            // Smooth sinusoidal fade-in: sin(u * PI/2)
-            const u = (s - sIn) / TRANS_WINDOW;
-            opacity = Math.sin(u * Math.PI * 0.5);
-            zIndex = 8;
+            // Incoming room dissolving on top: smooth Hermite curve
+            const u = Math.max(0, Math.min(1, (s - sIn) / TRANS_WINDOW));
+            opacity = u * u * (3 - 2 * u);
+            zIndex = 10;
           } else if (s >= sFullStart && s <= sFullEnd) {
             // Fully active room
             opacity = 1;
-            zIndex = 10;
+            zIndex = 8;
           } else if (k < numScenes - 1 && s > sFullEnd) {
-            // Smooth cosine fade-out: cos(u * PI/2)
-            const u = (s - sFullEnd) / TRANS_WINDOW;
-            opacity = Math.cos(u * Math.PI * 0.5);
-            zIndex = 6;
+            // Outgoing room: stays 100% solid underneath incoming room to eliminate background leak
+            opacity = 1;
+            zIndex = 5;
           } else {
             opacity = 1;
-            zIndex = 10;
+            zIndex = 8;
+          }
+
+          // 3. Subtle continuous camera movement & zoom-in for unbroken spatial flow
+          if (wrapper) {
+            const roomLocal = Math.max(0, Math.min(1, s - k));
+            const scale = prefersReducedMotion ? 1.0 : 1.0 + roomLocal * 0.024;
+            wrapper.style.transform = `scale(${scale.toFixed(4)}) translate3d(0, 0, 0)`;
           }
         }
 
-        // Apply style directly via DOM for 60 FPS compositing performance
+        // Apply compositing styles directly to DOM
         if (wrapper) {
           wrapper.style.opacity = opacity.toFixed(3);
           wrapper.style.visibility = opacity > 0.005 ? 'visible' : 'hidden';
@@ -309,10 +341,10 @@ export const CinematicResidenceTour: React.FC = () => {
                   ref={(el) => {
                     videoWrapperRefs.current[idx] = el;
                   }}
-                  className="absolute inset-0 w-full h-full will-change-[opacity]"
+                  className="absolute inset-0 w-full h-full will-change-[transform,opacity] transform-gpu"
                   style={{
                     opacity: idx === 0 ? 1 : 0,
-                    zIndex: idx === 0 ? 10 : 2,
+                    zIndex: idx === 0 ? 8 : 2,
                     visibility: idx === 0 ? 'visible' : 'hidden',
                   }}
                 >
@@ -328,6 +360,27 @@ export const CinematicResidenceTour: React.FC = () => {
                     preload={idx <= 1 ? 'auto' : 'metadata'}
                     disablePictureInPicture
                     disableRemotePlayback
+                    onSeeking={() => {
+                      seekTrackersRef.current[idx].isSeeking = true;
+                    }}
+                    onSeeked={() => {
+                      const tracker = seekTrackersRef.current[idx];
+                      tracker.isSeeking = false;
+                      if (tracker.pendingTime !== null) {
+                        const nextTime = tracker.pendingTime;
+                        tracker.pendingTime = null;
+                        const vid = videoRefs.current[idx];
+                        if (vid && Math.abs(vid.currentTime - nextTime) > 0.015) {
+                          tracker.isSeeking = true;
+                          tracker.lastTargetTime = nextTime;
+                          if ('fastSeek' in vid && typeof (vid as unknown as { fastSeek: (t: number) => void }).fastSeek === 'function') {
+                            (vid as unknown as { fastSeek: (t: number) => void }).fastSeek(nextTime);
+                          } else {
+                            vid.currentTime = nextTime;
+                          }
+                        }
+                      }
+                    }}
                     onLoadedData={() => {
                       setReadyClips((prev) => {
                         const next = [...prev];
@@ -335,7 +388,14 @@ export const CinematicResidenceTour: React.FC = () => {
                         return next;
                       });
                     }}
-                    className="absolute inset-0 w-full h-full object-cover filter brightness-[0.98] contrast-[1.02] transform-gpu z-10"
+                    onCanPlay={() => {
+                      setReadyClips((prev) => {
+                        const next = [...prev];
+                        next[idx] = true;
+                        return next;
+                      });
+                    }}
+                    className="absolute inset-0 w-full h-full object-cover transform-gpu z-10"
                   />
 
                   {/* High-Resolution Poster Placeholder */}
@@ -513,19 +573,7 @@ export const CinematicResidenceTour: React.FC = () => {
                   </button>
                 </div>
 
-                {/* 3D Studio Prompt for Flagship Product */}
-                {featuredProduct.id === 'prod-001' && (
-                  <div className="mt-2.5 pt-2 border-t border-checkerboard/10 flex items-center justify-between">
-                    <Link
-                      href="/products/kronos-lounge-chair"
-                      className="inline-flex items-center space-x-1.5 text-[11px] font-sans font-medium text-tangerine hover:text-coral transition-colors"
-                    >
-                      <Box className="w-3 h-3" />
-                      <span>Inspect in 3D Studio</span>
-                    </Link>
-                    <ArrowUpRight className="w-3 h-3 text-tangerine" />
-                  </div>
-                )}
+
               </div>
             </div>
           )}
