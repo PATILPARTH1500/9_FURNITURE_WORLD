@@ -532,18 +532,18 @@ export const CinematicResidenceTour: React.FC = () => {
             </button>
           </div>
 
-          {/* 4. LAYER: Room Narrative OR Brand Outro */}
+          {/* 4. LAYER: Room Narrative OR Brand Presentation */}
           {isFinalOutroScene ? (
-            /* BRAND OUTRO: Centered Wordmark Presentation */
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 sm:p-6 text-center pointer-events-auto bg-cream/45 backdrop-blur-[2px]">
-              <div className="max-w-xl mx-auto space-y-4 sm:space-y-6">
-                <span className="inline-block text-[10px] sm:text-xs font-sans tracking-[0.25em] uppercase text-tangerine font-semibold bg-white/80 px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full border border-tangerine/20 shadow-xs">
+            /* BRAND PRESENTATION: Single Sharp Centered Wordmark */
+            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-center pointer-events-auto bg-cream">
+              <div className="max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto space-y-4 sm:space-y-6">
+                <span className="inline-block text-[10px] sm:text-xs font-sans tracking-[0.25em] uppercase text-tangerine font-semibold bg-white/90 px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full border border-tangerine/20 shadow-xs">
                   Welcome to the Village
                 </span>
-                <h1 className="font-serif text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-checkerboard font-normal tracking-tight drop-shadow-sm">
+                <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-checkerboard font-normal tracking-tight leading-[1.1] sm:leading-[1.15]">
                   FURNITURE VILLAGE
                 </h1>
-                <p className="font-sans text-xs sm:text-base md:text-lg text-walnut font-normal max-w-md mx-auto leading-relaxed">
+                <p className="font-sans text-xs sm:text-base md:text-lg text-walnut font-normal max-w-md sm:max-w-lg mx-auto leading-relaxed">
                   Colourful living, beautifully made. Explore retro-modern furniture and happy home essentials.
                 </p>
                 <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 w-full max-w-xs sm:max-w-none mx-auto">
