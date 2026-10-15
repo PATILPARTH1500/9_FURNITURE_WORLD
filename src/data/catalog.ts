@@ -113,7 +113,7 @@ export const FLAGSHIP_PRODUCT: Product = {
       price: 1850,
       inStock: true,
       leadTimeWeeks: 2,
-      images: ['/images/film/hero-plinth.jpg'],
+      images: ['/images/film/hero-plinth.webp'],
     },
     {
       id: 'var-02',
@@ -126,7 +126,7 @@ export const FLAGSHIP_PRODUCT: Product = {
       compareAtPrice: 2200,
       inStock: true,
       leadTimeWeeks: 2,
-      images: ['/images/film/cognac-leather.jpg'],
+      images: ['/images/film/cognac-leather.webp'],
     },
     {
       id: 'var-03',
@@ -138,7 +138,7 @@ export const FLAGSHIP_PRODUCT: Product = {
       price: 1890,
       inStock: true,
       leadTimeWeeks: 3,
-      images: ['/images/film/exploded-view.jpg'],
+      images: ['/images/film/exploded-view.webp'],
     },
   ],
   annotations: [
@@ -184,10 +184,10 @@ export const FLAGSHIP_PRODUCT: Product = {
     },
   ],
   images: {
-    hero: '/images/film/hero-plinth.jpg',
-    editorial: '/images/film/interior-villa.jpg',
-    detail: '/images/film/macro-joinery.jpg',
-    inSitu: '/images/film/cognac-leather.jpg',
+    hero: '/images/film/hero-plinth.webp',
+    editorial: '/images/film/interior-villa.webp',
+    detail: '/images/film/macro-joinery.webp',
+    inSitu: '/images/film/cognac-leather.webp',
   },
   featured: true,
   tags: ['Living', 'Armchair', 'Bouclé', 'Bestseller'],

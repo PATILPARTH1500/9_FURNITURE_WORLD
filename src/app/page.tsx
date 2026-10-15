@@ -5,14 +5,37 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, Compass, Sparkles, ShieldCheck, Truck, Clock } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { CinematicResidenceTour } from '@/components/cinema/CinematicResidenceTour';
-import { CuratedCollectionSection } from '@/components/landing/CuratedCollectionSection';
-import { ArtOfLivingSection } from '@/components/landing/ArtOfLivingSection';
-import { DesignPhilosophySection } from '@/components/landing/DesignPhilosophySection';
-import { CustomerReviewsCarousel } from '@/components/landing/CustomerReviewsCarousel';
-import { MaterialsCraftSection } from '@/components/landing/MaterialsCraftSection';
-import { RoomDiscoverySection } from '@/components/landing/RoomDiscoverySection';
-import { ThoughtfulServiceSection } from '@/components/landing/ThoughtfulServiceSection';
+
+const CuratedCollectionSection = dynamic(
+  () => import('@/components/landing/CuratedCollectionSection').then((mod) => mod.CuratedCollectionSection),
+  { ssr: true }
+);
+const ArtOfLivingSection = dynamic(
+  () => import('@/components/landing/ArtOfLivingSection').then((mod) => mod.ArtOfLivingSection),
+  { ssr: true }
+);
+const DesignPhilosophySection = dynamic(
+  () => import('@/components/landing/DesignPhilosophySection').then((mod) => mod.DesignPhilosophySection),
+  { ssr: true }
+);
+const CustomerReviewsCarousel = dynamic(
+  () => import('@/components/landing/CustomerReviewsCarousel').then((mod) => mod.CustomerReviewsCarousel),
+  { ssr: true }
+);
+const MaterialsCraftSection = dynamic(
+  () => import('@/components/landing/MaterialsCraftSection').then((mod) => mod.MaterialsCraftSection),
+  { ssr: true }
+);
+const RoomDiscoverySection = dynamic(
+  () => import('@/components/landing/RoomDiscoverySection').then((mod) => mod.RoomDiscoverySection),
+  { ssr: true }
+);
+const ThoughtfulServiceSection = dynamic(
+  () => import('@/components/landing/ThoughtfulServiceSection').then((mod) => mod.ThoughtfulServiceSection),
+  { ssr: true }
+);
 
 export default function HomePage() {
   const promiseSectionRef = useRef<HTMLElement>(null);

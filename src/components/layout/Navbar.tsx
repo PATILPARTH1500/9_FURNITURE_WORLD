@@ -5,7 +5,12 @@ import Link from 'next/link';
 import { ShoppingBag, Menu, X, ArrowUpRight, Play } from 'lucide-react';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
-import { BrandFilmModal } from '@/components/media/BrandFilmModal';
+import dynamic from 'next/dynamic';
+
+const BrandFilmModal = dynamic(
+  () => import('@/components/media/BrandFilmModal').then((mod) => mod.BrandFilmModal),
+  { ssr: false }
+);
 
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);

@@ -22,7 +22,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
     category: 'Timber Selection',
     name: 'Solid European Oak & Smoked Walnut',
     materialType: 'Natural Hardwood',
-    image: '/images/film/macro-joinery.jpg',
+    image: '/images/film/macro-joinery.webp',
     description:
       'We work only with kiln-dried solid hardwood, never synthetic wood foils or hollow particleboard. Natural medullary rays and rich grain patterns give every table and chair a unique, living character that deepens over generations.',
     attributes: [
@@ -36,7 +36,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
     category: 'Textile Weave',
     name: 'Heavyweight Looped Cream Bouclé',
     materialType: 'Tactile Upholstery',
-    image: '/images/film/macro-boucle.jpg',
+    image: '/images/film/macro-boucle.webp',
     description:
       'Crafted from high-density looped yarns that create a plush, nubby texture that feels warm and cozy. Engineered with natural soil resistance and high rub counts to stay beautiful through daily family living.',
     attributes: [
@@ -50,7 +50,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
     category: 'Craftsmanship',
     name: 'Precision Mortise-and-Tenon Joints',
     materialType: 'Structural Joinery',
-    image: '/images/film/exploded-view.jpg',
+    image: '/images/film/exploded-view.webp',
     description:
       'Every leg, rail, and stretcher is fitted with interlocking timber joints and reinforced by concealed steel anchoring pins. This traditional joinery prevents creaks, wobbles, and structural loosening over time.',
     attributes: [
@@ -64,7 +64,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
     category: 'Luxe Finishes',
     name: 'Top-Grain Leather & Cotton Velvet',
     materialType: 'Supple Finishes',
-    image: '/images/film/cognac-leather.jpg',
+    image: '/images/film/cognac-leather.webp',
     description:
       'Our supple cognac leathers and olive velvets are selected for their soft hand-feel and durability. Double-stitched seams along every edge ensure shapes remain tailored and refined through decades of lounging.',
     attributes: [

@@ -29,7 +29,7 @@ const ROOM_OPTIONS: RoomData[] = [
     subtitle: 'Curved cream bouclé seating, sculptural tangerine coffee table, and soft lighting',
     description:
       'The living room is designed to bring family together. Soft curved contours replace rigid square seating, while our textured bouclé and solid oak armchairs create a calm, tactile haven flooded with natural daylight.',
-    image: '/videos/scenes/posters/scene-1-living.jpg',
+    image: '/videos/scenes/posters/scene-1-living.webp',
     keyPieces: [
       'Arcos Curved Bouclé Sofa',
       'Tangerine Petal Lacquer Table',
@@ -46,7 +46,7 @@ const ROOM_OPTIONS: RoomData[] = [
     subtitle: 'Round European walnut dining table with deep olive velvet chairs',
     description:
       'Shared meals are the soul of the home. Our round walnut pedestal table gives everyone generous elbow room without bumping into restrictive corner legs, perfect for lively dinners and lazy breakfasts alike.',
-    image: '/videos/scenes/posters/scene-2-dining.jpg',
+    image: '/videos/scenes/posters/scene-2-dining.webp',
     keyPieces: [
       'Sölve 150cm Round Walnut Table',
       'Solid Pedestal Weight-Base',
@@ -63,7 +63,7 @@ const ROOM_OPTIONS: RoomData[] = [
     subtitle: 'Architectural counter stools, warm pendant lamps, and clean stone surfaces',
     description:
       'Morning coffee and quick snacks feel elevated with honest materials. Our solid oak counter stools feature curved saddle seats and built-in brass footrests for everyday family comfort.',
-    image: '/videos/scenes/posters/scene-3-kitchen.jpg',
+    image: '/videos/scenes/posters/scene-3-kitchen.webp',
     keyPieces: [
       'Nordic Oak Counter Stools',
       'Checkerboard Runner Floor',
@@ -80,7 +80,7 @@ const ROOM_OPTIONS: RoomData[] = [
     subtitle: 'Checkerboard floors, resilient bouclé, and playful burnt-orange accents',
     description:
       'Designed with real family life in mind. Heavy-duty woven upholstery, soft rounded edges that prevent bumps during active play, and generous open floor plans that give children and parents room to enjoy.',
-    image: '/videos/scenes/posters/scene-4-lounge.jpg',
+    image: '/videos/scenes/posters/scene-4-lounge.webp',
     keyPieces: [
       'Kronos Low-Slung Armchair',
       'Kid-Safe Rounded Armrests',
@@ -97,7 +97,7 @@ const ROOM_OPTIONS: RoomData[] = [
     subtitle: 'Olive green velvet headboard, washed peach organic linens, and serene stillness',
     description:
       'The bedroom should be a sanctuary of acoustic calm. Our plush upholstered headboards naturally dampen room echoes, while the solid oak frame supports restorative rest with zero squeaks.',
-    image: '/videos/scenes/posters/scene-5-bedroom.jpg',
+    image: '/videos/scenes/posters/scene-5-bedroom.webp',
     keyPieces: [
       'Nordica Olive Velvet Bedframe',
       'Solid Oak Low Nightstands',

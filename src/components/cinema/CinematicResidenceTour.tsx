@@ -21,8 +21,17 @@ import { PRODUCTS_CATALOG } from '@/data/catalog';
 import { formatPrice } from '@/config/brand';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
-import { ProductQuickDrawer } from '@/components/discovery/ProductQuickDrawer';
-import { BrandFilmModal } from '@/components/media/BrandFilmModal';
+import dynamic from 'next/dynamic';
+
+const ProductQuickDrawer = dynamic(
+  () => import('@/components/discovery/ProductQuickDrawer').then((mod) => mod.ProductQuickDrawer),
+  { ssr: false }
+);
+
+const BrandFilmModal = dynamic(
+  () => import('@/components/media/BrandFilmModal').then((mod) => mod.BrandFilmModal),
+  { ssr: false }
+);
 
 export const CinematicResidenceTour: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -408,7 +417,13 @@ export const CinematicResidenceTour: React.FC = () => {
                     muted
                     loop={false}
                     playsInline
-                    preload={idx <= 1 ? 'auto' : 'metadata'}
+                    preload={
+                      idx === 0
+                        ? 'auto'
+                        : Math.abs(idx - activeSceneIndex) <= 1
+                        ? 'metadata'
+                        : 'none'
+                    }
                     disablePictureInPicture
                     disableRemotePlayback
                     onError={() => {
@@ -463,7 +478,7 @@ export const CinematicResidenceTour: React.FC = () => {
                       src={scene.posterSrc}
                       alt={scene.roomTitle}
                       fill
-                      priority={idx <= 1}
+                      priority={idx === 0}
                       className="object-cover"
                       sizes="100vw"
                     />

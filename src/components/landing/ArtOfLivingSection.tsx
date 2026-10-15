@@ -172,7 +172,7 @@ export const ArtOfLivingSection: React.FC = () => {
               className="relative aspect-[4/5] sm:aspect-[3/4] w-full rounded-3xl overflow-hidden border border-checkerboard/15 shadow-retro bg-cream-dark group"
             >
               <Image
-                src="/images/film/interior-villa.jpg"
+                src="/images/film/interior-villa.webp"
                 alt="Furniture Village Warm Residence Interior"
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"

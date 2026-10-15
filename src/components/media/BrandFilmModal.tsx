@@ -19,7 +19,7 @@ export const BrandFilmModal: React.FC<BrandFilmModalProps> = ({ isOpen, onClose 
   const [progress, setProgress] = useState(0);
 
   const videoSrc = resolveVideoUrl('/videos/scenes/scene-7-outro.mp4');
-  const posterSrc = '/videos/scenes/posters/scene-7-outro.jpg';
+  const posterSrc = '/videos/scenes/posters/scene-7-outro.webp';
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

@@ -26,7 +26,7 @@ const DESIGN_PRINCIPLES: PrincipleItem[] = [
     description:
       'A sofa should welcome you the moment you sit down. We engineer multi-layer high-resilience foam wrapped in soft fiber fill, paired with relaxed 112° backrest angles for natural lumbar support.',
     icon: Sofa,
-    image: '/images/film/macro-boucle.jpg',
+    image: '/images/film/macro-boucle.webp',
     accentBadge: 'text-tangerine bg-tangerine/20 border-tangerine/30',
   },
   {
@@ -37,7 +37,7 @@ const DESIGN_PRINCIPLES: PrincipleItem[] = [
     description:
       'Real homes are full of life. We round table perimeters and seat armrests with gentle curves, avoiding sharp 90° corners so children and family can move past without painful bumps.',
     icon: Compass,
-    image: '/images/film/exploded-view.jpg',
+    image: '/images/film/exploded-view.webp',
     accentBadge: 'text-[#D8E6A6] bg-[#D8E6A6]/15 border-[#D8E6A6]/30',
   },
   {
@@ -48,7 +48,7 @@ const DESIGN_PRINCIPLES: PrincipleItem[] = [
     description:
       'We use solid European oak, natural smoked walnut, and heavy-gauge woven bouclé. We never use cheap particleboard or paper foils. Hand-applied wax oils celebrate natural grain that improves with age.',
     icon: Shield,
-    image: '/images/film/macro-joinery.jpg',
+    image: '/images/film/macro-joinery.webp',
     accentBadge: 'text-[#F5A89A] bg-[#F5A89A]/15 border-[#F5A89A]/30',
   },
   {
@@ -59,7 +59,7 @@ const DESIGN_PRINCIPLES: PrincipleItem[] = [
     description:
       'We move beyond sterile cold grey interiors. Inspired by 1970s architectural residences, our palette blends joyful burnt oranges, calming olive greens, and warm creams that bring happiness home.',
     icon: Palette,
-    image: '/images/film/hero-plinth.jpg',
+    image: '/images/film/hero-plinth.webp',
     accentBadge: 'text-mustard-light bg-mustard/20 border-mustard/30',
   },
 ];

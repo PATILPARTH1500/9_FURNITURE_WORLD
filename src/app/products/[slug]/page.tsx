@@ -148,11 +148,12 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               <div className="relative aspect-video w-full rounded-2xl border border-checkerboard/10 bg-black overflow-hidden shadow-xl">
                 <video
                   src="/videos/scenes/scene-7-outro.mp4"
-                  poster="/videos/scenes/posters/scene-7-outro.jpg"
+                  poster="/videos/scenes/posters/scene-7-outro.webp"
                   controls
                   autoPlay
                   loop
                   playsInline
+                  preload="metadata"
                   className="w-full h-full object-contain"
                 />
               </div>

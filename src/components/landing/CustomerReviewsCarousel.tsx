@@ -24,7 +24,7 @@ const CUSTOMER_REVIEWS: ReviewItem[] = [
     itemPurchased: 'Arcos Curved Bouclé Sofa',
     quote:
       'The curved shape completely opened up our living space. Our two children love reading on it, and the textured cream bouclé fabric is so soft and cleans up with ease. Truly transforms the atmosphere of the room.',
-    roomPhoto: '/videos/scenes/posters/scene-1-living.jpg',
+    roomPhoto: '/videos/scenes/posters/scene-1-living.webp',
     roomName: 'Living Room',
   },
   {
@@ -34,7 +34,7 @@ const CUSTOMER_REVIEWS: ReviewItem[] = [
     itemPurchased: 'Sölve Round Walnut Dining Table',
     quote:
       'We host Sunday family lunches every week. The solid walnut top feels silky smooth and warm to the touch, and having six adults seated around the round pedestal allows everyone to chat effortlessly.',
-    roomPhoto: '/videos/scenes/posters/scene-2-dining.jpg',
+    roomPhoto: '/videos/scenes/posters/scene-2-dining.webp',
     roomName: 'Dining Room',
   },
   {
@@ -44,7 +44,7 @@ const CUSTOMER_REVIEWS: ReviewItem[] = [
     itemPurchased: 'Nordica Olive Velvet Bed & Nightstands',
     quote:
       'The olive velvet is rich without being loud. The two-person delivery team brought everything up to our 4th-floor apartment, assembled the solid timber frame in 35 minutes, and cleared away all the packaging.',
-    roomPhoto: '/videos/scenes/posters/scene-5-bedroom.jpg',
+    roomPhoto: '/videos/scenes/posters/scene-5-bedroom.webp',
     roomName: 'Master Bedroom',
   },
   {
@@ -54,7 +54,7 @@ const CUSTOMER_REVIEWS: ReviewItem[] = [
     itemPurchased: 'Kronos Lounge Chair in Natural Oak',
     quote:
       'Visited the Indiranagar flagship showroom to test the cushion density in person. The gentle 112-degree recline and hand-smoothed oak armrests make it the most relaxing chair in our home.',
-    roomPhoto: '/images/film/hero-plinth.jpg',
+    roomPhoto: '/images/film/hero-plinth.webp',
     roomName: 'Reading Corner',
   },
   {
@@ -64,7 +64,7 @@ const CUSTOMER_REVIEWS: ReviewItem[] = [
     itemPurchased: 'Checkerboard Lounge & Tangerine Table',
     quote:
       'The orange accent table brings just the right touch of playful 70s modern warmth to our lounge. The craftsmanship of the timber joinery and lacquered finish exceeded all our expectations.',
-    roomPhoto: '/videos/scenes/posters/scene-4-lounge.jpg',
+    roomPhoto: '/videos/scenes/posters/scene-4-lounge.webp',
     roomName: 'Family Lounge',
   },
 ];
