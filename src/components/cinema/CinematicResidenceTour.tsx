@@ -131,11 +131,12 @@ export const CinematicResidenceTour: React.FC = () => {
     });
   }, [hasInteractedAudio, initAmbientAudio]);
 
-  // Non-blocking seek tracker per scene to prevent decoder queue stalls
-  const seekTrackersRef = useRef<{ isSeeking: boolean; pendingTime: number | null; lastTargetTime: number }[]>(
-    Array.from({ length: totalScenes }, () => ({ isSeeking: false, pendingTime: null, lastTargetTime: -1 }))
+  // Non-blocking seek tracker per scene to prevent decoder queue stalls with watchdog timeout
+  const seekTrackersRef = useRef<{ isSeeking: boolean; pendingTime: number | null; lastTargetTime: number; seekStartTime: number }[]>(
+    Array.from({ length: totalScenes }, () => ({ isSeeking: false, pendingTime: null, lastTargetTime: -1, seekStartTime: 0 }))
   );
   const lastTimeRef = useRef<number>(typeof performance !== 'undefined' ? performance.now() : 0);
+  const lastWidthRef = useRef<number>(typeof window !== 'undefined' ? window.innerWidth : 0);
 
   // Main GSAP ScrollTrigger & Continuous Frame Synchronization Engine
   useEffect(() => {
@@ -145,11 +146,20 @@ export const CinematicResidenceTour: React.FC = () => {
     const numScenes = CINEMATIC_TOUR_SCENES.length;
     if (numScenes === 0) return;
 
+    // Prevent ScrollTrigger from refreshing when mobile address bars expand/collapse vertically
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
     // Transition overlap window (16% of room scroll distance)
     const TRANS_WINDOW = 0.16;
 
     // Check reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Adaptive device profile: coarse touch devices follow the finger with higher responsivity
+    const isTouchDevice =
+      window.innerWidth <= 768 ||
+      window.matchMedia('(pointer: coarse)').matches ||
+      window.matchMedia('(max-width: 768px)').matches;
 
     // ScrollTrigger pinning with 1:1 scroll progress mapping
     const st = ScrollTrigger.create({
@@ -171,8 +181,20 @@ export const CinematicResidenceTour: React.FC = () => {
         video.pause();
         video.currentTime = 0;
       }
-      seekTrackersRef.current[i] = { isSeeking: false, pendingTime: null, lastTargetTime: -1 };
+      seekTrackersRef.current[i] = { isSeeking: false, pendingTime: null, lastTargetTime: -1, seekStartTime: 0 };
     });
+
+    // Expose runtime debugging hook for automated test suites
+    if (typeof window !== 'undefined') {
+      (window as unknown as { __cinematicTour: unknown }).__cinematicTour = {
+        targetProgressRef,
+        currentProgressRef,
+        activeSceneIndexRef,
+        seekTrackersRef,
+        videoRefs,
+        ScrollTrigger,
+      };
+    }
 
     let rafId: number;
     let lastSceneIdx = -1;
@@ -186,12 +208,14 @@ export const CinematicResidenceTour: React.FC = () => {
       const target = targetProgressRef.current;
       let curr = currentProgressRef.current;
 
-      // Exponential physically-grounded smoothing: tactile follow without floatiness
+      // Exponential physically-grounded smoothing:
+      // Desktop retains exact 13.5 physical inertia; mobile/touch uses responsive 28.0
       const delta = target - curr;
-      const lambda = prefersReducedMotion ? 28.0 : 13.5;
+      const lambda = prefersReducedMotion ? 28.0 : isTouchDevice ? 28.0 : 13.5;
       curr += delta * (1 - Math.exp(-lambda * dt));
 
-      if (Math.abs(delta) < 0.00008) {
+      const snapThreshold = isTouchDevice ? 0.0004 : 0.00008;
+      if (Math.abs(delta) < snapThreshold) {
         curr = target;
       }
       currentProgressRef.current = curr;
@@ -222,6 +246,10 @@ export const CinematicResidenceTour: React.FC = () => {
           if (vid) {
             if (isNear) {
               if (vid.preload !== 'auto') vid.preload = 'auto';
+              // Mobile decoders require explicit load() if metadata hasn't started fetching
+              if (vid.readyState === 0) {
+                vid.load();
+              }
             } else {
               if (!vid.paused) vid.pause();
             }
@@ -247,24 +275,33 @@ export const CinematicResidenceTour: React.FC = () => {
         let zIndex = 2;
 
         if (s >= sIn && s <= sOut) {
-          // 1. Precise Video Scrubbing with Non-Blocking Hardware Decoder Queues
+          // 1. Precise Video Scrubbing with Non-Blocking Hardware Decoder Queues & Watchdog
           const span = sOut - sIn;
           const normProgress = Math.max(0, Math.min(1, (s - sIn) / span));
           const targetTime = normProgress * Math.max(0, actualDuration - 0.04);
 
-          if (video && video.readyState >= 1) {
-            if (Math.abs(video.currentTime - targetTime) > 0.015) {
-              if (!tracker.isSeeking) {
-                tracker.isSeeking = true;
-                tracker.lastTargetTime = targetTime;
-                if ('fastSeek' in video && typeof (video as unknown as { fastSeek: (t: number) => void }).fastSeek === 'function') {
-                  (video as unknown as { fastSeek: (t: number) => void }).fastSeek(targetTime);
+          if (video) {
+            if (video.readyState === 0) {
+              video.load();
+            } else if (video.readyState >= 1) {
+              // Auto-recovery watchdog: if previous seek stalled (> 180ms), clear isSeeking
+              if (tracker.isSeeking && tracker.seekStartTime && timeNow - tracker.seekStartTime > 180) {
+                tracker.isSeeking = false;
+                tracker.seekStartTime = 0;
+              }
+
+              if (Math.abs(video.currentTime - targetTime) > 0.015) {
+                if (!tracker.isSeeking) {
+                  tracker.isSeeking = true;
+                  tracker.seekStartTime = timeNow;
+                  tracker.lastTargetTime = targetTime;
+                  try {
+                    video.currentTime = targetTime;
+                  } catch {}
                 } else {
-                  video.currentTime = targetTime;
+                  // Video decoder is busy: record newest target (latest-target-wins)
+                  tracker.pendingTime = targetTime;
                 }
-              } else {
-                // Video decoder is busy: store pending target to execute immediately on seeked
-                tracker.pendingTime = targetTime;
               }
             }
           }
@@ -310,7 +347,13 @@ export const CinematicResidenceTour: React.FC = () => {
     rafId = requestAnimationFrame(renderLoop);
 
     const handleResize = () => {
-      ScrollTrigger.refresh();
+      const currentWidth = window.innerWidth;
+      // Ignore vertical-only height fluctuations from mobile browser address bar collapse/expand
+      // Only refresh when viewport width actually changes (device rotation or desktop window resize)
+      if (Math.abs(currentWidth - lastWidthRef.current) > 12) {
+        lastWidthRef.current = currentWidth;
+        ScrollTrigger.refresh();
+      }
     };
     window.addEventListener('resize', handleResize, { passive: true });
 
@@ -389,8 +432,8 @@ export const CinematicResidenceTour: React.FC = () => {
         className="relative w-full bg-cream touch-pan-y"
         style={{ height: `${totalScenes * 105}vh` }}
       >
-        {/* Pinned 100vh Viewport */}
-        <div ref={viewportRef} className="sticky top-0 h-screen w-full overflow-hidden select-none bg-cream touch-pan-y">
+        {/* Pinned Viewport with dynamic mobile height */}
+        <div ref={viewportRef} className="relative h-[100dvh] sm:h-screen w-full overflow-hidden select-none bg-cream touch-pan-y">
           {/* 1. LAYER: Video Scrubbing Stack */}
           <div className="absolute inset-0 w-full h-full bg-cream">
             {CINEMATIC_TOUR_SCENES.map((scene, idx) => {
@@ -435,23 +478,27 @@ export const CinematicResidenceTour: React.FC = () => {
                       });
                     }}
                     onSeeking={() => {
-                      seekTrackersRef.current[idx].isSeeking = true;
+                      const tracker = seekTrackersRef.current[idx];
+                      tracker.isSeeking = true;
+                      if (!tracker.seekStartTime) {
+                        tracker.seekStartTime = performance.now();
+                      }
                     }}
                     onSeeked={() => {
                       const tracker = seekTrackersRef.current[idx];
                       tracker.isSeeking = false;
+                      tracker.seekStartTime = 0;
                       if (tracker.pendingTime !== null) {
                         const nextTime = tracker.pendingTime;
                         tracker.pendingTime = null;
                         const vid = videoRefs.current[idx];
-                        if (vid && Math.abs(vid.currentTime - nextTime) > 0.015) {
+                        if (vid && vid.readyState >= 1 && Math.abs(vid.currentTime - nextTime) > 0.015) {
                           tracker.isSeeking = true;
+                          tracker.seekStartTime = performance.now();
                           tracker.lastTargetTime = nextTime;
-                          if ('fastSeek' in vid && typeof (vid as unknown as { fastSeek: (t: number) => void }).fastSeek === 'function') {
-                            (vid as unknown as { fastSeek: (t: number) => void }).fastSeek(nextTime);
-                          } else {
+                          try {
                             vid.currentTime = nextTime;
-                          }
+                          } catch {}
                         }
                       }
                     }}
@@ -469,7 +516,7 @@ export const CinematicResidenceTour: React.FC = () => {
                         return next;
                       });
                     }}
-                    className="absolute inset-0 w-full h-full object-cover transform-gpu z-10"
+                    className="absolute inset-0 w-full h-full object-cover transform-gpu z-10 pointer-events-none"
                   />
 
                   {/* High-Resolution Poster Placeholder - Always active as a solid backdrop underneath at z-0 */}
