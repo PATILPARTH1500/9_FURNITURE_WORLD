@@ -575,18 +575,18 @@ export const CinematicResidenceTour: React.FC = () => {
                   <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                     <MagneticButton
                       href="#collection"
-                      className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg inline-flex items-center justify-center"
+                      className="whitespace-nowrap shrink-0 group space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg inline-flex items-center justify-center"
                     >
-                      <span>Explore Furniture</span>
-                      <ArrowDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
+                      <span className="whitespace-nowrap">Explore Furniture</span>
+                      <ArrowDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5 shrink-0" />
                     </MagneticButton>
 
                     <MagneticButton
                       href="/collections"
-                      className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-white/90 hover:bg-white border border-checkerboard/15 text-checkerboard font-medium px-7 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-2xs transition-all duration-300 hover:shadow-warm inline-flex items-center justify-center"
+                      className="whitespace-nowrap shrink-0 group space-x-2 text-xs font-sans uppercase tracking-wider bg-white/90 hover:bg-white border border-checkerboard/15 text-checkerboard font-medium px-7 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-2xs transition-all duration-300 hover:shadow-warm inline-flex items-center justify-center"
                     >
-                      <span>Shop the Collection</span>
-                      <ArrowUpRight className="w-4 h-4 text-tangerine transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      <span className="whitespace-nowrap">Shop the Collection</span>
+                      <ArrowUpRight className="w-4 h-4 text-tangerine transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0" />
                     </MagneticButton>
                   </div>
 
