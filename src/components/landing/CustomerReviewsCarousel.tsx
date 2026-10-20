@@ -86,7 +86,6 @@ export const CustomerReviewsCarousel: React.FC = () => {
     setCurrentIndex((prev) => (prev - 1 + totalReviews) % totalReviews);
   }, [totalReviews]);
 
-  // GSAP Entrance Animation
   useEffect(() => {
     if (typeof window === 'undefined') return;
     gsap.registerPlugin(ScrollTrigger);
@@ -105,7 +104,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 92%',
+            start: 'top 90%',
             once: true,
             fastScrollEnd: true,
           },
@@ -123,7 +122,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 90%',
+            start: 'top 88%',
             once: true,
             fastScrollEnd: true,
           },
@@ -134,7 +133,6 @@ export const CustomerReviewsCarousel: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
-  // Continuous automatic rotation with pause-on-hover & reduced motion check
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -142,18 +140,16 @@ export const CustomerReviewsCarousel: React.FC = () => {
 
     const interval = setInterval(() => {
       nextSlide();
-    }, 5500);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, [isPaused, nextSlide]);
 
-  // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowLeft') prevSlide();
     if (e.key === 'ArrowRight') nextSlide();
   };
 
-  // Touch swiping handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.touches[0].clientX);
   };
@@ -171,7 +167,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
     <section
       id="customer-reviews"
       ref={sectionRef}
-      className="relative z-20 bg-gradient-to-b from-[#F7EFE4] via-[#F4E8D8] to-[#F7EFE4] py-24 sm:py-32 border-t border-checkerboard/10 overflow-hidden"
+      className="relative z-20 bg-gradient-to-b from-[#FAF8F5] via-[#F4E9D8] to-[#FAF8F5] py-24 sm:py-32 border-t border-checkerboard/12 overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -183,7 +179,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
     >
       {/* Decorative Oversized Quotation Mark in Background */}
       <div
-        className="absolute -right-6 top-6 sm:top-10 font-serif text-[180px] sm:text-[280px] leading-none text-tangerine/[0.07] select-none pointer-events-none -scale-x-100 hidden md:block"
+        className="absolute -right-6 top-6 sm:top-10 font-serif text-[180px] sm:text-[280px] leading-none text-tangerine/[0.06] select-none pointer-events-none -scale-x-100 hidden md:block"
         aria-hidden="true"
       >
         “
@@ -198,25 +194,24 @@ export const CustomerReviewsCarousel: React.FC = () => {
               <span>Real Homes · Customer Experiences</span>
             </span>
             <AnimatedHeading
-              text="Loved in Real Homes Across India"
-              highlightText="Across India"
+              text="Loved in Real Homes Across India."
+              highlightText="Across India."
               highlightClassName="italic text-walnut font-normal"
-              className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]"
+              className="font-serif text-4xl sm:text-5xl md:text-6xl text-checkerboard font-semibold tracking-tight leading-[1.12]"
             />
           </div>
 
           <div className="flex items-center space-x-4">
             <p className="hidden lg:block text-xs font-sans text-walnut/75">
-              Community feedback from flagship showroom visitors and home deliveries.
+              Impressions from flagship showroom visitors and direct home deliveries.
             </p>
 
-            {/* Unobtrusive Previous & Next Controls (No Play/Pause Button) */}
             <div className="flex items-center space-x-2">
               <MagneticButton
                 onClick={prevSlide}
                 magneticStrength={0.3}
                 maxDistance={8}
-                className="p-2.5 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
+                className="p-3 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
                 ariaLabel="Previous customer story"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -226,7 +221,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
                 onClick={nextSlide}
                 magneticStrength={0.3}
                 maxDistance={8}
-                className="p-2.5 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
+                className="p-3 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
                 ariaLabel="Next customer story"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -257,7 +252,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
               >
                 <SpotlightCard
                   className="group bg-white/95 backdrop-blur-xs rounded-3xl border border-checkerboard/12 p-8 sm:p-12 shadow-[0_16px_40px_rgba(41,37,31,0.06)] hover:shadow-[0_24px_50px_rgba(41,37,31,0.12)] transition-all duration-500"
-                  contentClassName="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+                  contentClassName="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
                   spotlightColor="rgba(244, 81, 11, 0.07)"
                 >
                   {/* Left Column: Room Photograph */}
@@ -279,7 +274,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
                     <Quote className="w-10 h-10 text-tangerine/30 -mb-2 transition-transform duration-300 group-hover:translate-x-1" />
                     <blockquote
                       data-testid="customer-review-quote"
-                      className="font-serif text-xl sm:text-2xl text-checkerboard leading-snug font-medium"
+                      className="font-serif text-xl sm:text-2xl lg:text-[1.65rem] text-checkerboard leading-snug font-medium"
                     >
                       “{review.quote}”
                     </blockquote>
@@ -289,7 +284,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
                         <p className="font-serif text-lg text-checkerboard font-semibold">
                           {review.author}
                         </p>
-                        <p className="font-sans text-xs text-walnut">
+                        <p className="font-sans text-xs text-walnut mt-0.5">
                           {review.location}
                         </p>
                       </div>

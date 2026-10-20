@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Truck, ShieldCheck, Wrench, MapPin, Phone, Mail, ArrowUpRight } from 'lucide-react';
 import { BRAND_CONFIG } from '@/config/brand';
-import { AnimatedHeading, MagneticButton, SpotlightCard } from '@/components/ui/motion';
+import { AnimatedHeading, MagneticButton, SpotlightCard, TextRoll, MovingBorder } from '@/components/ui/motion';
 
 interface ServiceItem {
   id: string;
@@ -212,19 +212,30 @@ export const ThoughtfulServiceSection: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0">
-            <MagneticButton
-              onClick={() => { window.location.href = 'tel:+918040008879'; }}
-              className="space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg"
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto shrink-0">
+            {/* Moving Border Aceternity UI Effect on Concierge Conversion Button */}
+            <MovingBorder
+              as="div"
+              borderRadius="9999px"
+              duration={3.5}
+              containerClassName="w-full sm:w-auto"
+              borderClassName="bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0deg,transparent_280deg,#F4510B_320deg,#F59E0B_360deg)]"
+              className="bg-transparent"
             >
-              <Phone className="w-4 h-4" />
-              <span>Call Concierge</span>
-            </MagneticButton>
+              <MagneticButton
+                onClick={() => { window.location.href = 'tel:+918040008879'; }}
+                className="space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg w-full sm:w-auto justify-center"
+              >
+                <Phone className="w-4 h-4" />
+                <TextRoll>Call Concierge</TextRoll>
+              </MagneticButton>
+            </MovingBorder>
+
             <MagneticButton
               href="/collections"
-              className="space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF5EE] font-medium px-6 py-4 rounded-full transition-all duration-300"
+              className="space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF5EE] font-medium px-6 py-4 rounded-full transition-all duration-300 justify-center"
             >
-              <span>Explore Collection</span>
+              <TextRoll>Explore Collection</TextRoll>
               <ArrowUpRight className="w-4 h-4" />
             </MagneticButton>
           </div>

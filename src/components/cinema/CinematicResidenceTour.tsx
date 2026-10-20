@@ -6,13 +6,10 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
-  Volume2,
-  VolumeX,
   ShoppingBag,
   ArrowUpRight,
   ArrowDown,
   Check,
-  Play,
   ChevronUp,
   ChevronDown,
 } from 'lucide-react';
@@ -29,15 +26,9 @@ const ProductQuickDrawer = dynamic(
   { ssr: false }
 );
 
-const BrandFilmModal = dynamic(
-  () => import('@/components/media/BrandFilmModal').then((mod) => mod.BrandFilmModal),
-  { ssr: false }
-);
-
 export const CinematicResidenceTour: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
-  const [brandFilmOpen, setBrandFilmOpen] = useState(false);
   const totalScenes = CINEMATIC_TOUR_SCENES.length;
   const totalScenesPad = totalScenes.toString().padStart(2, '0');
 
@@ -539,48 +530,19 @@ export const CinematicResidenceTour: React.FC = () => {
             })}
           </div>
 
-          {/* 2. LAYER: Interactive Product Hotspot (Hidden on Final Outro) */}
-          {!isFinalOutroScene && activeScene.hotspot && (
-            <div
-              className="absolute z-30 transition-all duration-700 pointer-events-auto"
-              style={{
-                left: `${activeScene.hotspot.xPercent}%`,
-                top: `${activeScene.hotspot.yPercent}%`,
-                transform: 'translate(-50%, -50%)',
-              }}
-            >
-              <button
-                onClick={() => setActiveProduct(featuredProduct.id)}
-                className="group relative flex items-center space-x-2 focus:outline-hidden"
-                aria-label={`Explore ${activeScene.hotspot.label}`}
-              >
-                <div className="relative flex items-center justify-center">
-                  <span className="w-6 h-6 rounded-full border-2 border-tangerine bg-cream/90 shadow-md flex items-center justify-center transition-all duration-300 group-hover:scale-125">
-                    <span className="w-2 h-2 rounded-full bg-tangerine group-hover:bg-coral transition-colors" />
-                  </span>
-                </div>
-                <div className="opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-300 pointer-events-none hidden sm:flex items-center space-x-1.5 px-3 py-1 bg-cream/95 text-checkerboard shadow-retro border border-tangerine/30 rounded-full">
-                  <span className="text-[11px] font-sans font-medium">
-                    {activeScene.hotspot.label}
-                  </span>
-                  <ArrowUpRight className="w-3 h-3 text-tangerine" />
-                </div>
-              </button>
+          {/* 2. LAYER: Editorial Scene Indicator / Subtle Progress Cue (Replaces floating orb) */}
+          {!isFinalOutroScene && (
+            <div className="absolute top-20 sm:top-24 right-4 sm:right-8 md:right-12 z-30 pointer-events-none">
+              <div className="inline-flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-white/90 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-tangerine animate-pulse" />
+                <span className="font-sans text-[10px] sm:text-[11px] tracking-[0.2em] uppercase font-medium">
+                  Scene {activeScene.roomNumber} · {activeScene.roomTitle}
+                </span>
+              </div>
             </div>
           )}
 
-          {/* 3. LAYER: Ambient Sound Toggle (Top-Right) */}
-          <div className="absolute top-20 sm:top-24 right-3 sm:right-6 md:right-12 z-30 pointer-events-none">
-            <button
-              onClick={toggleAudio}
-              className="p-2 sm:p-3 rounded-full bg-cream/90 backdrop-blur-md border border-checkerboard/15 text-checkerboard hover:text-tangerine hover:border-tangerine/50 shadow-retro transition-all pointer-events-auto active:scale-95"
-              aria-label={isMuted ? 'Turn on subtle ambient sound' : 'Mute sound'}
-            >
-              {isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine" />}
-            </button>
-          </div>
-
-          {/* 4. LAYER: Room Narrative OR Brand Presentation */}
+          {/* 3. LAYER: Room Narrative OR Brand Presentation */}
           {isFinalOutroScene ? (
             /* BRAND PRESENTATION: Single Sharp Centered Wordmark */
             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-center pointer-events-auto bg-cream">
@@ -596,45 +558,38 @@ export const CinematicResidenceTour: React.FC = () => {
                 </p>
                 <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 w-full max-w-xs sm:max-w-none mx-auto">
                   <MagneticButton
-                    onClick={() => setBrandFilmOpen(true)}
-                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-checkerboard text-white hover:bg-black font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
-                  >
-                    <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine fill-current" />
-                    <span>Watch Brand Film</span>
-                  </MagneticButton>
-                  <MagneticButton
                     href="#collection"
-                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300"
+                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-6 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300"
                   >
                     <span>Explore Furniture</span>
                     <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </MagneticButton>
                   <MagneticButton
                     href="/collections"
-                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
+                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-6 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
                   >
-                    <span>Shop the Collection</span>
+                    <span>Shop Collection</span>
                     <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine" />
                   </MagneticButton>
                 </div>
               </div>
             </div>
           ) : (
-            /* Standard Room Narrative (Bottom-Left) */
+            /* Standard Room Narrative (Bottom-Left) — Crisp Editorial Typography */
             <div className="absolute bottom-28 sm:bottom-32 md:bottom-16 left-3 sm:left-6 md:left-12 z-30 max-w-[calc(100%-1.5rem)] sm:max-w-xl pointer-events-none transition-all duration-500">
-              <div className="space-y-1 sm:space-y-2 md:space-y-3">
+              <div className="space-y-2 sm:space-y-2.5 p-4 sm:p-5 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 max-w-lg shadow-lg">
                 <div className="flex items-center space-x-2">
-                  <span className="font-sans text-[10px] sm:text-[11px] tracking-wider uppercase text-mustard font-semibold bg-black/45 backdrop-blur-xs px-2.5 py-0.5 sm:py-1 rounded-full sm:rounded-sm border border-white/10 sm:border-none shadow-xs">
+                  <span className="font-sans text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-[#E7C89F] font-semibold">
                     {activeScene.roomNumber} / {totalScenesPad} · {activeScene.roomSubtitle}
                   </span>
                 </div>
 
-                <h2 className="font-serif text-[22px] sm:text-3xl md:text-5xl lg:text-6xl text-white font-normal tracking-tight leading-[1.1] drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] cinematic-room-title">
+                <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-[3.25rem] text-[#FAF8F5] font-light tracking-tight leading-[1.1] cinematic-room-title">
                   {activeScene.roomTitle}
                 </h2>
 
                 {/* Hide long room description on small screens (<md) so footage is not obscured, shown on desktop */}
-                <p className="hidden md:block font-sans text-xs sm:text-sm text-cream-light font-light max-w-md leading-relaxed drop-shadow-md">
+                <p className="hidden md:block font-sans text-xs sm:text-sm text-[#E2DACF] font-normal max-w-md leading-relaxed">
                   {activeScene.description}
                 </p>
               </div>
@@ -871,9 +826,6 @@ export const CinematicResidenceTour: React.FC = () => {
 
       {/* Shoppable Product Quick Drawer */}
       <ProductQuickDrawer />
-
-      {/* Fullscreen Brand Film Modal */}
-      <BrandFilmModal isOpen={brandFilmOpen} onClose={() => setBrandFilmOpen(false)} />
     </>
   );
 };

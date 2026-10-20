@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Layers, ShieldCheck, Check } from 'lucide-react';
-import { AnimatedHeading, SpotlightCard } from '@/components/ui/motion';
+import { Layers, ShieldCheck, Check, ArrowUpRight } from 'lucide-react';
+import { AnimatedHeading, SpotlightCard, MagneticButton, TextRoll } from '@/components/ui/motion';
 
 interface MaterialStory {
   id: string;
@@ -282,6 +282,16 @@ export const MaterialsCraftSection: React.FC = () => {
             <div className="pt-2 flex items-center space-x-2 text-xs font-sans text-walnut/80">
               <ShieldCheck className="w-4 h-4 text-olive" />
               <span>Tested for everyday family resistance and generational structural longevity.</span>
+            </div>
+
+            <div className="pt-3 flex items-center">
+              <MagneticButton
+                href="/collections"
+                className="space-x-2 text-xs font-sans uppercase tracking-wider bg-checkerboard hover:bg-tangerine text-white font-medium px-6 py-3.5 rounded-full shadow-2xs hover:shadow-warm transition-all duration-300 inline-flex items-center"
+              >
+                <TextRoll>Explore Handcrafted Pieces</TextRoll>
+                <ArrowUpRight className="w-4 h-4" />
+              </MagneticButton>
             </div>
           </div>
         </SpotlightCard>

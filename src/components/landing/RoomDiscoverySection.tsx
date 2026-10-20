@@ -3,10 +3,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, Compass } from 'lucide-react';
-import { AnimatedHeading, MagneticButton, SpotlightCard } from '@/components/ui/motion';
+import { AnimatedHeading, MagneticButton, SpotlightCard, TextRoll } from '@/components/ui/motion';
 
 interface RoomData {
   id: string;
@@ -219,7 +220,7 @@ export const RoomDiscoverySection: React.FC = () => {
           </p>
         </div>
 
-        {/* Room Tab Selector Bar with Active Pill Indicator */}
+        {/* Room Tab Selector Bar with Active Pill Indicator (Aceternity UI Reference) */}
         <div className="room-tabs-bar flex items-center space-x-2 sm:space-x-3 overflow-x-auto pb-4 mb-12 scrollbar-none">
           {ROOM_OPTIONS.map((room) => {
             const isSelected = room.id === selectedRoomId;
@@ -228,14 +229,21 @@ export const RoomDiscoverySection: React.FC = () => {
                 key={room.id}
                 data-room-id={room.id}
                 onClick={() => handleSelectRoom(room.id)}
-                className={`px-5 py-3 rounded-full text-xs font-sans uppercase tracking-wider font-semibold whitespace-nowrap transition-all duration-300 ${
+                className={`relative px-5 py-3 rounded-full text-xs font-sans uppercase tracking-wider font-semibold whitespace-nowrap transition-colors duration-200 focus:outline-hidden ${
                   isSelected
-                    ? 'bg-tangerine text-white shadow-warm scale-102 ring-2 ring-tangerine/30'
-                    : 'bg-white hover:bg-cream text-checkerboard/80 hover:text-checkerboard border border-checkerboard/15 hover:border-checkerboard/30 shadow-2xs'
+                    ? 'text-white'
+                    : 'bg-white hover:bg-cream text-checkerboard/80 hover:text-checkerboard border border-checkerboard/15 shadow-2xs'
                 }`}
                 aria-pressed={isSelected}
               >
-                {room.name}
+                {isSelected && (
+                  <motion.span
+                    layoutId="room-active-indicator"
+                    className="absolute inset-0 rounded-full bg-tangerine shadow-warm -z-10 ring-2 ring-tangerine/30"
+                    transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+                  />
+                )}
+                <span className="relative z-10">{room.name}</span>
               </button>
             );
           })}
@@ -302,7 +310,7 @@ export const RoomDiscoverySection: React.FC = () => {
                 href={currentRoom.linkHref}
                 className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-6 py-3.5 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg"
               >
-                <span>{currentRoom.ctaText}</span>
+                <TextRoll>{currentRoom.ctaText}</TextRoll>
                 <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </MagneticButton>
 
@@ -310,7 +318,7 @@ export const RoomDiscoverySection: React.FC = () => {
                 href="/collections"
                 className="space-x-2 text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-5 py-3.5 rounded-full shadow-2xs transition-all duration-300"
               >
-                <span>View Collection</span>
+                <TextRoll>View Collection</TextRoll>
               </MagneticButton>
             </div>
           </div>

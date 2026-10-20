@@ -112,6 +112,15 @@ const config: Config = {
         retro: '0 10px 30px -10px rgba(41, 37, 31, 0.15)',
         warm: '0 15px 35px -5px rgba(244, 81, 11, 0.2)',
       },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+      },
+      animation: {
+        marquee: 'marquee 28s linear infinite',
+      },
     },
   },
   plugins: [],

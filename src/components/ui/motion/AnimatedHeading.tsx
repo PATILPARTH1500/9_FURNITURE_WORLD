@@ -21,48 +21,20 @@ export const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
   highlightText,
   highlightClassName = 'italic text-walnut font-normal',
   delay = 0,
-  stagger = 0.04,
+  stagger = 0.035,
   once = true,
 }) => {
   const containerRef = useRef<HTMLElement>(null);
-  const isInView = useInView(containerRef, { once, margin: '0px 0px 80px 0px' });
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [forcedVisible, setForcedVisible] = useState(false);
+  const isInView = useInView(containerRef, { once, margin: '0px 0px 100px 0px' });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(media.matches);
-    const listener = () => setPrefersReducedMotion(media.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
+    setMounted(true);
   }, []);
-
-  // Safety fallback: ensure text never remains invisible if scroll triggered abruptly
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setForcedVisible(true);
-    }, 900);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (prefersReducedMotion) {
-    return (
-      <Component className={className}>
-        {highlightText && text.includes(highlightText) ? (
-          <>
-            {text.split(highlightText)[0]}
-            <span className={highlightClassName}>{highlightText}</span>
-            {text.split(highlightText)[1]}
-          </>
-        ) : (
-          text
-        )}
-      </Component>
-    );
-  }
 
   const words = text.split(' ');
-  const shouldAnimate = isInView || forcedVisible;
+  // Always render visible if not yet mounted (SSR) or once in view
+  const shouldAnimate = mounted && isInView;
 
   const containerVariants: Variants = {
     hidden: {},
@@ -75,12 +47,12 @@ export const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
   };
 
   const wordVariants: Variants = {
-    hidden: { y: '100%', opacity: 0 },
+    hidden: { y: 14, opacity: 0.15 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.42,
+        duration: 0.45,
         ease: [0.16, 1, 0.3, 1],
       },
     },
@@ -104,11 +76,11 @@ export const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
           return (
             <span
               key={`${word}-${index}`}
-              className="inline-block overflow-hidden align-baseline mr-[0.26em] last:mr-0"
+              className="inline-block pb-1 -mb-1 mr-[0.24em] last:mr-0 align-baseline"
             >
               <motion.span
                 variants={wordVariants}
-                className={`inline-block transform-gpu ${
+                className={`inline-block transform-gpu will-change-transform motion-reduce:transform-none motion-reduce:opacity-100 ${
                   isHighlight ? highlightClassName : ''
                 }`}
               >

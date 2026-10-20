@@ -55,7 +55,7 @@ const DESIGN_PRINCIPLES: PrincipleItem[] = [
   {
     id: 'character',
     number: '04',
-    title: 'Colour and Architectural Character',
+    title: 'Colour & Architectural Character',
     subtitle: 'Terracotta, warm cream, olive velvet, and sunny orange notes',
     description:
       'We move beyond sterile cold grey interiors. Inspired by 1970s architectural residences, our palette blends joyful burnt oranges, calming olive greens, and warm creams that bring happiness home.',
@@ -78,15 +78,14 @@ export const DesignPhilosophySection: React.FC = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.philosophy-header',
-        { opacity: 0, y: 20 },
+        { y: 16 },
         {
-          opacity: 1,
           y: 0,
           duration: 0.45,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 92%',
+            start: 'top 90%',
             once: true,
             fastScrollEnd: true,
           },
@@ -100,11 +99,11 @@ export const DesignPhilosophySection: React.FC = () => {
           opacity: 1,
           y: 0,
           duration: 0.45,
-          stagger: 0.07,
+          stagger: 0.08,
           ease: 'power2.out',
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 90%',
+            trigger: '.philosophy-cards-grid',
+            start: 'top 88%',
             once: true,
             fastScrollEnd: true,
           },
@@ -119,11 +118,11 @@ export const DesignPhilosophySection: React.FC = () => {
     <section
       id="design-philosophy"
       ref={sectionRef}
-      className="relative z-20 bg-[#282F19] text-[#F4E9D8] py-24 sm:py-32 border-t border-checkerboard/30 overflow-hidden"
+      className="relative z-20 bg-[#1E2619] text-[#F4E9D8] py-28 sm:py-36 border-t border-checkerboard/30 overflow-hidden"
     >
       {/* Ambient Radial Glow on Deep Olive */}
       <div
-        className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,81,11,0.09),transparent_70%)] pointer-events-none"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(244,81,11,0.08),transparent_70%)] pointer-events-none select-none"
         aria-hidden="true"
       />
 
@@ -139,7 +138,7 @@ export const DesignPhilosophySection: React.FC = () => {
               text="Designed with Intention, Crafted for Family Life."
               highlightText="Crafted for Family Life."
               highlightClassName="italic text-[#E7D8BF] font-normal"
-              className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#FAF5EE] font-semibold tracking-tight leading-[1.15]"
+              className="font-serif text-4xl sm:text-5xl md:text-6xl text-[#FAF5EE] font-semibold tracking-tight leading-[1.12]"
             />
           </div>
           <p className="font-sans text-sm sm:text-base text-[#D0C4B4] leading-relaxed max-w-md font-normal">
@@ -148,7 +147,7 @@ export const DesignPhilosophySection: React.FC = () => {
         </div>
 
         {/* 4 Feature Cards Grid with Contrasting Glass Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="philosophy-cards-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {DESIGN_PRINCIPLES.map((item) => {
             const Icon = item.icon;
             return (
