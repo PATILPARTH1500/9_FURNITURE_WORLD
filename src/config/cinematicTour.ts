@@ -23,7 +23,11 @@ export interface TourSceneConfig {
  * Optional CDN base URL for production video delivery (e.g. Supabase, Vercel Blob, Cloudflare R2).
  * Falls back to local public directory paths if not configured.
  */
-const VIDEO_CDN_BASE = (process.env.NEXT_PUBLIC_VIDEO_CDN_URL || '').replace(/\/+$/, '');
+const VIDEO_CDN_BASE = (
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_VIDEO_CDN_URL) ||
+  (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_VIDEO_CDN_URL) ||
+  ''
+).replace(/\/+$/, '');
 export const resolveVideoUrl = (path: string): string => {
   if (!VIDEO_CDN_BASE) return path;
   const cleanPath = path.startsWith('/') ? path : `/${path}`;

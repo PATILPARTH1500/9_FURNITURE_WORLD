@@ -5,8 +5,8 @@
 :root {
   --background: #F4E9D8;
   --foreground: #29251F;
-  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
-  --font-sans: var(--font-dm-sans), 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-cormorant: var(--font-serif);
   --font-inter: var(--font-sans);
 }

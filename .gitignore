@@ -6,8 +6,9 @@
 # Testing
 /coverage
 
-# Next.js build and export outputs
+# Build and export outputs
 /.next/
+/dist/
 /out/
 /build
 
