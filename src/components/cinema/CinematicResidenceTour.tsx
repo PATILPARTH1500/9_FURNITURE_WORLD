@@ -544,33 +544,109 @@ export const CinematicResidenceTour: React.FC = () => {
 
           {/* 3. LAYER: Room Narrative OR Brand Presentation */}
           {isFinalOutroScene ? (
-            /* BRAND PRESENTATION: Single Sharp Centered Wordmark */
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-center pointer-events-auto bg-cream">
-              <div className="max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto space-y-4 sm:space-y-6">
-                <span className="inline-block text-[10px] sm:text-xs font-sans tracking-[0.25em] uppercase text-tangerine font-semibold bg-white/90 px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full border border-tangerine/20 shadow-xs">
-                  Welcome to the Village
-                </span>
-                <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-checkerboard font-normal tracking-tight leading-[1.1] sm:leading-[1.15]">
-                  FURNITURE VILLAGE
-                </h1>
-                <p className="font-sans text-xs sm:text-base md:text-lg text-walnut font-normal max-w-md sm:max-w-lg mx-auto leading-relaxed">
-                  Colourful living, beautifully made. Explore retro-modern furniture and happy home essentials.
-                </p>
-                <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 w-full max-w-xs sm:max-w-none mx-auto">
-                  <MagneticButton
-                    href="#collection"
-                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-6 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300"
-                  >
-                    <span>Explore Furniture</span>
-                    <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </MagneticButton>
-                  <MagneticButton
-                    href="/collections"
-                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-6 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
-                  >
-                    <span>Shop Collection</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine" />
-                  </MagneticButton>
+            /* BRAND WELCOME PRESENTATION: Architectural Split Editorial Layout with Curated Imagery */
+            <div className="absolute inset-0 z-30 flex items-center justify-center p-4 sm:p-8 md:p-12 lg:p-16 pointer-events-auto bg-gradient-to-b from-[#F5EFE6] via-[#FAF7F2] to-[#F3ECE1] overflow-hidden">
+              {/* Subtle Architectural Blueprint Grid Lines & Ambient Shimmer */}
+              <div
+                className="absolute inset-0 bg-[linear-gradient(to_right,#29251F06_1px,transparent_1px),linear-gradient(to_bottom,#29251F06_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none select-none"
+                aria-hidden="true"
+              />
+              <div
+                className="absolute -top-24 right-1/4 w-[500px] h-[500px] rounded-full bg-tangerine/[0.06] blur-3xl pointer-events-none select-none"
+                aria-hidden="true"
+              />
+
+              <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
+                {/* Left Column: Brand Eyebrow, Main Heading, Story Narrative, & Dual CTAs */}
+                <div className="lg:col-span-6 space-y-5 sm:space-y-6 text-left">
+                  <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-tangerine/25 text-[10px] sm:text-[11px] font-sans tracking-[0.25em] uppercase text-tangerine font-semibold shadow-2xs backdrop-blur-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-tangerine animate-pulse" />
+                    <span>Welcome to the Village</span>
+                  </div>
+
+                  <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-[4.25rem] text-checkerboard font-semibold tracking-tight leading-[1.08]">
+                    FURNITURE VILLAGE
+                  </h1>
+
+                  <p className="font-sans text-sm sm:text-base md:text-lg text-walnut font-normal max-w-xl leading-relaxed">
+                    Colourful living, beautifully made. Explore retro-modern furniture, organic European hardwoods, and handcrafted essentials designed to bring joy to your home.
+                  </p>
+
+                  <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                    <MagneticButton
+                      href="#collection"
+                      className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg inline-flex items-center justify-center"
+                    >
+                      <span>Explore Furniture</span>
+                      <ArrowDown className="w-4 h-4 transition-transform group-hover:translate-y-0.5" />
+                    </MagneticButton>
+
+                    <MagneticButton
+                      href="/collections"
+                      className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-white/90 hover:bg-white border border-checkerboard/15 text-checkerboard font-medium px-7 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-2xs transition-all duration-300 hover:shadow-warm inline-flex items-center justify-center"
+                    >
+                      <span>Shop the Collection</span>
+                      <ArrowUpRight className="w-4 h-4 text-tangerine transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </MagneticButton>
+                  </div>
+
+                  {/* Curated Quality Metrics */}
+                  <div className="pt-4 grid grid-cols-3 gap-3 sm:gap-6 border-t border-checkerboard/10 text-checkerboard">
+                    <div>
+                      <span className="font-serif text-xl sm:text-2xl font-semibold block">Solid Timber</span>
+                      <span className="text-[10px] sm:text-[11px] font-sans uppercase tracking-wider text-walnut/80 mt-0.5 block">Kiln-Dried Oak</span>
+                    </div>
+                    <div>
+                      <span className="font-serif text-xl sm:text-2xl font-semibold block">10-Year</span>
+                      <span className="text-[10px] sm:text-[11px] font-sans uppercase tracking-wider text-walnut/80 mt-0.5 block">Frame Guarantee</span>
+                    </div>
+                    <div>
+                      <span className="font-serif text-xl sm:text-2xl font-semibold block">White-Glove</span>
+                      <span className="text-[10px] sm:text-[11px] font-sans uppercase tracking-wider text-walnut/80 mt-0.5 block">Room Delivery</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column: High-Quality Architectural Living Room Composition */}
+                <div className="lg:col-span-6 relative">
+                  <div className="relative rounded-3xl overflow-hidden bg-[#EFE9DF] border border-checkerboard/15 shadow-[0_24px_50px_rgba(40,30,20,0.14)] group">
+                    <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden" style={{ position: 'relative' }}>
+                      <Image
+                        src="/images/film/interior-villa.webp"
+                        alt="Furniture Village living room showroom featuring handcrafted solid wood and curved bouclé furniture"
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        className="object-cover transform-gpu transition-transform duration-700 ease-out group-hover:scale-104"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
+
+                      {/* Architectural Corner Stamp */}
+                      <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-10 text-white">
+                        <span className="text-[10px] sm:text-xs font-sans tracking-[0.25em] uppercase text-[#E7C89F] font-semibold block">
+                          Flagship Residence · 2024 Collection
+                        </span>
+                        <span className="font-serif text-base sm:text-xl text-white font-normal mt-0.5 block">
+                          Curved Bouclé & Smoked Walnut
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Floating Inset Craft Plinth Card */}
+                    <div className="absolute top-4 right-4 sm:top-6 sm:right-6 w-24 sm:w-32 aspect-square rounded-2xl overflow-hidden border-2 border-white/90 shadow-[0_12px_28px_rgba(0,0,0,0.22)] bg-[#FAF8F5] hidden sm:block" style={{ position: 'absolute' }}>
+                      <Image
+                        src="/images/film/hero-plinth.webp"
+                        alt="Handcrafted joinery detail"
+                        fill
+                        sizes="128px"
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+                      <div className="absolute bottom-1 left-1.5 right-1.5 text-center bg-white/90 backdrop-blur-xs py-0.5 rounded text-[8px] sm:text-[9px] font-sans uppercase tracking-wider text-checkerboard font-semibold">
+                        Detail View
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

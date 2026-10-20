@@ -129,6 +129,7 @@ export const DirectionAwareHover: React.FC<DirectionAwareHoverProps> = ({
             ease: [0.16, 1, 0.3, 1],
           }}
           className="relative w-full h-full"
+          style={{ position: 'relative' }}
         >
           <Image
             src={imageUrl}

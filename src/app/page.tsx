@@ -217,7 +217,7 @@ export default function HomePage() {
             <div className="lg:col-span-6 relative promise-image-container">
               <div className="relative rounded-3xl overflow-hidden bg-[#EFE9DF] border border-checkerboard/15 shadow-[0_24px_50px_rgba(40,30,20,0.12)] group">
                 {/* Large High-Quality Interior Photography */}
-                <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden">
+                <div className="relative aspect-[4/3] sm:aspect-[16/11] w-full overflow-hidden" style={{ position: 'relative' }}>
                   <Image
                     src="/images/film/interior-villa.webp"
                     alt="Interior villa living room featuring handcrafted solid wood and curved bouclé furniture"
@@ -240,7 +240,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Overlaid Inset Detail Plinth Card */}
-                <div className="absolute top-4 right-4 sm:top-6 sm:right-6 w-28 sm:w-36 aspect-square rounded-2xl overflow-hidden border-2 border-white/80 shadow-[0_12px_28px_rgba(0,0,0,0.2)] bg-[#FAF8F5] hidden sm:block">
+                <div className="absolute top-4 right-4 sm:top-6 sm:right-6 w-28 sm:w-36 aspect-square rounded-2xl overflow-hidden border-2 border-white/80 shadow-[0_12px_28px_rgba(0,0,0,0.2)] bg-[#FAF8F5] hidden sm:block" style={{ position: 'absolute' }}>
                   <Image
                     src="/images/film/hero-plinth.webp"
                     alt="Tactile craft joinery detail on stone plinth"
