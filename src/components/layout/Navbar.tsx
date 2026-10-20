@@ -76,14 +76,14 @@ export const Navbar: React.FC = () => {
           <nav
             aria-label="Room navigation"
             onMouseLeave={() => setHoveredNav(null)}
-            className="hidden xl:flex items-center gap-2 2xl:gap-5 text-xs font-sans tracking-[0.16em] uppercase text-checkerboard/85 font-medium shrink-0"
+            className="hidden xl:flex items-center gap-2 2xl:gap-5 text-xs font-sans tracking-[0.15em] uppercase text-checkerboard/85 font-medium shrink-0"
           >
             {BRAND_CONFIG.navigation.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onMouseEnter={() => setHoveredNav(item.label)}
-                className="relative px-3.5 py-2 rounded-full whitespace-nowrap hover:text-[#B6532D] transition-colors duration-200 focus:outline-hidden focus-visible:text-[#B6532D] group"
+                className="relative px-3 2xl:px-4 py-2 rounded-full whitespace-nowrap hover:text-[#B6532D] transition-colors duration-200 focus:outline-hidden focus-visible:text-[#B6532D] group shrink-0"
               >
                 {hoveredNav === item.label && (
                   <motion.span
@@ -92,7 +92,7 @@ export const Navbar: React.FC = () => {
                     transition={{ type: 'spring', stiffness: 380, damping: 28 }}
                   />
                 )}
-                <span className="relative z-10">{item.label}</span>
+                <span className="relative z-10 whitespace-nowrap">{item.label}</span>
               </Link>
             ))}
           </nav>
@@ -102,10 +102,10 @@ export const Navbar: React.FC = () => {
             {/* Shop Furniture Button (Warm pill without harsh border) */}
             <MagneticButton
               href="/collections"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-sans tracking-wide uppercase px-4 py-2 rounded-full text-[#62432F] hover:text-[#B6532D] bg-[#EDE5D8]/70 hover:bg-[#EDE5D8] font-medium transition-all shadow-2xs group shrink-0"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs font-sans tracking-wide uppercase px-4 py-2 rounded-full text-[#62432F] hover:text-[#B6532D] bg-[#EDE5D8]/70 hover:bg-[#EDE5D8] font-medium transition-all shadow-2xs group shrink-0 whitespace-nowrap"
             >
-              <span>Shop Furniture</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#B6532D] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <span className="whitespace-nowrap">Shop Furniture</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#B6532D] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0" />
             </MagneticButton>
 
             {/* Shopping Cart Button */}
@@ -114,7 +114,7 @@ export const Navbar: React.FC = () => {
               className="relative p-2.5 rounded-full bg-[#EDE5D8]/70 hover:bg-[#EDE5D8] text-[#62432F] hover:text-checkerboard shadow-2xs transition-all shrink-0"
               ariaLabel={`Shopping bag with ${cartCount} items`}
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 shrink-0" />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#B6532D] text-white text-[10px] font-sans font-bold flex items-center justify-center shadow-xs">
                   {cartCount}
@@ -125,7 +125,7 @@ export const Navbar: React.FC = () => {
             {/* Tablet & Mobile Accessible Menu Hamburger Toggle (< xl widths) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 text-[#62432F] hover:text-[#B6532D] transition-colors rounded-full hover:bg-[#EDE5D8]/70 focus:outline-hidden"
+              className="xl:hidden p-2 text-[#62432F] hover:text-[#B6532D] transition-colors rounded-full hover:bg-[#EDE5D8]/70 focus:outline-hidden shrink-0"
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -134,7 +134,7 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Tablet & Mobile Dropdown Panel inside floating island structure */}
+        {/* Tablet & Mobile Dropdown Panel inside floating island structure (< xl) */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
