@@ -6,6 +6,7 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, Sparkles, HeartHandshake, ShieldCheck } from 'lucide-react';
+import { AnimatedHeading, MagneticButton, SpotlightCard, TiltCard } from '@/components/ui/motion';
 
 export const ArtOfLivingSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -106,10 +107,12 @@ export const ArtOfLivingSection: React.FC = () => {
                 <span>The Art of Living · Brand Story</span>
               </span>
 
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-checkerboard font-semibold tracking-tight leading-[1.12]">
-                Furniture Made to Be Lived In, <br />
-                <span className="italic text-walnut font-normal">Not Just Looked At.</span>
-              </h2>
+              <AnimatedHeading
+                text="Furniture Made to Be Lived In, Not Just Looked At."
+                highlightText="Not Just Looked At."
+                highlightClassName="italic text-walnut font-normal"
+                className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-checkerboard font-semibold tracking-tight leading-[1.12]"
+              />
             </div>
 
             <p className="font-sans text-base sm:text-lg text-walnut leading-relaxed font-normal">
@@ -122,7 +125,10 @@ export const ArtOfLivingSection: React.FC = () => {
 
             {/* 3 Core Editorial Pillars */}
             <div className="art-pillars-grid grid grid-cols-1 sm:grid-cols-3 gap-5 pt-4 border-t border-checkerboard/10">
-              <div className="art-pillar space-y-2 bg-white/80 hover:bg-white p-5 rounded-2xl border border-checkerboard/8 hover:border-tangerine/30 shadow-2xs hover:shadow-warm transition-all duration-300 hover:-translate-y-1">
+              <SpotlightCard
+                className="art-pillar space-y-2 bg-white/80 hover:bg-white p-5 rounded-2xl border border-checkerboard/8 hover:border-tangerine/30 shadow-2xs hover:shadow-warm transition-all duration-300 hover:-translate-y-1"
+                spotlightColor="rgba(244, 81, 11, 0.08)"
+              >
                 <div className="w-9 h-9 rounded-full bg-tangerine/10 flex items-center justify-center text-tangerine">
                   <Sparkles className="w-4 h-4" />
                 </div>
@@ -130,9 +136,12 @@ export const ArtOfLivingSection: React.FC = () => {
                 <p className="font-sans text-xs text-walnut leading-relaxed">
                   Genuine European Oak & Walnut with natural plant wax-oil finishes that let timber breathe.
                 </p>
-              </div>
+              </SpotlightCard>
 
-              <div className="art-pillar space-y-2 bg-white/80 hover:bg-white p-5 rounded-2xl border border-checkerboard/8 hover:border-olive/30 shadow-2xs hover:shadow-warm transition-all duration-300 hover:-translate-y-1">
+              <SpotlightCard
+                className="art-pillar space-y-2 bg-white/80 hover:bg-white p-5 rounded-2xl border border-checkerboard/8 hover:border-olive/30 shadow-2xs hover:shadow-warm transition-all duration-300 hover:-translate-y-1"
+                spotlightColor="rgba(98, 107, 61, 0.12)"
+              >
                 <div className="w-9 h-9 rounded-full bg-olive/10 flex items-center justify-center text-olive">
                   <HeartHandshake className="w-4 h-4" />
                 </div>
@@ -140,9 +149,12 @@ export const ArtOfLivingSection: React.FC = () => {
                 <p className="font-sans text-xs text-walnut leading-relaxed">
                   Gentle 112° reclines and high-resilience foam cores calibrated for lasting comfort.
                 </p>
-              </div>
+              </SpotlightCard>
 
-              <div className="art-pillar space-y-2 bg-white/80 hover:bg-white p-5 rounded-2xl border border-checkerboard/8 hover:border-rust/30 shadow-2xs hover:shadow-warm transition-all duration-300 hover:-translate-y-1">
+              <SpotlightCard
+                className="art-pillar space-y-2 bg-white/80 hover:bg-white p-5 rounded-2xl border border-checkerboard/8 hover:border-rust/30 shadow-2xs hover:shadow-warm transition-all duration-300 hover:-translate-y-1"
+                spotlightColor="rgba(184, 69, 24, 0.10)"
+              >
                 <div className="w-9 h-9 rounded-full bg-rust/10 flex items-center justify-center text-rust">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
@@ -150,50 +162,52 @@ export const ArtOfLivingSection: React.FC = () => {
                 <p className="font-sans text-xs text-walnut leading-relaxed">
                   Interlocking mortise-and-tenon joints built to withstand decades of family life.
                 </p>
-              </div>
+              </SpotlightCard>
             </div>
 
             {/* Link to All Furniture */}
             <div className="pt-2">
-              <Link
+              <MagneticButton
                 href="/collections"
-                className="group inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-3.5 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg active:scale-98"
+                className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-3.5 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg"
               >
                 <span>Explore All Handcrafted Pieces</span>
                 <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
+              </MagneticButton>
             </div>
           </div>
 
           {/* Right Column: Large Architectural Image & Detail Callout */}
           <div className="lg:col-span-5 relative">
-            <div
-              ref={imageWrapperRef}
-              className="relative aspect-[4/5] sm:aspect-[3/4] w-full rounded-3xl overflow-hidden border border-checkerboard/15 shadow-retro bg-cream-dark group"
-            >
-              <Image
-                src="/images/film/interior-villa.webp"
-                alt="Furniture Village Warm Residence Interior"
-                fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                sizes="(max-width: 1024px) 100vw, 45vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
+            <TiltCard maxTilt={2.5} className="w-full">
+              <div
+                ref={imageWrapperRef}
+                className="relative aspect-[4/5] sm:aspect-[3/4] w-full rounded-3xl overflow-hidden border border-checkerboard/15 shadow-retro bg-cream-dark group"
+              >
+                <Image
+                  src="/images/film/interior-villa.webp"
+                  alt="Furniture Village Warm Residence Interior"
+                  fill
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
 
-              {/* Floating Bottom Badge */}
-              <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-checkerboard/15 shadow-warm space-y-1 transition-transform duration-300 group-hover:-translate-y-1">
-                <div className="flex items-center justify-between text-xs font-sans font-semibold text-tangerine uppercase tracking-wider">
-                  <span>Residence Architecture</span>
-                  <span>Scene 01</span>
+                {/* Floating Bottom Badge */}
+                <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-checkerboard/15 shadow-warm space-y-1 transition-transform duration-300 group-hover:-translate-y-1">
+                  <div className="flex items-center justify-between text-xs font-sans font-semibold text-tangerine uppercase tracking-wider">
+                    <span>Residence Architecture</span>
+                    <span>Scene 01</span>
+                  </div>
+                  <p className="font-serif text-base text-checkerboard font-medium">
+                    The Light-Filled Residence Living Room
+                  </p>
+                  <p className="text-[11px] font-sans text-walnut">
+                    Curved seating, warm oak armchairs & natural daylight
+                  </p>
                 </div>
-                <p className="font-serif text-base text-checkerboard font-medium">
-                  The Light-Filled Residence Living Room
-                </p>
-                <p className="text-[11px] font-sans text-walnut">
-                  Curved seating, warm oak armchairs & natural daylight
-                </p>
               </div>
-            </div>
+            </TiltCard>
           </div>
         </div>
       </div>

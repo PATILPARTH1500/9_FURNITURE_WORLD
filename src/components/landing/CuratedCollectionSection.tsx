@@ -9,6 +9,7 @@ import { ArrowUpRight, ShoppingBag, Check } from 'lucide-react';
 import { PRODUCTS_CATALOG, COLLECTIONS_DATA } from '@/data/catalog';
 import { formatPrice } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
+import { AnimatedHeading, MagneticButton, InteractiveLink, TiltCard, SpotlightCard } from '@/components/ui/motion';
 
 export const CuratedCollectionSection: React.FC = () => {
   const { addItem, setIsOpen } = useCartStore();
@@ -123,56 +124,60 @@ export const CuratedCollectionSection: React.FC = () => {
             <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white px-3 py-1 rounded-full border border-tangerine/20 inline-block shadow-2xs">
               Furniture Collections
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]">
-              Explore Our Collections for <br />
-              <span className="italic text-walnut">Joyful Home Living</span>
-            </h2>
+            <AnimatedHeading
+              text="Explore Our Collections for Joyful Home Living"
+              highlightText="Joyful Home Living"
+              highlightClassName="italic text-walnut font-normal"
+              className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]"
+            />
           </div>
           <div className="space-y-3 max-w-sm">
             <p className="font-sans text-sm text-walnut leading-relaxed font-normal">
               Each piece is crafted with comfortable proportions, vibrant retro-modern colours, and natural timber built for busy homes.
             </p>
-            <Link
+            <InteractiveLink
               href="/collections"
-              className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider text-tangerine hover:text-coral font-semibold transition-colors group"
+              className="text-xs font-sans uppercase tracking-wider text-tangerine hover:text-coral font-semibold"
+              underlineColor="bg-tangerine"
+              arrowClassName="text-tangerine"
             >
-              <span>Explore All Furniture</span>
-              <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
+              Explore All Furniture
+            </InteractiveLink>
           </div>
         </div>
 
         {/* Collections Overview Banner */}
         <div className="collection-banners-grid grid grid-cols-1 md:grid-cols-3 gap-6 mb-24">
           {COLLECTIONS_DATA.map((col) => (
-            <Link
-              key={col.id}
-              href={`/collections/${col.slug}`}
-              className="collection-banner-card group relative h-[380px] rounded-2xl overflow-hidden border border-checkerboard/15 flex flex-col justify-end p-8 transition-all duration-500 hover:border-tangerine shadow-retro hover:shadow-warm hover:-translate-y-1.5"
-            >
-              <Image
-                src={col.coverImage}
-                alt={col.title}
-                fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-106 filter brightness-[0.75] group-hover:brightness-[0.88]"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-checkerboard/90 via-checkerboard/40 to-transparent" />
+            <TiltCard key={col.id} className="collection-banner-card h-[380px] rounded-2xl" maxTilt={3.5}>
+              <Link
+                href={`/collections/${col.slug}`}
+                className="group relative h-full w-full rounded-2xl overflow-hidden border border-checkerboard/15 flex flex-col justify-end p-8 transition-all duration-500 hover:border-tangerine shadow-retro hover:shadow-warm"
+              >
+                <Image
+                  src={col.coverImage}
+                  alt={col.title}
+                  fill
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-106 filter brightness-[0.75] group-hover:brightness-[0.88]"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-checkerboard/90 via-checkerboard/40 to-transparent" />
 
-              <div className="relative z-10 space-y-2">
-                <span className="font-sans text-[11px] uppercase tracking-wider text-mustard font-semibold bg-checkerboard/60 px-2 py-0.5 rounded-sm inline-block">
-                  {col.productCount} Designs
-                </span>
-                <h3 className="font-serif text-2xl text-white group-hover:text-mustard transition-colors font-medium">
-                  {col.title}
-                </h3>
-                <p className="font-sans text-xs text-cream-light font-light line-clamp-2 leading-relaxed">{col.subtitle}</p>
-                <div className="pt-2 flex items-center space-x-1 text-xs font-sans uppercase tracking-wider text-mustard group-hover:text-white transition-colors font-medium">
-                  <span>View Collection</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <div className="relative z-10 space-y-2">
+                  <span className="font-sans text-[11px] uppercase tracking-wider text-mustard font-semibold bg-checkerboard/60 px-2 py-0.5 rounded-sm inline-block">
+                    {col.productCount} Designs
+                  </span>
+                  <h3 className="font-serif text-2xl text-white group-hover:text-mustard transition-colors font-medium">
+                    {col.title}
+                  </h3>
+                  <p className="font-sans text-xs text-cream-light font-light line-clamp-2 leading-relaxed">{col.subtitle}</p>
+                  <div className="pt-2 flex items-center space-x-1 text-xs font-sans uppercase tracking-wider text-mustard group-hover:text-white transition-colors font-medium">
+                    <span>View Collection</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </TiltCard>
           ))}
         </div>
 
@@ -188,14 +193,16 @@ export const CuratedCollectionSection: React.FC = () => {
 
           <div className="products-grid-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {PRODUCTS_CATALOG.map((product) => (
-              <div
+              <SpotlightCard
                 key={product.id}
                 className="product-grid-card group flex flex-col bg-white rounded-3xl border border-checkerboard/10 overflow-hidden hover:border-tangerine/50 transition-all duration-400 shadow-retro hover:shadow-warm hover:-translate-y-1.5"
+                contentClassName="flex flex-col h-full"
+                spotlightColor="rgba(244, 81, 11, 0.08)"
               >
                 {/* Product Image */}
                 <Link
                   href={`/products/${product.slug}`}
-                  className="relative aspect-[4/3] overflow-hidden bg-cream-dark"
+                  className="relative aspect-[4/3] overflow-hidden bg-cream-dark block"
                 >
                   <Image
                     src={product.images.hero}
@@ -230,22 +237,24 @@ export const CuratedCollectionSection: React.FC = () => {
                   </div>
 
                   <div className="pt-4 border-t border-checkerboard/10 flex items-center justify-between text-xs">
-                    <Link
+                    <InteractiveLink
                       href={`/products/${product.slug}`}
-                      className="font-sans uppercase tracking-wider text-xs text-checkerboard hover:text-tangerine flex items-center space-x-1 font-semibold transition-colors"
+                      className="font-sans uppercase tracking-wider text-xs text-checkerboard hover:text-tangerine font-semibold"
+                      underlineColor="bg-tangerine"
                     >
-                      <span>View Details</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-tangerine transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </Link>
+                      View Details
+                    </InteractiveLink>
 
-                    <button
+                    <MagneticButton
                       onClick={() => handleQuickAdd(product)}
-                      className={`inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full font-medium text-xs shadow-xs transition-all duration-300 active:scale-95 ${
+                      magneticStrength={0.25}
+                      maxDistance={6}
+                      className={`inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-full font-medium text-xs shadow-xs transition-colors duration-300 ${
                         addedProductId === product.id
                           ? 'bg-olive text-white'
                           : 'bg-tangerine hover:bg-coral text-white'
                       }`}
-                      aria-label={`Add ${product.name} to bag`}
+                      ariaLabel={`Add ${product.name} to bag`}
                     >
                       {addedProductId === product.id ? (
                         <>
@@ -258,10 +267,10 @@ export const CuratedCollectionSection: React.FC = () => {
                           <span>Add</span>
                         </>
                       )}
-                    </button>
+                    </MagneticButton>
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </div>

@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Truck, ShieldCheck, Wrench, MapPin, Phone, Mail, ArrowUpRight } from 'lucide-react';
 import { BRAND_CONFIG } from '@/config/brand';
+import { AnimatedHeading, MagneticButton, SpotlightCard } from '@/components/ui/motion';
 
 interface ServiceItem {
   id: string;
@@ -132,10 +133,12 @@ export const ThoughtfulServiceSection: React.FC = () => {
               <ShieldCheck className="w-3.5 h-3.5 text-olive" />
               <span>Customer Care & Confidence</span>
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]">
-              Thoughtful Service, <br />
-              <span className="italic text-walnut font-normal">From Workshop to Your Room.</span>
-            </h2>
+            <AnimatedHeading
+              text="Thoughtful Service, From Workshop to Your Room."
+              highlightText="From Workshop to Your Room."
+              highlightClassName="italic text-walnut font-normal"
+              className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]"
+            />
           </div>
           <p className="font-sans text-sm sm:text-base text-walnut leading-relaxed max-w-md font-normal">
             Buying furniture should be reassuring. Here are the confirmed promises and customer care services included with every Furniture Village order.
@@ -147,9 +150,11 @@ export const ThoughtfulServiceSection: React.FC = () => {
           {CONFIRMED_SERVICES.map((srv) => {
             const Icon = srv.icon;
             return (
-              <div
+              <SpotlightCard
                 key={srv.id}
                 className="service-card group bg-white/95 rounded-3xl border border-checkerboard/12 p-7 flex flex-col justify-between space-y-6 shadow-xs hover:shadow-warm transition-all duration-400 hover:-translate-y-1.5"
+                contentClassName="flex flex-col justify-between h-full space-y-6"
+                spotlightColor="rgba(98, 107, 61, 0.12)"
               >
                 <div className="space-y-4">
                   <div className="w-12 h-12 rounded-2xl bg-[#F4E9D8] flex items-center justify-center text-tangerine border border-checkerboard/10 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
@@ -172,7 +177,7 @@ export const ThoughtfulServiceSection: React.FC = () => {
                   <span className="w-1.5 h-1.5 rounded-full bg-olive" />
                   <span>Guaranteed Included</span>
                 </div>
-              </div>
+              </SpotlightCard>
             );
           })}
         </div>
@@ -208,20 +213,20 @@ export const ThoughtfulServiceSection: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0">
-            <a
-              href="tel:+918040008879"
-              className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg active:scale-98"
+            <MagneticButton
+              onClick={() => { window.location.href = 'tel:+918040008879'; }}
+              className="space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg"
             >
               <Phone className="w-4 h-4" />
               <span>Call Concierge</span>
-            </a>
-            <Link
+            </MagneticButton>
+            <MagneticButton
               href="/collections"
-              className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF5EE] font-medium px-6 py-4 rounded-full transition-all duration-300"
+              className="space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF5EE] font-medium px-6 py-4 rounded-full transition-all duration-300"
             >
               <span>Explore Collection</span>
               <ArrowUpRight className="w-4 h-4" />
-            </Link>
+            </MagneticButton>
           </div>
         </div>
       </div>

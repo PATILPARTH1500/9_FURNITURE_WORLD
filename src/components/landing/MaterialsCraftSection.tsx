@@ -5,6 +5,7 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Layers, ShieldCheck, Check } from 'lucide-react';
+import { AnimatedHeading, SpotlightCard } from '@/components/ui/motion';
 
 interface MaterialStory {
   id: string;
@@ -157,10 +158,12 @@ export const MaterialsCraftSection: React.FC = () => {
               <Layers className="w-3.5 h-3.5 text-rust" />
               <span>Tactile Craftsmanship · Real Materials</span>
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]">
-              Materials That Tell a Story <br />
-              <span className="italic text-walnut font-normal">In Every Room.</span>
-            </h2>
+            <AnimatedHeading
+              text="Materials That Tell a Story In Every Room."
+              highlightText="In Every Room."
+              highlightClassName="italic text-walnut font-normal"
+              className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]"
+            />
           </div>
           <p className="font-sans text-sm sm:text-base text-walnut leading-relaxed max-w-md font-normal">
             Take a closer look at the timber grain, tactile fabric loops, and interlocking joints that make our furniture rewarding to touch and built to last.
@@ -224,9 +227,11 @@ export const MaterialsCraftSection: React.FC = () => {
         </div>
 
         {/* Selected Material Spotlight Panel */}
-        <div
+        <SpotlightCard
           ref={detailPanelRef}
-          className="bg-white rounded-3xl border border-checkerboard/15 p-8 sm:p-12 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
+          className="bg-white rounded-3xl border border-checkerboard/15 p-8 sm:p-12 shadow-sm"
+          contentClassName="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
+          spotlightColor="rgba(184, 69, 24, 0.08)"
         >
           {/* Close-up Macro Photo with Zoom Hint */}
           <div className="lg:col-span-6 relative aspect-[16/10] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream-dark">
@@ -279,7 +284,7 @@ export const MaterialsCraftSection: React.FC = () => {
               <span>Tested for everyday family resistance and generational structural longevity.</span>
             </div>
           </div>
-        </div>
+        </SpotlightCard>
       </div>
     </section>
   );

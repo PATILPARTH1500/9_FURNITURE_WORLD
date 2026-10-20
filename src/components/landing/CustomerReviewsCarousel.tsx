@@ -5,6 +5,7 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronLeft, ChevronRight, Quote, Sparkles } from 'lucide-react';
+import { AnimatedHeading, MagneticButton, SpotlightCard } from '@/components/ui/motion';
 
 interface ReviewItem {
   id: string;
@@ -196,10 +197,12 @@ export const CustomerReviewsCarousel: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5 text-tangerine" />
               <span>Real Homes · Customer Experiences</span>
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]">
-              Loved in Real Homes <br />
-              <span className="italic text-walnut font-normal">Across India</span>
-            </h2>
+            <AnimatedHeading
+              text="Loved in Real Homes Across India"
+              highlightText="Across India"
+              highlightClassName="italic text-walnut font-normal"
+              className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]"
+            />
           </div>
 
           <div className="flex items-center space-x-4">
@@ -209,21 +212,25 @@ export const CustomerReviewsCarousel: React.FC = () => {
 
             {/* Unobtrusive Previous & Next Controls (No Play/Pause Button) */}
             <div className="flex items-center space-x-2">
-              <button
+              <MagneticButton
                 onClick={prevSlide}
-                className="p-2.5 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs hover:scale-105 active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
-                aria-label="Previous customer story"
+                magneticStrength={0.3}
+                maxDistance={8}
+                className="p-2.5 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
+                ariaLabel="Previous customer story"
               >
                 <ChevronLeft className="w-4 h-4" />
-              </button>
+              </MagneticButton>
 
-              <button
+              <MagneticButton
                 onClick={nextSlide}
-                className="p-2.5 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs hover:scale-105 active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
-                aria-label="Next customer story"
+                magneticStrength={0.3}
+                maxDistance={8}
+                className="p-2.5 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
+                ariaLabel="Next customer story"
               >
                 <ChevronRight className="w-4 h-4" />
-              </button>
+              </MagneticButton>
             </div>
           </div>
         </div>
@@ -248,7 +255,11 @@ export const CustomerReviewsCarousel: React.FC = () => {
                 className="w-full shrink-0 px-2 sm:px-4"
                 aria-hidden={idx !== currentIndex}
               >
-                <div className="group bg-white/95 backdrop-blur-xs rounded-3xl border border-checkerboard/12 p-8 sm:p-12 shadow-[0_16px_40px_rgba(41,37,31,0.06)] hover:shadow-[0_24px_50px_rgba(41,37,31,0.12)] transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <SpotlightCard
+                  className="group bg-white/95 backdrop-blur-xs rounded-3xl border border-checkerboard/12 p-8 sm:p-12 shadow-[0_16px_40px_rgba(41,37,31,0.06)] hover:shadow-[0_24px_50px_rgba(41,37,31,0.12)] transition-all duration-500"
+                  contentClassName="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+                  spotlightColor="rgba(244, 81, 11, 0.07)"
+                >
                   {/* Left Column: Room Photograph */}
                   <div className="lg:col-span-5 relative aspect-[4/3] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream">
                     <Image
@@ -290,7 +301,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </SpotlightCard>
               </div>
             ))}
           </div>

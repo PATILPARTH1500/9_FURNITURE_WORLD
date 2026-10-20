@@ -5,6 +5,7 @@ import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Sofa, Shield, Compass, Palette } from 'lucide-react';
+import { AnimatedHeading, SpotlightCard } from '@/components/ui/motion';
 
 interface PrincipleItem {
   id: string;
@@ -134,10 +135,12 @@ export const DesignPhilosophySection: React.FC = () => {
               <Compass className="w-3.5 h-3.5 text-[#D8E6A6]" />
               <span>Design Philosophy</span>
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#FAF5EE] font-semibold tracking-tight leading-[1.15]">
-              Designed with Intention, <br />
-              <span className="italic text-[#E7D8BF] font-normal">Crafted for Family Life.</span>
-            </h2>
+            <AnimatedHeading
+              text="Designed with Intention, Crafted for Family Life."
+              highlightText="Crafted for Family Life."
+              highlightClassName="italic text-[#E7D8BF] font-normal"
+              className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#FAF5EE] font-semibold tracking-tight leading-[1.15]"
+            />
           </div>
           <p className="font-sans text-sm sm:text-base text-[#D0C4B4] leading-relaxed max-w-md font-normal">
             Every piece in our catalogue follows four uncompromised design tenets to guarantee beauty, structural integrity, and deep daily comfort.
@@ -149,9 +152,11 @@ export const DesignPhilosophySection: React.FC = () => {
           {DESIGN_PRINCIPLES.map((item) => {
             const Icon = item.icon;
             return (
-              <div
+              <SpotlightCard
                 key={item.id}
                 className="philosophy-card group bg-white/[0.05] hover:bg-white/[0.09] backdrop-blur-xs rounded-3xl border border-white/10 hover:border-tangerine/50 p-6 flex flex-col justify-between space-y-6 shadow-[0_12px_36px_rgba(0,0,0,0.25)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.4)] transition-all duration-500 hover:-translate-y-2"
+                contentClassName="flex flex-col justify-between h-full space-y-6"
+                spotlightColor="rgba(216, 230, 166, 0.16)"
               >
                 <div className="space-y-4">
                   {/* Top Bar with Number & Icon */}
@@ -192,7 +197,7 @@ export const DesignPhilosophySection: React.FC = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-40 group-hover:opacity-20 transition-opacity" />
                 </div>
-              </div>
+              </SpotlightCard>
             );
           })}
         </div>

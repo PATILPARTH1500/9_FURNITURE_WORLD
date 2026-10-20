@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { BRAND_CONFIG } from '@/config/brand';
 import { ArrowUpRight, Phone, Mail, MapPin } from 'lucide-react';
+import { InteractiveLink } from '@/components/ui/motion';
 
 export const Footer: React.FC = () => {
   return (
@@ -53,22 +54,26 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-walnut">
               {BRAND_CONFIG.navigation.map((item) => (
                 <li key={item.label}>
-                  <Link
+                  <InteractiveLink
                     href={item.href}
-                    className="hover:text-tangerine transition-colors duration-200"
+                    showArrow={false}
+                    className="hover:text-tangerine transition-colors text-walnut"
+                    underlineColor="bg-tangerine"
                   >
                     {item.label}
-                  </Link>
+                  </InteractiveLink>
                 </li>
               ))}
               <li>
-                <Link
+                <InteractiveLink
                   href="/collections"
-                  className="hover:text-tangerine transition-colors duration-200 inline-flex items-center space-x-1 text-tangerine font-medium"
+                  showArrow={true}
+                  className="hover:text-coral transition-colors text-tangerine font-medium"
+                  underlineColor="bg-tangerine"
+                  arrowClassName="text-tangerine"
                 >
-                  <span>All Furniture</span>
-                  <ArrowUpRight className="w-3 h-3" />
-                </Link>
+                  All Furniture
+                </InteractiveLink>
               </li>
             </ul>
           </div>

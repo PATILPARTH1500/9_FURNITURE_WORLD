@@ -22,6 +22,7 @@ import { formatPrice } from '@/config/brand';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
 import dynamic from 'next/dynamic';
+import { MagneticButton } from '@/components/ui/motion';
 
 const ProductQuickDrawer = dynamic(
   () => import('@/components/discovery/ProductQuickDrawer').then((mod) => mod.ProductQuickDrawer),
@@ -594,27 +595,27 @@ export const CinematicResidenceTour: React.FC = () => {
                   Colourful living, beautifully made. Explore retro-modern furniture and happy home essentials.
                 </p>
                 <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-4 w-full max-w-xs sm:max-w-none mx-auto">
-                  <button
+                  <MagneticButton
                     onClick={() => setBrandFilmOpen(true)}
-                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-checkerboard text-white hover:bg-black font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
+                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-checkerboard text-white hover:bg-black font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
                   >
                     <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine fill-current" />
                     <span>Watch Brand Film</span>
-                  </button>
-                  <a
+                  </MagneticButton>
+                  <MagneticButton
                     href="#collection"
-                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300"
+                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-warm transition-all duration-300"
                   >
                     <span>Explore Furniture</span>
                     <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                  </a>
-                  <Link
+                  </MagneticButton>
+                  <MagneticButton
                     href="/collections"
-                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
+                    className="w-full sm:w-auto space-x-2 text-[11px] sm:text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-5 py-3 sm:px-8 sm:py-4 rounded-full shadow-retro transition-all duration-300"
                   >
                     <span>Shop the Collection</span>
                     <ArrowUpRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-tangerine" />
-                  </Link>
+                  </MagneticButton>
                 </div>
               </div>
             </div>

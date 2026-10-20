@@ -6,6 +6,7 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, Compass } from 'lucide-react';
+import { AnimatedHeading, MagneticButton, SpotlightCard } from '@/components/ui/motion';
 
 interface RoomData {
   id: string;
@@ -206,10 +207,12 @@ export const RoomDiscoverySection: React.FC = () => {
               <Compass className="w-3.5 h-3.5 text-tangerine" />
               <span>Room Exploration · Architecture</span>
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]">
-              Find Your Room&apos;s <br />
-              <span className="italic text-walnut font-normal">Unique Personality.</span>
-            </h2>
+            <AnimatedHeading
+              text="Find Your Room's Unique Personality."
+              highlightText="Unique Personality."
+              highlightClassName="italic text-walnut font-normal"
+              className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.15]"
+            />
           </div>
           <p className="font-sans text-sm sm:text-base text-walnut leading-relaxed max-w-md font-normal">
             Select a room to preview its architectural mood, curated furniture palette, and signature handcrafted pieces.
@@ -239,9 +242,11 @@ export const RoomDiscoverySection: React.FC = () => {
         </div>
 
         {/* Interactive Room Showcase Panel */}
-        <div
+        <SpotlightCard
           ref={showcaseRef}
-          className="bg-white rounded-3xl border border-checkerboard/15 p-6 sm:p-10 lg:p-12 shadow-[0_16px_40px_rgba(41,37,31,0.06)] grid grid-cols-1 lg:grid-cols-12 gap-10 items-center transition-all duration-300"
+          className="bg-white rounded-3xl border border-checkerboard/15 p-6 sm:p-10 lg:p-12 shadow-[0_16px_40px_rgba(41,37,31,0.06)] transition-all duration-300"
+          contentClassName="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
+          spotlightColor="rgba(244, 81, 11, 0.08)"
         >
           {/* Room Image with Smooth Crossfade */}
           <div className="lg:col-span-7 relative aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream-dark group">
@@ -293,23 +298,23 @@ export const RoomDiscoverySection: React.FC = () => {
 
             {/* CTA Links to Residence Scene */}
             <div className="pt-4 border-t border-checkerboard/10 flex flex-col sm:flex-row gap-3">
-              <Link
+              <MagneticButton
                 href={currentRoom.linkHref}
-                className="group inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-6 py-3.5 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg active:scale-98"
+                className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-6 py-3.5 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg"
               >
                 <span>{currentRoom.ctaText}</span>
                 <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
+              </MagneticButton>
 
-              <Link
+              <MagneticButton
                 href="/collections"
-                className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-5 py-3.5 rounded-full shadow-2xs transition-all duration-300"
+                className="space-x-2 text-xs font-sans uppercase tracking-wider bg-white hover:bg-cream border border-checkerboard/20 text-checkerboard font-medium px-5 py-3.5 rounded-full shadow-2xs transition-all duration-300"
               >
                 <span>View Collection</span>
-              </Link>
+              </MagneticButton>
             </div>
           </div>
-        </div>
+        </SpotlightCard>
       </div>
     </section>
   );
