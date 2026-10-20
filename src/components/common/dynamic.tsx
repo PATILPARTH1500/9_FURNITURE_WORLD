@@ -27,3 +27,4 @@ export function dynamic<T extends ComponentType<any>>(
 }
 
 export default dynamic;
+

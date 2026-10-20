@@ -6,3 +6,4 @@ export default function ProductRoute() {
   const params = useParams<{ slug: string }>();
   return <ProductDetailPageComponent params={{ slug: params.slug || '' }} />;
 }
+

@@ -6,3 +6,4 @@ export default function CollectionRoute() {
   const params = useParams<{ slug: string }>();
   return <CollectionDetailPageComponent params={{ slug: params.slug || '' }} />;
 }
+

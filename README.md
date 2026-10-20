@@ -102,3 +102,4 @@ VITE_SUPABASE_ANON_KEY=
    - Hot Module Replacement updates changes instantaneously.
 3. **Responsive Client Routing**:
    - Direct navigation and deep link refreshing for `/`, `/collections`, `/collections/:slug`, `/products/:slug`, and `/cart`.
+
