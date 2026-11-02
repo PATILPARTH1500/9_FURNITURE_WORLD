@@ -1,16 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 
-// Pages
+// Eagerly loaded for instant first paint on homepage
 import HomePage from '@/app/page';
-import CollectionsPage from '@/app/collections/page';
-import CollectionRoute from '@/pages/CollectionDetailPage';
-import ProductRoute from '@/pages/ProductDetailPage';
-import CartPage from '@/app/cart/page';
-import NotFoundPage from '@/pages/NotFoundPage';
+
+// Route-level code splitting
+const CollectionsPage = lazy(() => import('@/app/collections/page'));
+const CollectionRoute = lazy(() => import('@/pages/CollectionDetailPage'));
+const ProductRoute = lazy(() => import('@/pages/ProductDetailPage'));
+const CartPage = lazy(() => import('@/app/cart/page'));
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
+
+function RouteLoadingFallback() {
+  return (
+    <div className="min-h-[50vh] flex items-center justify-center bg-cream">
+      <div className="w-7 h-7 rounded-full border-2 border-checkerboard/20 border-t-tangerine animate-spin" />
+    </div>
+  );
+}
 
 export function App() {
   const location = useLocation();
@@ -40,14 +50,16 @@ export function App() {
 
       {/* 3. Main Content Router */}
       <div className="grow">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/collections" element={<CollectionsPage />} />
-          <Route path="/collections/:slug" element={<CollectionRoute />} />
-          <Route path="/products/:slug" element={<ProductRoute />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/collections" element={<CollectionsPage />} />
+            <Route path="/collections/:slug" element={<CollectionRoute />} />
+            <Route path="/products/:slug" element={<ProductRoute />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
       </div>
 
       {/* 4. Global Footer */}

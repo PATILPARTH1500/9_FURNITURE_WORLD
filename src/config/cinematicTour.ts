@@ -63,14 +63,13 @@ export const resolveVideoUrl = (path: string, forcedVariant?: 'desktop' | 'mobil
 };
 
 /**
- * SOURCE OF TRUTH: 6-Scene Production Video Tour for Furniture Village
- * Mapped to the 6 Google Flow 1080p footage files:
+ * SOURCE OF TRUTH: 5-Scene Production Video Tour for Furniture Village
+ * Mapped to the 5 Google Flow 1080p footage files:
  * 1. Grand_living_room_reveal -> scene-1-living.mp4
  * 2. Camera_tracking_dining_room -> scene-2-dining.mp4
  * 3. Camera_tilting_down_in_kitchen -> scene-3-kitchen.mp4
  * 4. Children_racing_toy_cars -> scene-4-lounge.mp4
  * 5. Camera_pushes_into_bedroom -> scene-5-bedroom.mp4
- * 6. Furniture_Village_brand_reveal -> scene-7-outro.mp4
  */
 export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
   {
@@ -238,43 +237,10 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       label: 'Olive Velvet Bed',
     },
   },
-  {
-    id: 'scene-06-outro',
-    sceneFile: 'scene-7-outro.mp4',
-    roomNumber: '06',
-    roomTitle: 'FURNITURE VILLAGE',
-    roomSubtitle: 'Colourful Living, Beautifully Made',
-    statement: '“Welcome home to warm colors, comfortable design, and furniture made for living.”',
-    description:
-      'Step into a world of vibrant retro-modern furniture and home collections created to bring warmth and joy to every room.',
-    architecturalDetails: [
-      { label: 'Collections', value: 'Living, Dining, Bedroom & Accents' },
-      { label: 'Design Language', value: 'Warm Retro-Modern with Playful Color' },
-      { label: 'Craftsmanship', value: 'Handcrafted Solid Wood & Lifetime Care' },
-    ],
-    get videoSrc() {
-      return resolveVideoUrl('/videos/scenes/scene-7-outro.mp4');
-    },
-    get videoSrcDesktop() {
-      return resolveVideoUrl('/videos/scenes/scene-7-outro.mp4', 'desktop');
-    },
-    get videoSrcMobile() {
-      return resolveVideoUrl('/videos/scenes/scene-7-outro.mp4', 'mobile');
-    },
-    posterSrc: '/videos/scenes/posters/scene-7-outro.webp',
-    duration: 10.0,
-    featuredProductId: 'prod-001',
-    isAvailable: true,
-    hotspot: {
-      xPercent: 50,
-      yPercent: 50,
-      label: 'Furniture Village Outro',
-    },
-  },
 ];
 
 /**
- * All 6 active scenes for the continuous tour
+ * All 5 active scenes for the continuous tour
  */
 export const CINEMATIC_TOUR_SCENES: TourSceneConfig[] = CINEMATIC_TOUR_ALL_SCENES.filter(
   (s) => s.isAvailable !== false
