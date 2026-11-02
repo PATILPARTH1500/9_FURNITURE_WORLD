@@ -48,6 +48,9 @@ export const CinematicResidenceTour: React.FC = () => {
   const [hasInteractedAudio, setHasInteractedAudio] = useState(false);
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
   const [isMobileProductExpanded, setIsMobileProductExpanded] = useState(false);
+  const [_viewportMode, setViewportMode] = useState<'desktop' | 'mobile'>(() =>
+    typeof window !== 'undefined' && window.innerWidth <= 768 ? 'mobile' : 'desktop'
+  );
 
   useEffect(() => {
     setIsMobileProductExpanded(false);
@@ -339,6 +342,8 @@ export const CinematicResidenceTour: React.FC = () => {
 
     const handleResize = () => {
       const currentWidth = window.innerWidth;
+      const newMode = currentWidth <= 768 ? 'mobile' : 'desktop';
+      setViewportMode((prev) => (prev !== newMode ? newMode : prev));
       // Ignore vertical-only height fluctuations from mobile browser address bar collapse/expand
       // Only refresh when viewport width actually changes (device rotation or desktop window resize)
       if (Math.abs(currentWidth - lastWidthRef.current) > 12) {

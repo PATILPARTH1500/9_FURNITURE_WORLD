@@ -8,6 +8,8 @@ export interface TourSceneConfig {
   description: string;
   architecturalDetails: { label: string; value: string }[];
   videoSrc: string;
+  videoSrcDesktop: string;
+  videoSrcMobile: string;
   posterSrc: string;
   duration: number;
   featuredProductId: string;
@@ -28,9 +30,35 @@ const VIDEO_CDN_BASE = (
   (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_VIDEO_CDN_URL) ||
   ''
 ).replace(/\/+$/, '');
-export const resolveVideoUrl = (path: string): string => {
-  if (!VIDEO_CDN_BASE) return path;
-  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+
+/**
+ * Determine whether client viewport is mobile (<=768px).
+ * Safely defaults to desktop on SSR / node environments.
+ */
+export const isMobileViewport = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth <= 768;
+};
+
+/**
+ * Resolves the video asset URL, routing to optimized 1080p desktop or 720p mobile variants.
+ */
+export const resolveVideoUrl = (path: string, forcedVariant?: 'desktop' | 'mobile'): string => {
+  let targetPath = path;
+
+  // Auto-detect variant based on viewport if not explicitly passed
+  const activeVariant = forcedVariant || (isMobileViewport() ? 'mobile' : 'desktop');
+
+  if (
+    targetPath.includes('/videos/scenes/') &&
+    !targetPath.includes('/desktop/') &&
+    !targetPath.includes('/mobile/')
+  ) {
+    targetPath = targetPath.replace('/videos/scenes/', `/videos/scenes/${activeVariant}/`);
+  }
+
+  if (!VIDEO_CDN_BASE) return targetPath;
+  const cleanPath = targetPath.startsWith('/') ? targetPath : `/${targetPath}`;
   return `${VIDEO_CDN_BASE}${cleanPath}`;
 };
 
@@ -60,7 +88,15 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Accent Table', value: 'Glossy Tangerine Petal Lacquer' },
       { label: 'Chairs', value: 'Deep Olive Velvet Lounge Chairs' },
     ],
-    videoSrc: resolveVideoUrl('/videos/scenes/scene-1-living.mp4'),
+    get videoSrc() {
+      return resolveVideoUrl('/videos/scenes/scene-1-living.mp4');
+    },
+    get videoSrcDesktop() {
+      return resolveVideoUrl('/videos/scenes/scene-1-living.mp4', 'desktop');
+    },
+    get videoSrcMobile() {
+      return resolveVideoUrl('/videos/scenes/scene-1-living.mp4', 'mobile');
+    },
     posterSrc: '/videos/scenes/posters/scene-1-living.webp',
     duration: 10.0,
     featuredProductId: 'prod-003',
@@ -85,7 +121,15 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Lighting', value: 'Twin Tangerine Gloss Pendant Domes' },
       { label: 'Seating', value: 'Olive Green & Dusty Coral Velvet Chairs' },
     ],
-    videoSrc: resolveVideoUrl('/videos/scenes/scene-2-dining.mp4'),
+    get videoSrc() {
+      return resolveVideoUrl('/videos/scenes/scene-2-dining.mp4');
+    },
+    get videoSrcDesktop() {
+      return resolveVideoUrl('/videos/scenes/scene-2-dining.mp4', 'desktop');
+    },
+    get videoSrcMobile() {
+      return resolveVideoUrl('/videos/scenes/scene-2-dining.mp4', 'mobile');
+    },
     posterSrc: '/videos/scenes/posters/scene-2-dining.webp',
     duration: 10.0,
     featuredProductId: 'prod-002',
@@ -110,7 +154,15 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Shelving', value: 'Solid Walnut Open Display Ledges' },
       { label: 'Cabinetry', value: 'Olive Green Shaker Millwork with Brass Knobs' },
     ],
-    videoSrc: resolveVideoUrl('/videos/scenes/scene-3-kitchen.mp4'),
+    get videoSrc() {
+      return resolveVideoUrl('/videos/scenes/scene-3-kitchen.mp4');
+    },
+    get videoSrcDesktop() {
+      return resolveVideoUrl('/videos/scenes/scene-3-kitchen.mp4', 'desktop');
+    },
+    get videoSrcMobile() {
+      return resolveVideoUrl('/videos/scenes/scene-3-kitchen.mp4', 'mobile');
+    },
     posterSrc: '/videos/scenes/posters/scene-3-kitchen.webp',
     duration: 10.0,
     featuredProductId: 'prod-006',
@@ -135,7 +187,15 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Atmosphere', value: 'Wide Open Sunlit Family Play Space' },
       { label: 'Living', value: 'Comfortable Modular Family Seating' },
     ],
-    videoSrc: resolveVideoUrl('/videos/scenes/scene-4-lounge.mp4'),
+    get videoSrc() {
+      return resolveVideoUrl('/videos/scenes/scene-4-lounge.mp4');
+    },
+    get videoSrcDesktop() {
+      return resolveVideoUrl('/videos/scenes/scene-4-lounge.mp4', 'desktop');
+    },
+    get videoSrcMobile() {
+      return resolveVideoUrl('/videos/scenes/scene-4-lounge.mp4', 'mobile');
+    },
     posterSrc: '/videos/scenes/posters/scene-4-lounge.webp',
     duration: 10.0,
     featuredProductId: 'prod-001',
@@ -160,7 +220,15 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Bedding', value: 'Washed Pure Linen in Dusty Peach & Coral' },
       { label: 'Bedside Table', value: 'Fluted Navona Travertine Pedestal' },
     ],
-    videoSrc: resolveVideoUrl('/videos/scenes/scene-5-bedroom.mp4'),
+    get videoSrc() {
+      return resolveVideoUrl('/videos/scenes/scene-5-bedroom.mp4');
+    },
+    get videoSrcDesktop() {
+      return resolveVideoUrl('/videos/scenes/scene-5-bedroom.mp4', 'desktop');
+    },
+    get videoSrcMobile() {
+      return resolveVideoUrl('/videos/scenes/scene-5-bedroom.mp4', 'mobile');
+    },
     posterSrc: '/videos/scenes/posters/scene-5-bedroom.webp',
     duration: 10.0,
     featuredProductId: 'prod-004',
@@ -185,7 +253,15 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Timber Surface', value: 'Hand-Finished Solid European Walnut' },
       { label: 'Joinery', value: 'Durable Precision Mortise & Tenon Assembly' },
     ],
-    videoSrc: resolveVideoUrl('/videos/scenes/scene-6-craft.mp4'),
+    get videoSrc() {
+      return resolveVideoUrl('/videos/scenes/scene-6-craft.mp4');
+    },
+    get videoSrcDesktop() {
+      return resolveVideoUrl('/videos/scenes/scene-6-craft.mp4', 'desktop');
+    },
+    get videoSrcMobile() {
+      return resolveVideoUrl('/videos/scenes/scene-6-craft.mp4', 'mobile');
+    },
     posterSrc: '/videos/scenes/posters/scene-6-craft.webp',
     duration: 10.0,
     featuredProductId: 'prod-001',
@@ -210,7 +286,15 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
       { label: 'Design Language', value: 'Warm Retro-Modern with Playful Color' },
       { label: 'Craftsmanship', value: 'Handcrafted Solid Wood & Lifetime Care' },
     ],
-    videoSrc: resolveVideoUrl('/videos/scenes/scene-7-outro.mp4'),
+    get videoSrc() {
+      return resolveVideoUrl('/videos/scenes/scene-7-outro.mp4');
+    },
+    get videoSrcDesktop() {
+      return resolveVideoUrl('/videos/scenes/scene-7-outro.mp4', 'desktop');
+    },
+    get videoSrcMobile() {
+      return resolveVideoUrl('/videos/scenes/scene-7-outro.mp4', 'mobile');
+    },
     posterSrc: '/videos/scenes/posters/scene-7-outro.webp',
     duration: 10.0,
     featuredProductId: 'prod-001',
