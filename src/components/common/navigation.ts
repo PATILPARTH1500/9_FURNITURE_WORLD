@@ -12,8 +12,8 @@ export function useRouter() {
   };
 }
 
-export function notFound() {
-  throw new Error('NEXT_NOT_FOUND');
+export function notFound(): never {
+  throw new Error('NOT_FOUND');
 }
 
 export { useParams, useLocation };

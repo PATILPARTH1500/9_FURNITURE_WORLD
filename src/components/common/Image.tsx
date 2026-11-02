@@ -16,7 +16,7 @@ export const Image: React.FC<ImageProps> = ({
   fill,
   priority,
   sizes,
-  quality,
+  quality: _quality,
   className = '',
   style,
   ...props

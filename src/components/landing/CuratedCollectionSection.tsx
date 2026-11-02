@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/Image';
+import Link from '@/components/common/Link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,8 +12,8 @@ import { Product } from '@/types';
 import { formatPrice } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
 import { useSceneStore } from '@/store/useSceneStore';
-import { AnimatedHeading, MagneticButton, SpotlightCard, TextRoll, DirectionAwareHover } from '@/components/ui/motion';
-import dynamic from 'next/dynamic';
+import { AnimatedHeading, SpotlightCard, TextRoll, DirectionAwareHover } from '@/components/ui/motion';
+import dynamic from '@/components/common/dynamic';
 
 const ProductQuickDrawer = dynamic(
   () => import('@/components/discovery/ProductQuickDrawer').then((mod) => mod.ProductQuickDrawer),

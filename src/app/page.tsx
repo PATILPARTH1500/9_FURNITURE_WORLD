@@ -1,14 +1,13 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, ArrowDown, Sparkles, ShieldCheck, Truck, Droplets, MapPin } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import dynamic from '@/components/common/dynamic';
 import { CinematicResidenceTour } from '@/components/cinema/CinematicResidenceTour';
-import { AnimatedHeading, MagneticButton, SpotlightCard, TextRoll, MarqueeTicker } from '@/components/ui/motion';
+import { AnimatedHeading, MagneticButton, SpotlightCard, MarqueeTicker } from '@/components/ui/motion';
 
 const CuratedCollectionSection = dynamic(
   () => import('@/components/landing/CuratedCollectionSection').then((mod) => mod.CuratedCollectionSection),

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/Image';
+import Link from '@/components/common/Link';
 import { ArrowLeft, Check, ShieldCheck, Truck, RotateCcw, Plus, Minus, Film, Camera } from 'lucide-react';
 import { PRODUCTS_CATALOG, WOOD_MATERIALS, UPHOLSTERY_MATERIALS } from '@/data/catalog';
 import { formatPrice } from '@/config/brand';

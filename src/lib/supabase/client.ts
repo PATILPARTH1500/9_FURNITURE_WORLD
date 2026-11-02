@@ -1,4 +1,4 @@
-import { createBrowserClient } from '@supabase/ssr';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export const isSupabaseConfigured = (): boolean => {
   const url =
@@ -20,6 +20,5 @@ export const createClient = () => {
     (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY) ||
     'placeholder-key';
 
-  return createBrowserClient(supabaseUrl, supabaseAnonKey);
+  return createSupabaseClient(supabaseUrl, supabaseAnonKey);
 };
-

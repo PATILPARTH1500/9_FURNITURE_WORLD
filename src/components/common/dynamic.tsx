@@ -19,11 +19,14 @@ export function dynamic<T extends ComponentType<any>>(
     return { default: (firstExport as T) || mod };
   });
 
-  return (props: any) => (
+  const DynamicComponent: React.FC<any> = (props: any) => (
     <Suspense fallback={options?.loading ? options.loading() : null}>
       <LazyComponent {...props} />
     </Suspense>
   );
+  DynamicComponent.displayName = 'DynamicComponent';
+
+  return DynamicComponent;
 }
 
 export default dynamic;

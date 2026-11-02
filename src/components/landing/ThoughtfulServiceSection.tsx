@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Truck, ShieldCheck, Wrench, MapPin, Phone, Mail, ArrowUpRight } from 'lucide-react';
-import { BRAND_CONFIG } from '@/config/brand';
 import { AnimatedHeading, MagneticButton, SpotlightCard, TextRoll, MovingBorder } from '@/components/ui/motion';
 
 interface ServiceItem {

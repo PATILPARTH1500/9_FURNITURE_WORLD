@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -18,7 +17,7 @@ import { PRODUCTS_CATALOG } from '@/data/catalog';
 import { formatPrice } from '@/config/brand';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
-import dynamic from 'next/dynamic';
+import dynamic from '@/components/common/dynamic';
 import { MagneticButton } from '@/components/ui/motion';
 
 const ProductQuickDrawer = dynamic(
@@ -44,8 +43,8 @@ export const CinematicResidenceTour: React.FC = () => {
 
   // Discrete state for narrative text & product overlay
   const [activeSceneIndex, setActiveSceneIndex] = useState(0);
-  const [readyClips, setReadyClips] = useState<boolean[]>(new Array(totalScenes).fill(false));
-  const [isMuted, setIsMuted] = useState(true);
+  const [_readyClips, setReadyClips] = useState<boolean[]>(new Array(totalScenes).fill(false));
+  const [_isMuted, setIsMuted] = useState(true);
   const [hasInteractedAudio, setHasInteractedAudio] = useState(false);
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
   const [isMobileProductExpanded, setIsMobileProductExpanded] = useState(false);
@@ -106,7 +105,7 @@ export const CinematicResidenceTour: React.FC = () => {
     }
   }, []);
 
-  const toggleAudio = useCallback(() => {
+  const _toggleAudio = useCallback(() => {
     if (!hasInteractedAudio) {
       initAmbientAudio();
       setHasInteractedAudio(true);

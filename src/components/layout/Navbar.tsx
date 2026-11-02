@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
+import Link from '@/components/common/Link';
 import { ShoppingBag, Menu, X, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND_CONFIG } from '@/config/brand';
@@ -76,14 +76,14 @@ export const Navbar: React.FC = () => {
           <nav
             aria-label="Room navigation"
             onMouseLeave={() => setHoveredNav(null)}
-            className="hidden lg:flex items-center gap-0.5 xl:gap-2.5 2xl:gap-4 text-[9.5px] xl:text-[11px] 2xl:text-xs font-sans tracking-[0.1em] xl:tracking-[0.12em] uppercase text-checkerboard/85 font-medium shrink-0"
+            className="hidden md:flex items-center gap-0.5 lg:gap-1.5 xl:gap-2.5 2xl:gap-3.5 text-[8px] md:text-[8.5px] lg:text-[10px] xl:text-[11px] 2xl:text-xs font-sans tracking-[0.05em] lg:tracking-[0.1em] uppercase text-checkerboard/85 font-medium shrink-0"
           >
             {BRAND_CONFIG.navigation.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
                 onMouseEnter={() => setHoveredNav(item.label)}
-                className="relative px-1.5 xl:px-2.5 2xl:px-3 py-1.5 rounded-full whitespace-nowrap hover:text-[#B6532D] transition-colors duration-200 focus:outline-hidden focus-visible:text-[#B6532D] group shrink-0"
+                className="relative px-1 md:px-1.5 lg:px-2 xl:px-2.5 2xl:px-3 py-1 lg:py-1.5 rounded-full whitespace-nowrap hover:text-[#B6532D] transition-colors duration-200 focus:outline-hidden focus-visible:text-[#B6532D] group shrink-0"
               >
                 {hoveredNav === item.label && (
                   <motion.span
@@ -102,7 +102,7 @@ export const Navbar: React.FC = () => {
             {/* Shop Furniture Button (Warm pill without harsh border) */}
             <MagneticButton
               href="/collections"
-              className="hidden sm:inline-flex items-center gap-1 text-[10px] xl:text-xs font-sans tracking-wide uppercase px-2.5 xl:px-3.5 py-1.5 xl:py-2 rounded-full text-[#62432F] hover:text-[#B6532D] bg-[#EDE5D8]/70 hover:bg-[#EDE5D8] font-medium transition-all shadow-2xs group shrink-0 whitespace-nowrap"
+              className="hidden lg:inline-flex items-center gap-1 text-[10px] xl:text-xs font-sans tracking-wide uppercase px-2.5 xl:px-3.5 py-1.5 xl:py-2 rounded-full text-[#62432F] hover:text-[#B6532D] bg-[#EDE5D8]/70 hover:bg-[#EDE5D8] font-medium transition-all shadow-2xs group shrink-0 whitespace-nowrap"
             >
               <span className="whitespace-nowrap">Shop Furniture</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-[#B6532D] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0" />
@@ -122,10 +122,10 @@ export const Navbar: React.FC = () => {
               )}
             </MagneticButton>
 
-            {/* Tablet & Mobile Accessible Menu Hamburger Toggle (< lg widths) */}
+            {/* Tablet & Mobile Accessible Menu Hamburger Toggle (< md widths) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-1.5 text-[#62432F] hover:text-[#B6532D] transition-colors rounded-full hover:bg-[#EDE5D8]/70 focus:outline-hidden shrink-0"
+              className="md:hidden p-1.5 text-[#62432F] hover:text-[#B6532D] transition-colors rounded-full hover:bg-[#EDE5D8]/70 focus:outline-hidden shrink-0"
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -134,7 +134,7 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile & Tablet Dropdown Panel inside floating island structure (< lg) */}
+        {/* Mobile & Tablet Dropdown Panel inside floating island structure (< md) */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -142,7 +142,7 @@ export const Navbar: React.FC = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:hidden overflow-hidden pt-4 pb-2 border-t border-[#62432F]/10 mt-3 space-y-4"
+              className="md:hidden overflow-hidden pt-4 pb-2 border-t border-[#62432F]/10 mt-3 space-y-4"
             >
               <nav className="flex flex-col space-y-1.5" aria-label="Mobile and tablet room navigation">
                 {BRAND_CONFIG.navigation.map((item, idx) => (

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/Image';
+import Link from '@/components/common/Link';
 import { X, Plus, Minus, Trash2, ArrowUpRight, ShieldCheck, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { BRAND_CONFIG, formatPrice } from '@/config/brand';

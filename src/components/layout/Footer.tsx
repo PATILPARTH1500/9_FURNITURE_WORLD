@@ -1,7 +1,7 @@
 import React from 'react';
-import Link from 'next/link';
+import Link from '@/components/common/Link';
 import { BRAND_CONFIG } from '@/config/brand';
-import { ArrowUpRight, Phone, Mail, MapPin } from 'lucide-react';
+import { ArrowUpRight, Phone, Mail } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (

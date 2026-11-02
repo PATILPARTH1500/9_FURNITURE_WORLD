@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, Compass, Sparkles } from 'lucide-react';
-import { AnimatedHeading, MagneticButton, TextRoll } from '@/components/ui/motion';
+import { MagneticButton, TextRoll } from '@/components/ui/motion';
 
 export const ArtOfLivingSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);

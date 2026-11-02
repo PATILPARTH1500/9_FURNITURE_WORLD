@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import Link from 'next/link';
+import Link from '@/components/common/Link';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 interface MagneticButtonProps {

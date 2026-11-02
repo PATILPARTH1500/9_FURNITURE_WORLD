@@ -1,7 +1,7 @@
 import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import Image from '@/components/common/Image';
+import Link from '@/components/common/Link';
+import { notFound } from '@/components/common/navigation';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { COLLECTIONS_DATA, PRODUCTS_CATALOG } from '@/data/catalog';
 import { formatPrice } from '@/config/brand';

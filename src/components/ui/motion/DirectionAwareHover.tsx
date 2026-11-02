@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import Image from 'next/image';
+import Image from '@/components/common/Image';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export interface DirectionAwareHoverProps {

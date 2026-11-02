@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import Image from '@/components/common/Image';
+import Link from '@/components/common/Link';
 import { X, Check, ArrowUpRight, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
