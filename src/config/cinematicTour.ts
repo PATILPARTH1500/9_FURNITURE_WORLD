@@ -63,15 +63,14 @@ export const resolveVideoUrl = (path: string, forcedVariant?: 'desktop' | 'mobil
 };
 
 /**
- * SOURCE OF TRUTH: 7-Scene Production Video Tour for Furniture Village
- * Mapped to the 7 new Google Flow 1080p footage files:
+ * SOURCE OF TRUTH: 6-Scene Production Video Tour for Furniture Village
+ * Mapped to the 6 Google Flow 1080p footage files:
  * 1. Grand_living_room_reveal -> scene-1-living.mp4
  * 2. Camera_tracking_dining_room -> scene-2-dining.mp4
  * 3. Camera_tilting_down_in_kitchen -> scene-3-kitchen.mp4
  * 4. Children_racing_toy_cars -> scene-4-lounge.mp4
  * 5. Camera_pushes_into_bedroom -> scene-5-bedroom.mp4
- * 6. Macro_shots_of_luxury_furniture -> scene-6-craft.mp4
- * 7. Furniture_Village_brand_reveal -> scene-7-outro.mp4
+ * 6. Furniture_Village_brand_reveal -> scene-7-outro.mp4
  */
 export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
   {
@@ -240,42 +239,9 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
     },
   },
   {
-    id: 'scene-06-craft',
-    sceneFile: 'scene-6-craft.mp4',
-    roomNumber: '06',
-    roomTitle: 'Craftsmanship & Textures',
-    roomSubtitle: 'Cream Bouclé Weave & Natural Walnut Grain',
-    statement: '“Furniture made to be touched: durable textured fabrics and sustainably sourced timber.”',
-    description:
-      'Close-up craftsmanship: soft looped bouclé yarns, smooth organic walnut grain, and durable finishes designed for years of everyday use.',
-    architecturalDetails: [
-      { label: 'Fabric Weave', value: 'Heavyweight Virgin Wool & Bouclé Looped Yarns' },
-      { label: 'Timber Surface', value: 'Hand-Finished Solid European Walnut' },
-      { label: 'Joinery', value: 'Durable Precision Mortise & Tenon Assembly' },
-    ],
-    get videoSrc() {
-      return resolveVideoUrl('/videos/scenes/scene-6-craft.mp4');
-    },
-    get videoSrcDesktop() {
-      return resolveVideoUrl('/videos/scenes/scene-6-craft.mp4', 'desktop');
-    },
-    get videoSrcMobile() {
-      return resolveVideoUrl('/videos/scenes/scene-6-craft.mp4', 'mobile');
-    },
-    posterSrc: '/videos/scenes/posters/scene-6-craft.webp',
-    duration: 10.0,
-    featuredProductId: 'prod-001',
-    isAvailable: true,
-    hotspot: {
-      xPercent: 50,
-      yPercent: 50,
-      label: 'Tactile Bouclé Fabric',
-    },
-  },
-  {
-    id: 'scene-07-outro',
+    id: 'scene-06-outro',
     sceneFile: 'scene-7-outro.mp4',
-    roomNumber: '07',
+    roomNumber: '06',
     roomTitle: 'FURNITURE VILLAGE',
     roomSubtitle: 'Colourful Living, Beautifully Made',
     statement: '“Welcome home to warm colors, comfortable design, and furniture made for living.”',
@@ -308,7 +274,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
 ];
 
 /**
- * All 7 active scenes for the continuous tour
+ * All 6 active scenes for the continuous tour
  */
 export const CINEMATIC_TOUR_SCENES: TourSceneConfig[] = CINEMATIC_TOUR_ALL_SCENES.filter(
   (s) => s.isAvailable !== false

@@ -353,14 +353,13 @@ export const CinematicResidenceTour: React.FC = () => {
     };
     window.addEventListener('resize', handleResize, { passive: true });
 
-    // Direct anchor navigation for room links (#living, #dining, #kitchen, #lounge, #bedroom, #craft)
+    // Direct anchor navigation for room links (#living, #dining, #kitchen, #lounge, #bedroom)
     const roomHashMap: Record<string, number> = {
       '#living': 0,
       '#dining': 1,
       '#kitchen': 2,
       '#lounge': 3,
       '#bedroom': 4,
-      '#craft': 5,
     };
     const handleRoomHash = () => {
       const hash = window.location.hash.toLowerCase();
