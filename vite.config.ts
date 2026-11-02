@@ -14,4 +14,23 @@ export default defineConfig({
     port: 3000,
     open: false,
   },
+  preview: {
+    port: 3000,
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('framer-motion')) {
+              return 'vendor-framer';
+            }
+            if (id.includes('gsap')) {
+              return 'vendor-gsap';
+            }
+          }
+        },
+      },
+    },
+  },
 });
