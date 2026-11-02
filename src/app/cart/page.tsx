@@ -22,7 +22,7 @@ export default function CartPage() {
   const handleSimulateCheckout = () => {
     setIsSubmitting(true);
     setTimeout(() => {
-      const orderRef = `FV-${Math.floor(100000 + Math.random() * 900000)}`;
+      const orderRef = `FW-${Math.floor(100000 + Math.random() * 900000)}`;
       setOrderConfirmation(orderRef);
       setIsSubmitting(false);
       clearCart();
@@ -68,7 +68,7 @@ export default function CartPage() {
               Thank You for Your Order!
             </h2>
             <p className="text-sm text-checkerboard/80 font-normal leading-relaxed">
-              Order number <span className="font-mono text-checkerboard font-bold bg-cream px-2 py-0.5 rounded">{orderConfirmation}</span> has been confirmed. Our Furniture Village customer care team will contact you to coordinate delivery logistics and room setup.
+              Order number <span className="font-mono text-checkerboard font-bold bg-cream px-2 py-0.5 rounded">{orderConfirmation}</span> has been confirmed. Our Furniture World customer care team will contact you to coordinate delivery logistics and room setup.
             </p>
             <div className="p-4 bg-cream/70 rounded-xl border border-checkerboard/10 text-[11px] font-mono text-checkerboard/70">
               Free room-of-choice delivery and packaging removal are included with your order.

@@ -163,7 +163,7 @@ export const ArtOfLivingSection: React.FC = () => {
 
             <div className="space-y-4 text-[#D0C4B4] font-sans text-sm sm:text-base leading-relaxed">
               <p>
-                At Furniture Village, we reject cold, delicate showroom pieces designed only for photoshoots. Real homes are meant for morning tea, energetic family dinners, afternoon reading, and quiet moments of stillness.
+                At Furniture World, we reject cold, delicate showroom pieces designed only for photoshoots. Real homes are meant for morning tea, energetic family dinners, afternoon reading, and quiet moments of stillness.
               </p>
               <p>
                 We take inspiration from optimistic 1970s residences: organic curved contours, solid European oak, rich smoked walnut, and joyful burnt-orange accents. Every timber corner is hand-smoothed so children and pets can move freely around your home.

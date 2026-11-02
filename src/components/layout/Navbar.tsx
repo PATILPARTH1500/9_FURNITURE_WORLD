@@ -64,10 +64,10 @@ export const Navbar: React.FC = () => {
             className="group flex flex-col text-left focus:outline-hidden py-0.5 shrink-0"
             aria-label={`${BRAND_CONFIG.name} — Home`}
           >
-            <span className="font-serif text-base sm:text-lg md:text-xl lg:text-2xl tracking-wider text-checkerboard group-hover:text-[#B6532D] transition-colors duration-200 font-semibold leading-tight">
+            <span className="font-serif text-base sm:text-lg md:text-xl lg:text-2xl tracking-wider text-checkerboard group-hover:text-tangerine transition-colors duration-200 font-semibold leading-tight">
               {BRAND_CONFIG.name}
             </span>
-            <span className="text-[8px] sm:text-[9px] lg:text-[10px] tracking-widest text-[#62432F] uppercase font-medium -mt-0.5 opacity-85">
+            <span className="text-[8px] sm:text-[9px] lg:text-[10px] tracking-widest text-walnut uppercase font-medium -mt-0.5 opacity-85">
               Handcrafted Furniture
             </span>
           </Link>
@@ -83,12 +83,12 @@ export const Navbar: React.FC = () => {
                 key={item.label}
                 href={item.href}
                 onMouseEnter={() => setHoveredNav(item.label)}
-                className="relative px-1 md:px-1.5 lg:px-2 xl:px-2.5 2xl:px-3 py-1 lg:py-1.5 rounded-full whitespace-nowrap hover:text-[#B6532D] transition-colors duration-200 focus:outline-hidden focus-visible:text-[#B6532D] group shrink-0"
+                className="relative px-1 md:px-1.5 lg:px-2 xl:px-2.5 2xl:px-3 py-1 lg:py-1.5 rounded-full whitespace-nowrap hover:text-tangerine transition-colors duration-200 focus:outline-hidden focus-visible:text-tangerine group shrink-0"
               >
                 {hoveredNav === item.label && (
                   <motion.span
                     layoutId="navbar-hover-pill"
-                    className="absolute inset-0 rounded-full bg-[#EDE5D8]/80 shadow-2xs -z-10"
+                    className="absolute inset-0 rounded-full bg-cream-dark/60 shadow-2xs -z-10"
                     transition={{ type: 'spring', stiffness: 380, damping: 28 }}
                   />
                 )}
@@ -102,21 +102,21 @@ export const Navbar: React.FC = () => {
             {/* Shop Furniture Button (Warm pill without harsh border) */}
             <MagneticButton
               href="/collections"
-              className="hidden lg:inline-flex items-center gap-1 text-[10px] xl:text-xs font-sans tracking-wide uppercase px-2.5 xl:px-3.5 py-1.5 xl:py-2 rounded-full text-[#62432F] hover:text-[#B6532D] bg-[#EDE5D8]/70 hover:bg-[#EDE5D8] font-medium transition-all shadow-2xs group shrink-0 whitespace-nowrap"
+              className="hidden lg:inline-flex items-center gap-1 text-[10px] xl:text-xs font-sans tracking-wide uppercase px-2.5 xl:px-3.5 py-1.5 xl:py-2 rounded-full text-walnut hover:text-tangerine bg-cream-dark/60 hover:bg-cream-dark/90 font-medium transition-all shadow-2xs group shrink-0 whitespace-nowrap"
             >
               <span className="whitespace-nowrap">Shop Furniture</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-[#B6532D] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0" />
+              <ArrowUpRight className="w-3.5 h-3.5 text-tangerine transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 shrink-0" />
             </MagneticButton>
 
             {/* Shopping Cart Button */}
             <MagneticButton
               onClick={() => setIsOpen(true)}
-              className="relative p-1.5 xl:p-2 rounded-full bg-[#EDE5D8]/70 hover:bg-[#EDE5D8] text-[#62432F] hover:text-checkerboard shadow-2xs transition-all shrink-0"
+              className="relative p-1.5 xl:p-2 rounded-full bg-cream-dark/60 hover:bg-cream-dark/90 text-walnut hover:text-checkerboard shadow-2xs transition-all shrink-0"
               ariaLabel={`Shopping bag with ${cartCount} items`}
             >
               <ShoppingBag className="w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#B6532D] text-white text-[9px] font-sans font-bold flex items-center justify-center shadow-xs">
+                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-tangerine text-white text-[9px] font-sans font-bold flex items-center justify-center shadow-xs">
                   {cartCount}
                 </span>
               )}
@@ -125,7 +125,7 @@ export const Navbar: React.FC = () => {
             {/* Tablet & Mobile Accessible Menu Hamburger Toggle (< md widths) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-1.5 text-[#62432F] hover:text-[#B6532D] transition-colors rounded-full hover:bg-[#EDE5D8]/70 focus:outline-hidden shrink-0"
+              className="md:hidden p-1.5 text-walnut hover:text-tangerine transition-colors rounded-full hover:bg-cream-dark/60 focus:outline-hidden shrink-0"
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -142,7 +142,7 @@ export const Navbar: React.FC = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className="md:hidden overflow-hidden pt-4 pb-2 border-t border-[#62432F]/10 mt-3 space-y-4"
+              className="md:hidden overflow-hidden pt-4 pb-2 border-t border-checkerboard/10 mt-3 space-y-4"
             >
               <nav className="flex flex-col space-y-1.5" aria-label="Mobile and tablet room navigation">
                 {BRAND_CONFIG.navigation.map((item, idx) => (
@@ -155,10 +155,10 @@ export const Navbar: React.FC = () => {
                     <Link
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="text-xs font-sans tracking-wide uppercase text-[#62432F] hover:text-[#B6532D] font-medium py-2.5 px-3.5 rounded-xl hover:bg-white/60 active:bg-white/80 transition-colors flex items-center justify-between group"
+                      className="text-xs font-sans tracking-wide uppercase text-walnut hover:text-tangerine font-medium py-2.5 px-3.5 rounded-xl hover:bg-white/60 active:bg-white/80 transition-colors flex items-center justify-between group"
                     >
                       <span className="group-hover:translate-x-1 transition-transform duration-200">{item.label}</span>
-                      <span className="text-[10px] text-[#62432F]/50 uppercase group-hover:text-[#B6532D] transition-colors">Explore →</span>
+                      <span className="text-[10px] text-walnut/60 uppercase group-hover:text-tangerine transition-colors">Explore →</span>
                     </Link>
                   </motion.div>
                 ))}
@@ -168,12 +168,12 @@ export const Navbar: React.FC = () => {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.16, duration: 0.2 }}
-                className="pt-3 border-t border-[#62432F]/10 flex flex-col gap-2"
+                className="pt-3 border-t border-checkerboard/10 flex flex-col gap-2"
               >
                 <Link
                   href="/collections"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#B6532D] hover:bg-[#94320C] text-white font-medium px-4 py-3 rounded-full shadow-sm transition-colors"
+                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-4 py-3 rounded-full shadow-sm transition-colors"
                 >
                   <span>Shop All Furniture</span>
                   <ArrowUpRight className="w-3.5 h-3.5 text-white" />

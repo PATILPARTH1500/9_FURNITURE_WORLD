@@ -31,7 +31,7 @@ export default function CollectionsPage() {
         {/* Header */}
         <div className="max-w-2xl space-y-4 mb-16">
           <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/80 px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-block shadow-2xs">
-            Furniture Village Collections
+            Furniture World Collections
           </span>
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-checkerboard font-semibold tracking-tight">
             Furniture for Every Room

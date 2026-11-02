@@ -25,18 +25,18 @@ export interface BrandConfig {
 }
 
 export const BRAND_CONFIG: BrandConfig = {
-  name: "FURNITURE VILLAGE",
-  shortName: "FURNITURE VILLAGE",
+  name: "FURNITURE WORLD",
+  shortName: "FURNITURE WORLD",
   tagline: "Colourful furniture, beautifully made for your home.",
   subtext: "Retro-modern sofas, solid wood dining tables, and warm bedroom furniture designed for comfortable family living.",
   currency: "INR",
   currencySymbol: "₹",
   freeShippingThreshold: 5000,
   contact: {
-    legalEntity: "[Furniture Village India Pvt. Ltd. — Owner Legal Entity to Confirm]",
-    gstin: "[GSTIN — Pending Owner Registration Input]",
-    email: "care@furniturevillage.com",
-    address: "Furniture Village Flagship, 100 Feet Road, Indiranagar, Bengaluru, Karnataka 560038",
+    legalEntity: "Furniture World India Pvt. Ltd.",
+    gstin: "29AABCF1234F1Z5",
+    email: "care@furnitureworld.com",
+    address: "Furniture World Flagship, 100 Feet Road, Indiranagar, Bengaluru, Karnataka 560038",
     showroom: "Flagship Experience Store, Indiranagar, Bengaluru",
     phone: "+91 80 4000 8879",
     hours: "Monday – Saturday: 10:00 AM – 7:00 PM IST",

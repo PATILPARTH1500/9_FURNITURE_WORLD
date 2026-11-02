@@ -22,7 +22,7 @@ export const CartDrawer: React.FC = () => {
   const handleCheckout = async () => {
     setIsSubmitting(true);
     await new Promise((resolve) => setTimeout(resolve, 800));
-    const randomOrderId = `FV-${Math.floor(100000 + Math.random() * 900000)}`;
+    const randomOrderId = `FW-${Math.floor(100000 + Math.random() * 900000)}`;
     setOrderComplete(randomOrderId);
     setIsSubmitting(false);
   };

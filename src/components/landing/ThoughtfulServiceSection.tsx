@@ -205,7 +205,7 @@ export const ThoughtfulServiceSection: React.FC = () => {
               <span className="hidden sm:inline text-white/30">·</span>
               <span className="inline-flex items-center space-x-1.5">
                 <Mail className="w-4 h-4 text-tangerine" />
-                <span>care@furniturevillage.com</span>
+                <span>care@furnitureworld.com</span>
               </span>
             </div>
           </div>

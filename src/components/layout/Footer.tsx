@@ -8,10 +8,10 @@ export const Footer: React.FC = () => {
     <footer className="bg-[#15120F] text-[#FAF8F5] border-t border-white/10 pt-20 pb-12 relative overflow-hidden">
       {/* Background brand watermark */}
       <div
-        className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.03] text-[12vw] font-serif leading-none tracking-tight font-bold text-white"
+        className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.03] text-[12vw] font-serif leading-none tracking-tight font-bold text-white uppercase whitespace-nowrap"
         aria-hidden="true"
       >
-        FURNITURE VILLAGE
+        {BRAND_CONFIG.name}
       </div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">

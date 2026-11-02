@@ -61,6 +61,11 @@ const config: Config = {
           DEFAULT: '#29251F',
           black: '#29251F',
         },
+        espresso: {
+          DEFAULT: '#15120F',
+          light: '#1E1B17',
+          dark: '#0D0B09',
+        },
         leaf: {
           DEFAULT: '#477A48',
           light: '#5E9A60',
