@@ -265,9 +265,6 @@ export const RoomDiscoverySection: React.FC = () => {
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-104"
               sizes="(max-width: 1024px) 100vw, 60vw"
             />
-            <div className="absolute top-4 left-4 bg-white/92 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold text-checkerboard border border-checkerboard/15 shadow-2xs">
-              {currentRoom.roomTag}
-            </div>
           </div>
 
           {/* Room Editorial & Key Pieces */}

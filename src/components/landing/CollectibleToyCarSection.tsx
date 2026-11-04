@@ -117,9 +117,6 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 58vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  Scale 1:18 · Vintage Monoposto
-                </div>
               </div>
 
               <div className="p-6 sm:p-8 space-y-3">
@@ -152,9 +149,6 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 42vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  Solid American Walnut
-                </div>
               </div>
 
               <div className="p-6 sm:p-8 space-y-3">
@@ -182,9 +176,6 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 66vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  Family Lounge Atmosphere · Scene 04
-                </div>
               </div>
 
               <div className="p-6 sm:p-8 space-y-3">
@@ -218,9 +209,6 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 34vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  Turned Solid Brass Axles
-                </div>
               </div>
 
               <div className="p-6 space-y-2">

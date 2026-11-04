@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Layers, ShieldCheck, Check, ArrowUpRight, Eye } from 'lucide-react';
+import { Layers, ShieldCheck, Check, ArrowUpRight } from 'lucide-react';
 import { AnimatedHeading, SpotlightCard, MagneticButton, TextRoll } from '@/components/ui/motion';
 
 interface MaterialStory {
@@ -223,9 +223,6 @@ export const MaterialsCraftSection: React.FC = () => {
                     className="object-cover transition-transform duration-700 group-hover:scale-106"
                     sizes="(max-width: 768px) 100vw, 25vw"
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-xs text-white px-3 py-1 rounded-full text-xs font-sans font-medium uppercase tracking-wider">
-                    {mat.specCode}
-                  </div>
                 </div>
 
                 <div className="space-y-1.5">
@@ -263,7 +260,7 @@ export const MaterialsCraftSection: React.FC = () => {
           contentClassName="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
           spotlightColor="rgba(244, 81, 11, 0.08)"
         >
-          {/* Close-up Macro Photo with Zoom Hint */}
+          {/* Close-up Macro Photo */}
           <div className="lg:col-span-6 relative aspect-[16/10] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream-dark">
             <Image
               src={selectedMaterial.image}
@@ -272,10 +269,6 @@ export const MaterialsCraftSection: React.FC = () => {
               className="object-cover transition-transform duration-700"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
-            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold text-checkerboard border border-checkerboard/15 shadow-2xs flex items-center space-x-1.5">
-              <Eye className="w-3.5 h-3.5 text-tangerine" />
-              <span>Tactile Macro View</span>
-            </div>
           </div>
 
           {/* Editorial Specs & Technical Data Bento */}

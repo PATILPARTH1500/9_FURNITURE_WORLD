@@ -337,16 +337,6 @@ export const CuratedCollectionSection: React.FC = () => {
                           />
                         </Link>
 
-                        {/* Top Badges */}
-                        <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-                          <span className="font-sans text-xs uppercase tracking-wider font-semibold px-3 py-1 rounded-full bg-white/95 backdrop-blur-xs text-checkerboard border border-checkerboard/10 shadow-2xs">
-                            {product.category}
-                          </span>
-                          <span className="font-serif text-sm font-semibold text-checkerboard bg-white/95 backdrop-blur-xs px-3 py-0.5 rounded-full border border-checkerboard/10 shadow-2xs">
-                            {formatPrice(product.price)}
-                          </span>
-                        </div>
-
                         {/* Quick Inspect Floating Overlay Trigger */}
                         <motion.button
                           type="button"
@@ -370,9 +360,14 @@ export const CuratedCollectionSection: React.FC = () => {
                             <span>·</span>
                             <span>{woodName} Timber</span>
                           </div>
-                          <h4 className="font-serif text-xl text-checkerboard font-semibold group-hover:text-tangerine transition-colors">
-                            <Link href={`/products/${product.slug}`}>{product.name}</Link>
-                          </h4>
+                          <div className="flex items-baseline justify-between gap-2">
+                            <h4 className="font-serif text-xl text-checkerboard font-semibold group-hover:text-tangerine transition-colors">
+                              <Link href={`/products/${product.slug}`}>{product.name}</Link>
+                            </h4>
+                            <span className="font-serif text-base font-semibold text-checkerboard shrink-0">
+                              {formatPrice(product.price)}
+                            </span>
+                          </div>
                           <p className="font-sans text-xs text-walnut line-clamp-2 leading-relaxed">
                             {product.subtitle}
                           </p>

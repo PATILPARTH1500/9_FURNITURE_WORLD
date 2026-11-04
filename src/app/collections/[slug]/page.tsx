@@ -50,11 +50,6 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-checkerboard/95 via-checkerboard/50 to-transparent" />
 
-        {/* Blueprint line decorations */}
-        <div className="absolute top-8 right-8 hidden md:block text-right z-10 font-mono text-[11px] text-cream/60 tracking-widest uppercase border border-cream/20 px-3 py-1.5 rounded-sm bg-checkerboard/40 backdrop-blur-xs">
-          SERIES CODE: FW-{collection.slug.replace('-', '_').toUpperCase()}
-        </div>
-
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 pb-16 w-full space-y-4">
           <nav aria-label="Breadcrumb" className="flex items-center space-x-2 text-xs font-mono uppercase tracking-wider text-cream/70">
             <Link href="/" className="hover:text-tangerine transition-colors">Home</Link>
@@ -134,15 +129,13 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
-                <div className="absolute top-4 left-4">
-                  <span className="font-mono text-[10px] uppercase tracking-wider bg-white/90 backdrop-blur-xs border border-checkerboard/10 px-2.5 py-1 rounded-md text-checkerboard font-semibold shadow-2xs">
-                    {product.variants[0]?.sku || `FW-${product.id.toUpperCase()}`}
-                  </span>
-                </div>
               </div>
 
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div>
+                  <span className="font-sans text-[11px] uppercase tracking-wider text-tangerine font-semibold block mb-1">
+                    {product.category}
+                  </span>
                   <div className="flex items-baseline justify-between">
                     <h3 className="font-serif text-xl text-checkerboard group-hover:text-tangerine transition-colors font-semibold">
                       {product.name}

@@ -104,14 +104,9 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             <span>/</span>
             <span className="text-checkerboard font-semibold">{product.name}</span>
           </nav>
-          <div className="flex items-center space-x-2">
-            <span className="uppercase tracking-wider text-[11px] font-semibold text-tangerine bg-white/90 px-3 py-1 rounded-full border border-tangerine/20 shadow-2xs">
-              SKU: {product.variants[0]?.sku || `FW-${product.id.toUpperCase()}`}
-            </span>
-            <span className="uppercase tracking-wider text-[11px] font-semibold text-walnut bg-cream-dark px-3 py-1 rounded-full border border-checkerboard/10 hidden sm:inline-block">
-              Category: {product.category}
-            </span>
-          </div>
+          <span className="uppercase tracking-wider text-xs font-semibold text-walnut">
+            {product.category}
+          </span>
         </div>
 
         {/* Main 2-Column Product Grid */}
@@ -158,12 +153,6 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                     priority
                     sizes="(max-width: 1024px) 100vw, 55vw"
                   />
-                  <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-xs font-sans font-medium text-checkerboard shadow-2xs">
-                    {photoOptions.find((p) => p.key === selectedPhoto)?.label}
-                  </div>
-                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono px-2.5 py-1 rounded-md">
-                    100% Solid Natural Materials
-                  </div>
                 </div>
 
                 {/* Thumbnail Bar */}
@@ -205,9 +194,6 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                   preload="metadata"
                   className="w-full h-full object-contain"
                 />
-                <div className="absolute top-3 left-3 bg-black/65 backdrop-blur-xs text-white text-[11px] font-mono px-3 py-1 rounded-full border border-white/20">
-                  {roomTourVideo.roomName}
-                </div>
               </div>
             )}
 
@@ -444,12 +430,12 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
-                  <div className="absolute top-3 left-3 bg-cream/90 backdrop-blur-xs border border-checkerboard/10 px-2.5 py-0.5 rounded-full text-[10px] font-sans font-semibold tracking-wider text-checkerboard capitalize">
-                    {rel.category}
-                  </div>
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                   <div>
+                    <span className="font-sans text-[10px] uppercase tracking-wider text-tangerine font-semibold block mb-1">
+                      {rel.category}
+                    </span>
                     <div className="flex items-baseline justify-between">
                       <h4 className="font-serif text-lg text-checkerboard group-hover:text-tangerine transition-colors font-semibold">
                         {rel.name}

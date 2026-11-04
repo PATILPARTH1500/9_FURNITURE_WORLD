@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MapPin, Phone, ArrowUpRight, Sparkles, ShieldCheck, Truck, Wrench } from 'lucide-react';
 import { BRAND_CONFIG } from '@/config/brand';
-import { MagneticButton, TextRoll, MovingBorder } from '@/components/ui/motion';
+import { MagneticButton, TextRoll } from '@/components/ui/motion';
 
 export const EditorialSpreadSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -94,22 +94,13 @@ export const EditorialSpreadSection: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-            <MovingBorder
-              as="div"
-              borderRadius="9999px"
-              duration={3.5}
-              containerClassName="w-full sm:w-auto"
-              borderClassName="bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0deg,transparent_280deg,#F4510B_320deg,#F59E0B_360deg)]"
-              className="bg-transparent"
+            <MagneticButton
+              onClick={() => { window.location.href = `tel:${BRAND_CONFIG.contact.phone}`; }}
+              className="space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-8 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg w-full sm:w-auto justify-center"
             >
-              <MagneticButton
-                onClick={() => { window.location.href = `tel:${BRAND_CONFIG.contact.phone}`; }}
-                className="space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-8 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg w-full sm:w-auto justify-center"
-              >
-                <Phone className="w-4 h-4" />
-                <TextRoll>Book Design Consultation</TextRoll>
-              </MagneticButton>
-            </MovingBorder>
+              <Phone className="w-4 h-4" />
+              <TextRoll>Book Design Consultation</TextRoll>
+            </MagneticButton>
 
             <MagneticButton
               href="/collections"

@@ -4,7 +4,7 @@ import React from 'react';
 import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowDown, ArrowUpRight, Compass, ShieldCheck, Sparkles, Layers, Box } from 'lucide-react';
+import { ArrowDown, ArrowUpRight, ShieldCheck } from 'lucide-react';
 
 interface FurnitureVillageHeroProps {
   onExploreTour?: () => void;
@@ -51,28 +51,6 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
     <section className="relative min-h-[92vh] sm:min-h-screen w-full bg-cream text-checkerboard flex flex-col justify-between pt-28 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-8 md:px-12 lg:px-16 overflow-hidden bg-architectural-grid">
       {/* Subtle fine paper grain overlay */}
       <div className="absolute inset-0 bg-fine-grain pointer-events-none" />
-
-      {/* Top Architectural Brand Bar */}
-      <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-checkerboard/10">
-        <div className="inline-flex items-center space-x-2">
-          <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/90 px-3.5 py-1 rounded-full border border-tangerine/20 shadow-2xs inline-flex items-center space-x-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-            <span>Furniture Village · Atelier Showroom</span>
-          </span>
-          <span className="hidden md:inline-block font-sans text-xs uppercase tracking-wider text-walnut/70 bg-cream-dark px-3 py-1 rounded-full border border-checkerboard/10">
-            2026 Residence Collection
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-4 text-xs font-sans text-walnut/80">
-          <span className="flex items-center space-x-1.5">
-            <Compass className="w-3.5 h-3.5 text-tangerine" />
-            <span>Bengaluru Flagship · Indiranagar</span>
-          </span>
-          <span className="hidden sm:inline text-walnut/30">|</span>
-          <span className="hidden sm:inline font-medium">Five Continuous Living Suites</span>
-        </div>
-      </div>
 
       {/* Main Hero Visual & Editorial Content Grid */}
       <motion.div
@@ -147,7 +125,7 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
           </motion.div>
         </div>
 
-        {/* Right Column: Architectural Hero Image Frame with Blueprint Details */}
+        {/* Right Column: Architectural Hero Image */}
         <motion.div variants={itemVariants} className="lg:col-span-5 relative">
           <div className="relative aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5] rounded-3xl overflow-hidden border border-checkerboard/15 shadow-warm bg-cream-dark">
             <Image
@@ -158,28 +136,6 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
               className="object-cover transition-transform duration-700 ease-out hover:scale-103"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
             />
-            {/* Architectural gradient wash */}
-            <div className="absolute inset-0 bg-gradient-to-t from-checkerboard/85 via-checkerboard/20 to-transparent" />
-
-            {/* Inset Corner Metadata Tag */}
-            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white font-sans text-xs uppercase px-3 py-1 rounded-full border border-white/20 flex items-center space-x-1.5">
-              <Box className="w-3.5 h-3.5 text-tangerine" />
-              <span>Suite 01 · Sanctuary</span>
-            </div>
-
-            {/* Bottom In-Image Story Badge */}
-            <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-black/60 backdrop-blur-md border border-white/15 text-white">
-              <div className="flex items-center justify-between mb-1 text-xs font-sans">
-                <span className="text-tangerine-light font-semibold uppercase tracking-wider flex items-center space-x-1.5">
-                  <Layers className="w-3.5 h-3.5 text-tangerine" />
-                  <span>Cinematic Residence Tour</span>
-                </span>
-                <span className="text-white/80">Five Curated Suites</span>
-              </div>
-              <p className="font-serif text-sm sm:text-base text-[#FAF8F5] font-medium leading-snug">
-                Living Room · Dining Room · Kitchen · Family Lounge · Master Bedroom
-              </p>
-            </div>
           </div>
         </motion.div>
       </motion.div>

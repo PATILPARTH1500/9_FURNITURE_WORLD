@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight, Compass, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowUpRight, Compass } from 'lucide-react';
 import { MagneticButton, TextRoll } from '@/components/ui/motion';
 import { AmbientParticles } from '@/components/ui/AmbientParticles';
 
@@ -117,26 +117,6 @@ export const ArtOfLivingSection: React.FC = () => {
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter brightness-[0.92]"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25" />
-
-              <div className="absolute top-6 left-6 flex items-center space-x-2">
-                <span className="px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-xs font-sans uppercase tracking-wider text-[#FAF8F5] border border-white/20 font-medium">
-                  Residence Architecture · Sanctuary Suite
-                </span>
-              </div>
-
-              <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl bg-black/70 backdrop-blur-md border border-white/15">
-                <div className="flex items-center space-x-2 text-xs font-sans uppercase tracking-wider text-tangerine-light mb-1 font-semibold">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>The Residence Sanctuary Series</span>
-                </div>
-                <p className="font-serif text-lg text-white font-medium">
-                  The Light-Filled Residence Sanctuary
-                </p>
-                <p className="text-xs font-sans text-white/75 mt-1">
-                  Sculpted solid oak framing, natural plant wax finishes, and curved bouclé contours.
-                </p>
-              </div>
             </div>
 
             {/* Overlapping Floating Macro Joinery Inset with Scrubbed Parallax */}
@@ -148,22 +128,15 @@ export const ArtOfLivingSection: React.FC = () => {
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                 sizes="224px"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 text-xs font-sans font-semibold text-white uppercase tracking-wider">
-                Interlocking Mortise-Tenon Joint
-              </div>
             </div>
           </div>
 
           {/* Right Column: Editorial Narrative & Commitments (Cols 7-12) */}
           <div className="lg:col-span-6 space-y-8 art-narrative">
             <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-sans text-xs tracking-wider uppercase text-tangerine-light font-semibold bg-white/10 px-3.5 py-1.5 rounded-full border border-tangerine/30 inline-flex items-center space-x-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-                  <span>Brand Manifesto · The Art of Living</span>
-                </span>
-                <span className="font-sans text-xs uppercase tracking-wider text-white/70 bg-white/10 px-3 py-1 rounded-full border border-white/15 font-medium">
+              <div className="flex items-center space-x-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
+                <span className="font-mono text-xs uppercase tracking-widest text-tangerine-light font-semibold">
                   Craft Philosophy
                 </span>
               </div>

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
-import { ArrowUpRight, Sparkles, Layers } from 'lucide-react';
+import { ArrowUpRight, Layers } from 'lucide-react';
 import { PRODUCTS_CATALOG, COLLECTIONS_DATA } from '@/data/catalog';
 import { formatPrice } from '@/config/brand';
 
@@ -33,12 +33,9 @@ export default function CollectionsPage() {
         {/* Header */}
         <div className="max-w-3xl space-y-4 mb-16">
           <div className="flex items-center space-x-2">
-            <span className="font-mono text-[11px] tracking-widest uppercase text-tangerine font-semibold bg-white/90 px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-flex items-center space-x-1.5 shadow-2xs">
-              <Sparkles className="w-3 h-3 text-tangerine" />
-              <span>Permanent Showroom Collection</span>
-            </span>
-            <span className="font-mono text-[11px] uppercase tracking-wider text-walnut/70 bg-cream-dark px-3 py-1.5 rounded-full border border-checkerboard/10 hidden sm:inline-block">
-              2026 Atelier Catalogue
+            <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
+            <span className="font-mono text-xs uppercase tracking-widest text-tangerine font-semibold">
+              Permanent Collection
             </span>
           </div>
 
@@ -81,9 +78,6 @@ export default function CollectionsPage() {
                   <div className="flex items-center space-x-2">
                     <span className="font-mono text-[10px] uppercase tracking-wider text-mustard font-semibold bg-checkerboard/70 border border-mustard/30 px-2.5 py-0.5 rounded-sm inline-block backdrop-blur-xs">
                       {col.productCount} Designs
-                    </span>
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-cream/70 bg-black/40 px-2 py-0.5 rounded-sm">
-                      FW-{col.slug.split('-')[0].toUpperCase()}
                     </span>
                   </div>
                   <h3 className="font-serif text-2xl text-white group-hover:text-mustard transition-colors font-medium">
@@ -155,20 +149,13 @@ export default function CollectionsPage() {
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-cream/95 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-[11px] font-sans font-semibold tracking-wider text-checkerboard shadow-2xs capitalize">
-                    {product.category}
-                  </span>
-                </div>
-                <div className="absolute top-4 right-4">
-                  <span className="font-mono text-[10px] uppercase bg-black/60 text-white backdrop-blur-xs px-2.5 py-1 rounded-md">
-                    {product.variants[0]?.sku || `FW-${product.id.toUpperCase()}`}
-                  </span>
-                </div>
               </div>
 
               <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                 <div>
+                  <span className="font-sans text-[11px] uppercase tracking-wider text-tangerine font-semibold block mb-1">
+                    {product.category}
+                  </span>
                   <div className="flex items-baseline justify-between">
                     <h3 className="font-serif text-xl text-checkerboard group-hover:text-tangerine transition-colors font-semibold">
                       {product.name}

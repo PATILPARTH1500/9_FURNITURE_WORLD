@@ -264,9 +264,6 @@ export const CustomerReviewsCarousel: React.FC = () => {
                       className="object-cover transition-transform duration-700 group-hover:scale-104"
                       sizes="(max-width: 1024px) 100vw, 40vw"
                     />
-                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-[11px] font-sans font-semibold text-checkerboard border border-checkerboard/10 shadow-2xs">
-                      {review.roomName}
-                    </div>
                   </div>
 
                   {/* Right Column: Review Text & Attribution */}
