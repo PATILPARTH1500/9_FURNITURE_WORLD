@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import dynamic from '@/components/common/dynamic';
+import { FurnitureVillageHero } from '@/components/landing/FurnitureVillageHero';
 import { CinematicResidenceTour } from '@/components/cinema/CinematicResidenceTour';
 
 const CuratedCollectionSection = dynamic(
@@ -57,19 +58,22 @@ export default function HomePage() {
 
   return (
     <main className="relative min-h-screen bg-[#FAF8F5] text-checkerboard overflow-x-hidden w-full bg-fine-grain">
-      {/* SECTION 01: Cinematic Scroll-Driven 5-Scene Residence Tour (Opening Experience) */}
+      {/* SCREEN 01: Dedicated Furniture Village Hero Experience (Instant First Paint & Brand Statement) */}
+      <FurnitureVillageHero />
+
+      {/* SCREEN 02: Cinematic Scroll-Driven 5-Scene Residence Tour (Progressive Video Scrubbing) */}
       <CinematicResidenceTour />
 
-      {/* SECTION 02 & 03: Featured Collections (Lookbook) & Curated Furniture (Showroom Floor) */}
+      {/* SECTION 03 & 04: Featured Collections (Lookbook) & Curated Furniture (Showroom Floor) */}
       <CuratedCollectionSection />
 
-      {/* SECTION 04: Brand Philosophy — The Art of Living (Manifesto & Commitments) */}
+      {/* SECTION 05: Brand Philosophy — The Art of Living (Manifesto & Commitments) */}
       <ArtOfLivingSection />
 
-      {/* SECTION 05: Materials & Craftsmanship (Tactile Details & Swatch Inspector) */}
+      {/* SECTION 06: Materials & Craftsmanship (Tactile Details & Swatch Inspector) */}
       <MaterialsCraftSection />
 
-      {/* SECTION 06: Collectible Toy Cars & Lifestyle Feature (Scene 04 Family Lounge Narrative) */}
+      {/* SECTION 07: Collectible Toy Cars & Lifestyle Feature (Scene 04 Family Lounge Narrative) */}
       <CollectibleToyCarSection />
 
       {/* Interactive Room Discovery — Reconnect with Residence Scenes */}
@@ -78,10 +82,10 @@ export default function HomePage() {
       {/* Real Homes & Verified Reviews Carousel */}
       <CustomerReviewsCarousel />
 
-      {/* SECTION 07: Editorial Feature & Flagship Atelier (Consultation & Service Hallmarks) */}
+      {/* SECTION 08: Editorial Feature & Flagship Atelier (Consultation & Service Hallmarks) */}
       <EditorialSpreadSection />
 
-      {/* SECTION 08: The Gazette (Seasonal Newsletter & Private Dispatch) */}
+      {/* SECTION 09: The Gazette (Seasonal Newsletter & Private Dispatch) */}
       <GazetteNewsletterSection />
     </main>
   );

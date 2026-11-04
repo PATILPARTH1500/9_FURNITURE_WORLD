@@ -10,6 +10,7 @@ import {
   Check,
   ChevronUp,
   ChevronDown,
+  Sparkles,
 } from 'lucide-react';
 import { CINEMATIC_TOUR_SCENES } from '@/config/cinematicTour';
 import { PRODUCTS_CATALOG } from '@/data/catalog';
@@ -39,6 +40,9 @@ export const CinematicResidenceTour: React.FC = () => {
   const currentProgressRef = useRef(0);
   const activeSceneIndexRef = useRef(0);
 
+  // Progressive preloading tracker to avoid redundant load() calls
+  const primedScenesRef = useRef<boolean[]>(new Array(totalScenes).fill(false));
+
   // Discrete state for narrative text & product overlay
   const [activeSceneIndex, setActiveSceneIndex] = useState(0);
   const [_readyClips, setReadyClips] = useState<boolean[]>(new Array(totalScenes).fill(false));
@@ -46,13 +50,27 @@ export const CinematicResidenceTour: React.FC = () => {
   const [hasInteractedAudio, setHasInteractedAudio] = useState(false);
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
   const [isMobileProductExpanded, setIsMobileProductExpanded] = useState(false);
-  const [_viewportMode, setViewportMode] = useState<'desktop' | 'mobile'>(() =>
+  const [viewportMode, setViewportMode] = useState<'desktop' | 'mobile'>(() =>
     typeof window !== 'undefined' && window.innerWidth <= 768 ? 'mobile' : 'desktop'
   );
+
+  // Scene 01 Readiness & Branded Preparation Overlay
+  const [isScene0Ready, setIsScene0Ready] = useState(false);
+  const [scene0BufferedPct, setScene0BufferedPct] = useState(0);
+  const [isInTourViewport, setIsInTourViewport] = useState(false);
 
   useEffect(() => {
     setIsMobileProductExpanded(false);
   }, [activeSceneIndex]);
+
+  // Graceful fallback watchdog: never hold the preparation loader indefinitely
+  useEffect(() => {
+    const fallbackTimer = setTimeout(() => {
+      setIsScene0Ready(true);
+    }, 3500);
+
+    return () => clearTimeout(fallbackTimer);
+  }, []);
 
   const { setActiveProduct, setActiveRoomIndex } = useSceneStore();
   const { addItem, setIsOpen: setCartOpen } = useCartStore();
@@ -151,6 +169,9 @@ export const CinematicResidenceTour: React.FC = () => {
       window.matchMedia('(pointer: coarse)').matches ||
       window.matchMedia('(max-width: 768px)').matches;
 
+    // Mark Scene 0 as primed initially
+    primedScenesRef.current[0] = true;
+
     // ScrollTrigger pinning with 1:1 scroll progress mapping
     const st = ScrollTrigger.create({
       trigger: containerRef.current,
@@ -160,19 +181,28 @@ export const CinematicResidenceTour: React.FC = () => {
       scrub: true,
       anticipatePin: 1,
       fastScrollEnd: true,
+      onEnter: () => setIsInTourViewport(true),
+      onEnterBack: () => setIsInTourViewport(true),
+      onLeave: () => setIsInTourViewport(false),
+      onLeaveBack: () => setIsInTourViewport(false),
       onUpdate: (self) => {
         targetProgressRef.current = Math.max(0, Math.min(0.9999, self.progress));
+        if (self.progress > 0.001) {
+          setIsInTourViewport(true);
+        }
       },
     });
 
-    // Prime all videos in paused state and reset trackers
-    videoRefs.current.forEach((video, i) => {
-      if (video) {
-        video.pause();
-        video.currentTime = 0;
-      }
-      seekTrackersRef.current[i] = { isSeeking: false, pendingTime: null, lastTargetTime: -1, seekStartTime: 0 };
-    });
+    // Prime ONLY Scene 00 in paused state.
+    // CRITICAL: Do NOT set currentTime = 0 on unprimed scenes (scenes 1..4),
+    // which would trigger aggressive pre-fetching on all 5 MP4s at once!
+    if (videoRefs.current[0]) {
+      videoRefs.current[0].pause();
+      try {
+        videoRefs.current[0].currentTime = 0;
+      } catch {}
+    }
+    seekTrackersRef.current[0] = { isSeeking: false, pendingTime: null, lastTargetTime: -1, seekStartTime: 0 };
 
     // Expose runtime debugging hook for automated test suites
     if (typeof window !== 'undefined') {
@@ -231,17 +261,33 @@ export const CinematicResidenceTour: React.FC = () => {
 
         // Intelligent decoder lifecycle: manage buffer for adjacent scenes
         for (let j = 0; j < numScenes; j++) {
-          const isNear = Math.abs(j - discreteIdx) <= 1;
+          const isNear = (j === discreteIdx) || (j === discreteIdx - 1) || (j === discreteIdx + 1 && primedScenesRef.current[j]);
           const vid = videoRefs.current[j];
           if (vid) {
-            if (isNear) {
+            if (isNear && primedScenesRef.current[j]) {
               if (vid.preload !== 'auto') vid.preload = 'auto';
-              // Mobile decoders require explicit load() if metadata hasn't started fetching
               if (vid.readyState === 0) {
                 vid.load();
               }
             } else {
               if (!vid.paused) vid.pause();
+            }
+          }
+        }
+      }
+
+      // Intelligent Progressive Next-Scene Preloading:
+      // When user passes 50% through current scene, begin fetching the immediate next scene
+      const nextSceneIdx = discreteIdx + 1;
+      if (nextSceneIdx < numScenes && !primedScenesRef.current[nextSceneIdx]) {
+        const localProgress = s - discreteIdx;
+        if (localProgress >= 0.5) {
+          primedScenesRef.current[nextSceneIdx] = true;
+          const nextVid = videoRefs.current[nextSceneIdx];
+          if (nextVid) {
+            nextVid.preload = 'auto';
+            if (nextVid.readyState === 0) {
+              nextVid.load();
             }
           }
         }
@@ -340,8 +386,6 @@ export const CinematicResidenceTour: React.FC = () => {
       const currentWidth = window.innerWidth;
       const newMode = currentWidth <= 768 ? 'mobile' : 'desktop';
       setViewportMode((prev) => (prev !== newMode ? newMode : prev));
-      // Ignore vertical-only height fluctuations from mobile browser address bar collapse/expand
-      // Only refresh when viewport width actually changes (device rotation or desktop window resize)
       if (Math.abs(currentWidth - lastWidthRef.current) > 12) {
         lastWidthRef.current = currentWidth;
         ScrollTrigger.refresh();
@@ -349,8 +393,10 @@ export const CinematicResidenceTour: React.FC = () => {
     };
     window.addEventListener('resize', handleResize, { passive: true });
 
-    // Direct anchor navigation for room links (#living, #dining, #kitchen, #lounge, #bedroom)
+    // Direct anchor navigation for room links (#living, #dining, #kitchen, #lounge, #bedroom, #residence-tour)
     const roomHashMap: Record<string, number> = {
+      '#residence-tour': 0,
+      '#tour': 0,
       '#living': 0,
       '#dining': 1,
       '#kitchen': 2,
@@ -415,11 +461,13 @@ export const CinematicResidenceTour: React.FC = () => {
     }, 800);
   };
 
+  const showPreparationTransition = isInTourViewport && !isScene0Ready;
+
   return (
     <>
       <div
         ref={containerRef}
-        id="tour"
+        id="residence-tour"
         className="relative w-full bg-cream touch-pan-y"
         style={{ height: `${totalScenes * 105}vh` }}
       >
@@ -428,6 +476,8 @@ export const CinematicResidenceTour: React.FC = () => {
           {/* 1. LAYER: Video Scrubbing Stack */}
           <div className="absolute inset-0 w-full h-full bg-cream">
             {CINEMATIC_TOUR_SCENES.map((scene, idx) => {
+              const videoSrc = viewportMode === 'mobile' ? scene.videoSrcMobile : scene.videoSrcDesktop;
+
               return (
                 <div
                   key={scene.id}
@@ -446,22 +496,30 @@ export const CinematicResidenceTour: React.FC = () => {
                     ref={(el) => {
                       videoRefs.current[idx] = el;
                     }}
-                    src={scene.videoSrc}
+                    src={videoSrc}
                     poster={scene.posterSrc}
                     muted
                     loop={false}
                     playsInline
-                    preload={
-                      idx === 0
-                        ? 'auto'
-                        : Math.abs(idx - activeSceneIndex) <= 1
-                        ? 'metadata'
-                        : 'none'
-                    }
+                    preload={idx === 0 ? 'auto' : 'none'}
                     disablePictureInPicture
                     disableRemotePlayback
+                    onProgress={(e) => {
+                      if (idx === 0) {
+                        const v = e.currentTarget;
+                        if (v.buffered.length > 0 && v.duration) {
+                          const bufferedEnd = v.buffered.end(v.buffered.length - 1);
+                          const pct = Math.min(100, Math.round((bufferedEnd / v.duration) * 100));
+                          setScene0BufferedPct(pct);
+                          if (bufferedEnd >= 1.5 || v.readyState >= 3) {
+                            setIsScene0Ready(true);
+                          }
+                        }
+                      }
+                    }}
                     onError={() => {
-                      // Fallback: mark clip unready so poster stays active
+                      // Fallback: mark clip ready so poster seamlessly takes over
+                      if (idx === 0) setIsScene0Ready(true);
                       setReadyClips((prev) => {
                         const next = [...prev];
                         next[idx] = false;
@@ -494,6 +552,7 @@ export const CinematicResidenceTour: React.FC = () => {
                       }
                     }}
                     onLoadedData={() => {
+                      if (idx === 0) setIsScene0Ready(true);
                       setReadyClips((prev) => {
                         const next = [...prev];
                         next[idx] = true;
@@ -501,6 +560,7 @@ export const CinematicResidenceTour: React.FC = () => {
                       });
                     }}
                     onCanPlay={() => {
+                      if (idx === 0) setIsScene0Ready(true);
                       setReadyClips((prev) => {
                         const next = [...prev];
                         next[idx] = true;
@@ -527,6 +587,47 @@ export const CinematicResidenceTour: React.FC = () => {
                 </div>
               );
             })}
+          </div>
+
+          {/* BRANDED PREPARATION TRANSITION OVERLAY */}
+          <div
+            id="residence-prep-overlay"
+            className={`absolute inset-0 z-40 bg-cream/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center transition-all duration-700 ease-out ${
+              showPreparationTransition ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            }`}
+            aria-live="polite"
+          >
+            <div className="max-w-md w-full space-y-5 bg-white/80 p-8 sm:p-10 rounded-3xl border border-checkerboard/10 shadow-warm">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-tangerine font-semibold flex items-center justify-center space-x-1.5">
+                <Sparkles className="w-3 h-3 text-tangerine" />
+                <span>Furniture Village · Living Tour</span>
+              </span>
+
+              <div className="space-y-1.5">
+                <h3 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold">
+                  Preparing your residence...
+                </h3>
+                <p className="font-sans text-xs sm:text-sm text-walnut">
+                  Scene 01 · The Living Room
+                </p>
+              </div>
+
+              {/* Honest Progress Indicator (only if measurable progress) */}
+              <div className="space-y-2 pt-2">
+                <div className="w-full h-1.5 bg-cream-dark rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-tangerine rounded-full transition-all duration-300 ease-out"
+                    style={{
+                      width: scene0BufferedPct > 0 ? `${scene0BufferedPct}%` : '20%',
+                    }}
+                  />
+                </div>
+                <div className="flex justify-between text-[10px] font-mono text-walnut/70">
+                  <span>Honest Materials & Joinery</span>
+                  <span>{scene0BufferedPct > 0 ? `${scene0BufferedPct}%` : 'Calibrating...'}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* 2. LAYER: Editorial Scene Indicator / Subtle Progress Cue */}

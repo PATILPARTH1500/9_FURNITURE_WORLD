@@ -49,8 +49,10 @@ export const resolveVideoUrl = (path: string, forcedVariant?: 'desktop' | 'mobil
   // Auto-detect variant based on viewport if not explicitly passed
   const activeVariant = forcedVariant || (isMobileViewport() ? 'mobile' : 'desktop');
 
-  if (
-    targetPath.includes('/videos/scenes/') &&
+  if (!targetPath.includes('/videos/scenes/')) {
+    const cleanFilename = targetPath.replace(/^\/+/, '');
+    targetPath = `/videos/scenes/${activeVariant}/${cleanFilename}`;
+  } else if (
     !targetPath.includes('/desktop/') &&
     !targetPath.includes('/mobile/')
   ) {
