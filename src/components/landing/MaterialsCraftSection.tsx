@@ -148,7 +148,7 @@ export const MaterialsCraftSection: React.FC = () => {
     <section
       id="materials-craft"
       ref={sectionRef}
-      className="relative z-20 bg-[#F3EFE6] py-24 sm:py-32 border-t border-checkerboard/15 overflow-hidden"
+      className="relative z-20 bg-[#F3EFE6] py-24 sm:py-32 border-t border-checkerboard/15 overflow-hidden bg-architectural-grid-dense"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Section Header */}

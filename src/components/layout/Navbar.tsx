@@ -2,15 +2,17 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from '@/components/common/Link';
-import { ShoppingBag, Menu, X, ArrowUpRight } from 'lucide-react';
+import { ShoppingBag, Menu, X, ArrowUpRight, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
 import { MagneticButton } from '@/components/ui/motion';
+import { SearchModal } from '@/components/discovery/SearchModal';
 
 export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
@@ -32,9 +34,13 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on Escape key press
+  // Keyboard shortcut: Cmd+K / Ctrl+K opens search, Escape closes mobile menu
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
       if (e.key === 'Escape' && mobileMenuOpen) {
         setMobileMenuOpen(false);
       }
@@ -97,8 +103,21 @@ export const Navbar: React.FC = () => {
             ))}
           </nav>
 
-          {/* 3. Right Area: Shopping Actions (Shop Furniture, Cart, Accessible Menu Toggle) */}
+          {/* 3. Right Area: Shopping Actions (Search, Shop Furniture, Cart, Accessible Menu Toggle) */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            {/* Quick Search Button */}
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="p-1.5 xl:p-2 rounded-full bg-cream-dark/60 hover:bg-cream-dark/90 text-walnut hover:text-checkerboard shadow-2xs transition-all flex items-center gap-1.5"
+              aria-label="Search furniture"
+              title="Search (Cmd+K)"
+            >
+              <Search className="w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0" />
+              <span className="hidden xl:inline text-[10px] uppercase font-sans tracking-wider text-walnut/70 pr-1">
+                Search
+              </span>
+            </button>
+
             {/* Shop Furniture Button (Warm pill without harsh border) */}
             <MagneticButton
               href="/collections"
@@ -170,6 +189,17 @@ export const Navbar: React.FC = () => {
                 transition={{ delay: 0.16, duration: 0.2 }}
                 className="pt-3 border-t border-checkerboard/10 flex flex-col gap-2"
               >
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white border border-checkerboard/15 text-checkerboard font-medium px-4 py-2.5 rounded-full shadow-2xs hover:bg-cream transition-colors"
+                >
+                  <Search className="w-3.5 h-3.5 text-tangerine" />
+                  <span>Search Furniture</span>
+                </button>
+
                 <Link
                   href="/collections"
                   onClick={() => setMobileMenuOpen(false)}
@@ -183,6 +213,9 @@ export const Navbar: React.FC = () => {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Global Search Modal */}
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 };

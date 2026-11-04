@@ -72,6 +72,7 @@ export interface Product {
   };
   featured: boolean;
   tags: string[];
+  sku?: string;
 }
 
 export interface Collection {
@@ -83,6 +84,7 @@ export interface Collection {
   coverImage: string;
   productCount: number;
   curatorNote: string;
+  year?: number;
 }
 
 export interface CartItem {

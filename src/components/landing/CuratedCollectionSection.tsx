@@ -115,7 +115,7 @@ export const CuratedCollectionSection: React.FC = () => {
     <section
       id="collection"
       ref={sectionRef}
-      className="relative z-20 bg-[#F4E9D8] text-checkerboard py-24 sm:py-32 border-t border-checkerboard/12 overflow-hidden"
+      className="relative z-20 bg-[#F4E9D8] text-checkerboard py-24 sm:py-32 border-t border-checkerboard/12 overflow-hidden bg-architectural-grid"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Section Header */}

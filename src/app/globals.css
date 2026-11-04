@@ -67,3 +67,37 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #F4510B;
 }
+
+/* Architectural Fine-Line Grids (Light & Dark) */
+.bg-architectural-grid {
+  background-image: 
+    linear-gradient(to right, rgba(41, 37, 31, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(41, 37, 31, 0.04) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+}
+
+.bg-architectural-grid-dense {
+  background-image: 
+    linear-gradient(to right, rgba(41, 37, 31, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(41, 37, 31, 0.035) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+}
+
+.bg-architectural-grid-dark {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+}
+
+/* Minimal Architectural Blueprint Dotted Grid */
+.bg-blueprint-dots {
+  background-image: radial-gradient(rgba(41, 37, 31, 0.08) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+}
+
+/* Fine Tactile Paper / Film Grain Texture */
+.bg-fine-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
+}
+

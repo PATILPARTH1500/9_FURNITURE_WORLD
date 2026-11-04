@@ -69,8 +69,7 @@ export const AnimatedHeading: React.FC<AnimatedHeadingProps> = ({
       className={`relative ${className}`}
       aria-label={text}
     >
-      <span className="sr-only">{text}</span>
-      <span aria-hidden="true" className="inline">
+      <span className="inline">
         {words.map((word, index) => {
           const isHighlight = highlightText && highlightText.includes(word);
           return (

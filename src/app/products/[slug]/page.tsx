@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
-import { ArrowLeft, Check, ShieldCheck, Truck, RotateCcw, Plus, Minus, Film, Camera } from 'lucide-react';
+import { Check, ShieldCheck, Truck, RotateCcw, Plus, Minus, Film, Camera, ArrowUpRight, Ruler, Award } from 'lucide-react';
 import { PRODUCTS_CATALOG, WOOD_MATERIALS, UPHOLSTERY_MATERIALS } from '@/data/catalog';
 import { formatPrice } from '@/config/brand';
 import { useSceneStore } from '@/store/useSceneStore';
@@ -27,6 +27,45 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   const selectedWood = WOOD_MATERIALS.find((w) => w.id === selectedWoodId) || WOOD_MATERIALS[0];
   const selectedFabric =
     UPHOLSTERY_MATERIALS.find((f) => f.id === selectedFabricId) || UPHOLSTERY_MATERIALS[0];
+
+  // Dynamic contextual room tour video matching the product's living space
+  const roomTourVideo = (() => {
+    switch (product.category) {
+      case 'seating':
+        return {
+          src: '/videos/scenes/desktop/scene-1-living.mp4',
+          poster: '/videos/scenes/posters/scene-1-living.webp',
+          roomName: 'Living Residence Gallery',
+        };
+      case 'tables':
+        return {
+          src: '/videos/scenes/desktop/scene-2-dining.mp4',
+          poster: '/videos/scenes/posters/scene-2-dining.webp',
+          roomName: 'Dining Room Pavilion',
+        };
+      case 'beds':
+        return {
+          src: '/videos/scenes/desktop/scene-5-bedroom.mp4',
+          poster: '/videos/scenes/posters/scene-5-bedroom.webp',
+          roomName: 'Master Bedroom Suite',
+        };
+      case 'lighting':
+        return {
+          src: '/videos/scenes/desktop/scene-3-kitchen.mp4',
+          poster: '/videos/scenes/posters/scene-3-kitchen.webp',
+          roomName: 'Kitchen & Ambient Studio',
+        };
+      default:
+        return {
+          src: '/videos/scenes/scene-7-outro.mp4',
+          poster: '/videos/scenes/posters/scene-7-outro.webp',
+          roomName: 'Architectural Showroom Tour',
+        };
+    }
+  })();
+
+  // Related companion pieces to complete the room
+  const relatedProducts = PRODUCTS_CATALOG.filter((p) => p.id !== product.id).slice(0, 3);
 
   const handleAddToCart = () => {
     const currentVariant = product.variants[0];
@@ -52,20 +91,27 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   ];
 
   return (
-    <main className="min-h-screen bg-cream text-checkerboard pt-28 pb-24">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <main className="min-h-screen bg-cream text-checkerboard pt-28 pb-24 relative overflow-hidden bg-architectural-grid">
+      <div className="absolute inset-0 bg-fine-grain pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Navigation Breadcrumb */}
-        <div className="mb-8 flex items-center justify-between text-xs font-sans text-checkerboard/70">
-          <Link
-            href="/collections"
-            className="inline-flex items-center space-x-2 uppercase tracking-wider hover:text-tangerine transition-colors font-medium"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to All Furniture</span>
-          </Link>
-          <span className="uppercase tracking-wider text-[11px] font-semibold text-tangerine bg-white/70 px-3 py-1 rounded-full border border-tangerine/20">
-            Category: {product.category}
-          </span>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono text-checkerboard/70 gap-2 border-b border-checkerboard/10 pb-4">
+          <nav aria-label="Breadcrumb" className="flex items-center space-x-2">
+            <Link href="/" className="hover:text-tangerine transition-colors">Home</Link>
+            <span>/</span>
+            <Link href="/collections" className="hover:text-tangerine transition-colors">Collections</Link>
+            <span>/</span>
+            <span className="text-checkerboard font-semibold">{product.name}</span>
+          </nav>
+          <div className="flex items-center space-x-2">
+            <span className="uppercase tracking-wider text-[11px] font-semibold text-tangerine bg-white/90 px-3 py-1 rounded-full border border-tangerine/20 shadow-2xs">
+              SKU: {product.variants[0]?.sku || `FW-${product.id.toUpperCase()}`}
+            </span>
+            <span className="uppercase tracking-wider text-[11px] font-semibold text-walnut bg-cream-dark px-3 py-1 rounded-full border border-checkerboard/10 hidden sm:inline-block">
+              Category: {product.category}
+            </span>
+          </div>
         </div>
 
         {/* Main 2-Column Product Grid */}
@@ -83,7 +129,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
-                <span>Product Photos (4)</span>
+                <span>Product Photography (4 Angles)</span>
               </button>
 
               <button
@@ -95,7 +141,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 }`}
               >
                 <Film className="w-3.5 h-3.5" />
-                <span>Room Tour Video</span>
+                <span>{roomTourVideo.roomName} Video</span>
               </button>
             </div>
 
@@ -103,7 +149,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             {activeTab === 'photos' ? (
               <div className="space-y-4">
                 {/* Main Large Photo */}
-                <div className="relative aspect-[4/3] rounded-2xl border border-checkerboard/10 overflow-hidden bg-white shadow-sm">
+                <div className="relative aspect-[4/3] rounded-2xl border border-checkerboard/10 overflow-hidden bg-white shadow-retro">
                   <Image
                     src={product.images[selectedPhoto]}
                     alt={`${product.name} - ${selectedPhoto}`}
@@ -114,6 +160,9 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                   />
                   <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-xs font-sans font-medium text-checkerboard shadow-2xs">
                     {photoOptions.find((p) => p.key === selectedPhoto)?.label}
+                  </div>
+                  <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono px-2.5 py-1 rounded-md">
+                    100% Solid Natural Materials
                   </div>
                 </div>
 
@@ -147,8 +196,8 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               /* Room Tour Video */
               <div className="relative aspect-video w-full rounded-2xl border border-checkerboard/10 bg-black overflow-hidden shadow-xl">
                 <video
-                  src="/videos/scenes/scene-7-outro.mp4"
-                  poster="/videos/scenes/posters/scene-7-outro.webp"
+                  src={roomTourVideo.src}
+                  poster={roomTourVideo.poster}
                   controls
                   autoPlay
                   loop
@@ -156,27 +205,71 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                   preload="metadata"
                   className="w-full h-full object-contain"
                 />
+                <div className="absolute top-3 left-3 bg-black/65 backdrop-blur-xs text-white text-[11px] font-mono px-3 py-1 rounded-full border border-white/20">
+                  {roomTourVideo.roomName}
+                </div>
               </div>
             )}
 
             {/* Design & Craftsmanship Story */}
-            <div className="p-8 bg-white rounded-2xl border border-checkerboard/10 shadow-sm space-y-3">
-              <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold">
-                Design & Material Story
+            <div className="p-8 bg-white/95 backdrop-blur-xs rounded-2xl border border-checkerboard/10 shadow-sm space-y-3">
+              <span className="font-mono text-[11px] uppercase tracking-wider text-tangerine font-semibold block">
+                Design & Material Philosophy
               </span>
               <p className="font-serif text-lg md:text-xl text-checkerboard italic font-normal leading-relaxed">
                 &ldquo;{product.architecturalStatement}&rdquo;
               </p>
-              <p className="font-sans text-xs text-walnut pt-2 font-medium">
-                Designed by {product.designer}, {product.year}
-              </p>
+              <div className="pt-2 flex items-center justify-between text-xs text-walnut border-t border-checkerboard/10 font-medium">
+                <span>Designed by {product.designer}</span>
+                <span className="font-mono text-tangerine">{product.year} Atelier Release</span>
+              </div>
+            </div>
+
+            {/* Architectural Blueprint Specifications */}
+            <div className="p-8 bg-white/95 backdrop-blur-xs rounded-2xl border border-checkerboard/10 shadow-sm space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-checkerboard/10">
+                <div className="flex items-center space-x-2">
+                  <Ruler className="w-4 h-4 text-tangerine" />
+                  <h3 className="font-mono text-xs uppercase tracking-wider text-checkerboard font-semibold">
+                    Architectural Blueprint & Dimensions
+                  </h3>
+                </div>
+                <span className="font-mono text-[11px] text-walnut">Metric (cm / kg)</span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-sans">
+                <div className="p-3 bg-cream/50 rounded-xl border border-checkerboard/10 text-center">
+                  <span className="text-walnut block text-[10px] font-mono uppercase tracking-wider">Width</span>
+                  <span className="text-checkerboard font-serif text-lg font-bold">{product.dimensions.widthCm} cm</span>
+                </div>
+                <div className="p-3 bg-cream/50 rounded-xl border border-checkerboard/10 text-center">
+                  <span className="text-walnut block text-[10px] font-mono uppercase tracking-wider">Depth</span>
+                  <span className="text-checkerboard font-serif text-lg font-bold">{product.dimensions.depthCm} cm</span>
+                </div>
+                <div className="p-3 bg-cream/50 rounded-xl border border-checkerboard/10 text-center">
+                  <span className="text-walnut block text-[10px] font-mono uppercase tracking-wider">Height</span>
+                  <span className="text-checkerboard font-serif text-lg font-bold">{product.dimensions.heightCm} cm</span>
+                </div>
+                <div className="p-3 bg-cream/50 rounded-xl border border-checkerboard/10 text-center">
+                  <span className="text-walnut block text-[10px] font-mono uppercase tracking-wider">Net Weight</span>
+                  <span className="text-checkerboard font-serif text-lg font-bold">{product.dimensions.weightKg} kg</span>
+                </div>
+              </div>
+
+              <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-walnut">
+                <span className="flex items-center space-x-1.5">
+                  <Award className="w-3.5 h-3.5 text-tangerine" />
+                  <span>FSC® 100% Certified Sustainable Timber</span>
+                </span>
+                <span>Crafted in Karnataka, India</span>
+              </div>
             </div>
           </div>
 
           {/* Right Column: Pricing, Finishes & Shopping Actions */}
           <div className="lg:col-span-5 space-y-8">
             <div className="space-y-3 pb-6 border-b border-checkerboard/10">
-              <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold">
+              <span className="font-mono text-xs tracking-wider uppercase text-tangerine font-semibold">
                 {product.subtitle}
               </span>
               <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight">
@@ -186,11 +279,13 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 <span className="font-sans text-3xl text-checkerboard font-bold">
                   {formatPrice(product.price, true)}
                 </span>
-                <span className="text-xs font-sans text-olive font-semibold bg-olive/10 px-2.5 py-1 rounded-full">
-                  In Stock · Free Delivery
+                <span className="text-xs font-sans text-olive font-semibold bg-olive/10 px-2.5 py-1 rounded-full border border-olive/20">
+                  In Stock · White Glove Setup
                 </span>
               </div>
-              <p className="text-xs text-walnut">Price includes all standard taxes and home delivery.</p>
+              <p className="text-xs text-walnut">
+                Inclusive of all applicable GST, delivery to room of choice, and full packaging removal.
+              </p>
             </div>
 
             <p className="text-sm text-checkerboard/85 font-normal leading-relaxed">
@@ -233,7 +328,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               {product.materials.upholsteryOptions.length > 0 && (
                 <div className="space-y-3">
                   <div className="flex justify-between text-xs font-sans">
-                    <span className="uppercase text-walnut font-medium">Fabric Choice</span>
+                    <span className="uppercase text-walnut font-medium">Tactile Fabric</span>
                     <span className="text-checkerboard font-semibold">{selectedFabric.name}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
@@ -285,14 +380,14 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-tangerine hover:bg-coral text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-bold transition-all duration-300 shadow-warm hover:shadow-lg"
+                  className="flex-1 bg-tangerine hover:bg-coral text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-bold transition-all duration-300 shadow-warm hover:shadow-lg active:scale-98"
                 >
                   Add to Bag · {formatPrice(product.price * quantity)}
                 </button>
               </div>
 
               {/* Customer Promises */}
-              <div className="grid grid-cols-2 gap-4 pt-4 text-xs text-walnut font-sans">
+              <div className="grid grid-cols-2 gap-4 pt-4 text-xs text-walnut font-sans bg-white/70 p-4 rounded-xl border border-checkerboard/10">
                 <div className="flex items-center space-x-2">
                   <ShieldCheck className="w-4 h-4 text-tangerine shrink-0" />
                   <span>10-Year Frame Warranty</span>
@@ -311,31 +406,70 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Dimensions Specifications */}
-            <div className="space-y-3 pt-6 border-t border-checkerboard/10">
-              <h3 className="font-sans text-xs uppercase tracking-wider text-checkerboard font-semibold">
-                Dimensions & Specifications
-              </h3>
-              <div className="grid grid-cols-2 gap-3 text-xs font-sans bg-white p-4 rounded-xl border border-checkerboard/10 shadow-sm">
-                <div>
-                  <span className="text-walnut block text-[11px]">Width:</span>
-                  <span className="text-checkerboard font-semibold">{product.dimensions.widthCm} cm</span>
-                </div>
-                <div>
-                  <span className="text-walnut block text-[11px]">Depth:</span>
-                  <span className="text-checkerboard font-semibold">{product.dimensions.depthCm} cm</span>
-                </div>
-                <div>
-                  <span className="text-walnut block text-[11px]">Height:</span>
-                  <span className="text-checkerboard font-semibold">{product.dimensions.heightCm} cm</span>
-                </div>
-                <div>
-                  <span className="text-walnut block text-[11px]">Net Weight:</span>
-                  <span className="text-checkerboard font-semibold">{product.dimensions.weightKg} kg</span>
-                </div>
-              </div>
+        {/* Complete the Living Space: Companion Pieces */}
+        <div className="mt-28 pt-16 border-t border-checkerboard/15">
+          <div className="flex items-end justify-between mb-8 pb-4 border-b border-checkerboard/10">
+            <div>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-tangerine font-semibold block">
+                Harmonious Living
+              </span>
+              <h2 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold mt-1">
+                Complete the Living Space
+              </h2>
             </div>
+            <Link
+              href="/collections"
+              className="font-mono text-xs text-tangerine hover:text-coral transition-colors font-semibold flex items-center space-x-1"
+            >
+              <span>Explore All Suites</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {relatedProducts.map((rel) => (
+              <Link
+                key={rel.id}
+                href={`/products/${rel.slug}`}
+                className="group flex flex-col rounded-2xl border border-checkerboard/10 bg-white/95 backdrop-blur-xs overflow-hidden hover:border-tangerine/60 transition-all duration-300 shadow-retro hover:shadow-warm"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
+                  <Image
+                    src={rel.images.hero}
+                    alt={rel.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div className="absolute top-3 left-3 bg-cream/90 backdrop-blur-xs border border-checkerboard/10 px-2.5 py-0.5 rounded-full text-[10px] font-sans font-semibold tracking-wider text-checkerboard capitalize">
+                    {rel.category}
+                  </div>
+                </div>
+                <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                  <div>
+                    <div className="flex items-baseline justify-between">
+                      <h4 className="font-serif text-lg text-checkerboard group-hover:text-tangerine transition-colors font-semibold">
+                        {rel.name}
+                      </h4>
+                      <span className="font-sans text-sm font-bold text-tangerine">
+                        {formatPrice(rel.price)}
+                      </span>
+                    </div>
+                    <p className="text-xs text-walnut mt-1 line-clamp-1">{rel.subtitle}</p>
+                  </div>
+                  <div className="pt-3 border-t border-checkerboard/10 flex items-center justify-between text-xs">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-checkerboard font-semibold group-hover:text-tangerine flex items-center space-x-1">
+                      <span>View Details</span>
+                      <ArrowUpRight className="w-3 h-3 text-tangerine" />
+                    </span>
+                    <span className="text-[11px] text-walnut font-medium">{rel.designer}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

@@ -18,6 +18,10 @@ const MaterialsCraftSection = dynamic(
   () => import('@/components/landing/MaterialsCraftSection').then((mod) => mod.MaterialsCraftSection),
   { ssr: true }
 );
+const CollectibleToyCarSection = dynamic(
+  () => import('@/components/landing/CollectibleToyCarSection').then((mod) => mod.CollectibleToyCarSection),
+  { ssr: true }
+);
 const CustomerReviewsCarousel = dynamic(
   () => import('@/components/landing/CustomerReviewsCarousel').then((mod) => mod.CustomerReviewsCarousel),
   { ssr: true }
@@ -52,7 +56,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="relative min-h-screen bg-[#FAF8F5] text-checkerboard overflow-x-hidden w-full">
+    <main className="relative min-h-screen bg-[#FAF8F5] text-checkerboard overflow-x-hidden w-full bg-fine-grain">
       {/* SECTION 01: Cinematic Scroll-Driven 5-Scene Residence Tour (Opening Experience) */}
       <CinematicResidenceTour />
 
@@ -65,16 +69,19 @@ export default function HomePage() {
       {/* SECTION 05: Materials & Craftsmanship (Tactile Details & Swatch Inspector) */}
       <MaterialsCraftSection />
 
+      {/* SECTION 06: Collectible Toy Cars & Lifestyle Feature (Scene 04 Family Lounge Narrative) */}
+      <CollectibleToyCarSection />
+
       {/* Interactive Room Discovery — Reconnect with Residence Scenes */}
       <RoomDiscoverySection />
 
       {/* Real Homes & Verified Reviews Carousel */}
       <CustomerReviewsCarousel />
 
-      {/* SECTION 06: Editorial Feature & Flagship Atelier (Consultation & Service Hallmarks) */}
+      {/* SECTION 07: Editorial Feature & Flagship Atelier (Consultation & Service Hallmarks) */}
       <EditorialSpreadSection />
 
-      {/* SECTION 07: The Gazette (Seasonal Newsletter & Private Dispatch) */}
+      {/* SECTION 08: The Gazette (Seasonal Newsletter & Private Dispatch) */}
       <GazetteNewsletterSection />
     </main>
   );

@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowUpRight, Compass, Sparkles } from 'lucide-react';
 import { MagneticButton, TextRoll } from '@/components/ui/motion';
+import { AmbientParticles } from '@/components/ui/AmbientParticles';
 
 export const ArtOfLivingSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -93,8 +94,11 @@ export const ArtOfLivingSection: React.FC = () => {
     <section
       id="art-of-living"
       ref={sectionRef}
-      className="relative z-20 bg-[#1C1612] text-[#FAF8F5] py-28 sm:py-36 border-t border-white/10 overflow-hidden"
+      className="relative z-20 bg-[#1C1612] text-[#FAF8F5] py-28 sm:py-36 border-t border-white/10 overflow-hidden bg-architectural-grid-dark"
     >
+      {/* Restrained Ambient Particles Floating in Warm Darkness */}
+      <AmbientParticles count={18} tint="mixed" opacity={0.35} />
+
       {/* Ambient Radial Warmth on Deep Espresso */}
       <div
         className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(244,81,11,0.08),transparent_70%)] pointer-events-none select-none"
