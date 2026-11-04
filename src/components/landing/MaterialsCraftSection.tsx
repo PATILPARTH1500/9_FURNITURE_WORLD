@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Layers, ShieldCheck, Check, ArrowUpRight, Cpu } from 'lucide-react';
+import { Layers, ShieldCheck, Check, ArrowUpRight, Eye } from 'lucide-react';
 import { AnimatedHeading, SpotlightCard, MagneticButton, TextRoll } from '@/components/ui/motion';
 
 interface MaterialStory {
@@ -25,7 +25,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
     category: 'Timber Selection',
     name: 'Solid European Oak & Smoked Walnut',
     materialType: 'Natural Hardwood',
-    specCode: '[ FSC®-C119822 CERTIFIED ]',
+    specCode: 'FSC® Certified Timber',
     image: '/images/film/macro-joinery.webp',
     description:
       'We work only with kiln-dried solid hardwood, never synthetic wood foils or hollow particleboard. Natural medullary rays and rich grain patterns give every table and chair a unique, living character that deepens over generations.',
@@ -45,7 +45,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
     category: 'Textile Weave',
     name: 'Heavyweight Looped Cream Bouclé',
     materialType: 'Tactile Upholstery',
-    specCode: '[ MARTINDALE: >50,000 CYCLES ]',
+    specCode: 'Martindale >50,000',
     image: '/images/film/macro-boucle.webp',
     description:
       'Crafted from high-density looped yarns that create a plush, nubby texture that feels warm and cozy. Engineered with natural soil resistance and high rub counts to stay beautiful through daily family living.',
@@ -65,7 +65,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
     category: 'Craftsmanship',
     name: 'Precision Mortise-and-Tenon Joints',
     materialType: 'Structural Joinery',
-    specCode: '[ TOLERANCE: ±0.5MM JOINERY ]',
+    specCode: 'Interlocking Tenon',
     image: '/images/film/exploded-view.webp',
     description:
       'Every leg, rail, and stretcher is fitted with interlocking timber joints and reinforced by concealed steel anchoring pins. This traditional joinery prevents creaks, wobbles, and structural loosening over time.',
@@ -75,7 +75,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
       '10-year structural frame guarantee',
     ],
     technicalData: [
-      { label: 'Tolerance', value: '±0.5 mm CNC & Hand-Shaved' },
+      { label: 'Tolerance', value: '±0.5 mm Hand-Shaved' },
       { label: 'Tensile Load', value: '1,450 kgf Joint Resistance' },
       { label: 'Adhesive', value: 'Type 1 Waterproof Polyurethane' },
     ],
@@ -85,7 +85,7 @@ const MATERIALS_STORIES: MaterialStory[] = [
     category: 'Luxe Finishes',
     name: 'Top-Grain Leather & Cotton Velvet',
     materialType: 'Supple Finishes',
-    specCode: '[ ANILINE DYE · ZERO FOILS ]',
+    specCode: 'Aniline Patina Finish',
     image: '/images/film/cognac-leather.webp',
     description:
       'Our supple cognac leathers and olive velvets are selected for their soft hand-feel and durability. Double-stitched seams along every edge ensure shapes remain tailored and refined through decades of lounging.',
@@ -184,8 +184,8 @@ export const MaterialsCraftSection: React.FC = () => {
                 <Layers className="w-3.5 h-3.5 text-tangerine" />
                 <span>Tactile Craftsmanship · Real Materials</span>
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-walnut/80 bg-white/70 px-2.5 py-1 rounded-md border border-checkerboard/10">
-                [ ATELIER WORKBENCH · MATERIAL CODEX ]
+              <span className="font-sans text-xs uppercase tracking-wider text-walnut/80 bg-white/70 px-3 py-1 rounded-full border border-checkerboard/10 font-medium">
+                Material Standards
               </span>
             </div>
             <AnimatedHeading
@@ -200,7 +200,7 @@ export const MaterialsCraftSection: React.FC = () => {
           </p>
         </div>
 
-        {/* 4 Clickable Material Cards Grid with Notion Spec Badges */}
+        {/* 4 Clickable Material Cards Grid */}
         <div className="materials-cards-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {MATERIALS_STORIES.map((mat) => {
             const isSelected = mat.id === activeMaterial;
@@ -223,13 +223,13 @@ export const MaterialsCraftSection: React.FC = () => {
                     className="object-cover transition-transform duration-700 group-hover:scale-106"
                     sizes="(max-width: 768px) 100vw, 25vw"
                   />
-                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-xs text-white px-2.5 py-1 rounded-full text-[9px] font-mono font-medium uppercase tracking-wider">
+                  <div className="absolute top-2.5 left-2.5 bg-black/75 backdrop-blur-xs text-white px-3 py-1 rounded-full text-xs font-sans font-medium uppercase tracking-wider">
                     {mat.specCode}
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-tangerine font-semibold block">
+                  <span className="text-xs font-sans uppercase tracking-wider text-tangerine font-semibold block">
                     {mat.materialType}
                   </span>
                   <h3 className="font-serif text-lg text-checkerboard font-semibold leading-snug group-hover:text-tangerine transition-colors">
@@ -238,8 +238,8 @@ export const MaterialsCraftSection: React.FC = () => {
                 </div>
 
                 <div className="pt-2 border-t border-checkerboard/10 flex items-center justify-between text-xs font-sans">
-                  <span className={`font-mono text-[11px] uppercase tracking-wider ${isSelected ? 'text-tangerine font-semibold' : 'text-walnut/70'}`}>
-                    {isSelected ? '[ VIEWING ]' : '[ INSPECT ]'}
+                  <span className={`text-xs uppercase tracking-wider ${isSelected ? 'text-tangerine font-semibold' : 'text-walnut/70'}`}>
+                    {isSelected ? 'Viewing' : 'Inspect'}
                   </span>
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
@@ -272,9 +272,9 @@ export const MaterialsCraftSection: React.FC = () => {
               className="object-cover transition-transform duration-700"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
-            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold text-checkerboard border border-checkerboard/15 shadow-2xs flex items-center space-x-1.5">
-              <Cpu className="w-3.5 h-3.5 text-tangerine" />
-              <span>MACRO INSPECTION · 10X RESOLUTION</span>
+            <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-full text-xs font-sans font-semibold text-checkerboard border border-checkerboard/15 shadow-2xs flex items-center space-x-1.5">
+              <Eye className="w-3.5 h-3.5 text-tangerine" />
+              <span>Tactile Macro View</span>
             </div>
           </div>
 
@@ -282,11 +282,11 @@ export const MaterialsCraftSection: React.FC = () => {
           <div className="lg:col-span-6 space-y-6">
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
-                <span className="font-mono text-xs uppercase tracking-wider text-tangerine font-semibold">
+                <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold">
                   {selectedMaterial.specCode}
                 </span>
                 <span className="text-walnut/40">·</span>
-                <span className="font-mono text-xs uppercase tracking-wider text-walnut">
+                <span className="font-sans text-xs uppercase tracking-wider text-walnut font-medium">
                   {selectedMaterial.materialType}
                 </span>
               </div>
@@ -299,20 +299,20 @@ export const MaterialsCraftSection: React.FC = () => {
               {selectedMaterial.description}
             </p>
 
-            {/* Notion Technical Spec Mini Grid */}
-            <div className="grid grid-cols-3 gap-2.5 p-3 rounded-2xl bg-cream/60 border border-checkerboard/10 font-mono text-[11px]">
+            {/* Technical Spec Mini Grid */}
+            <div className="grid grid-cols-3 gap-2.5 p-3.5 rounded-2xl bg-cream/60 border border-checkerboard/10 text-xs font-sans">
               {selectedMaterial.technicalData.map((tech, idx) => (
                 <div key={idx} className="space-y-0.5">
-                  <span className="text-walnut/70 uppercase block text-[9px]">{tech.label}</span>
-                  <span className="font-semibold text-checkerboard block">{tech.value}</span>
+                  <span className="text-walnut/70 uppercase block text-[10px] tracking-wide">{tech.label}</span>
+                  <span className="font-semibold text-checkerboard block text-xs">{tech.value}</span>
                 </div>
               ))}
             </div>
 
             {/* Quality Checklist */}
             <div className="space-y-2.5 pt-2 border-t border-checkerboard/10">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-walnut font-semibold block">
-                [ CONFIRMED ATELIER SPECIFICATIONS ]
+              <span className="font-sans text-xs uppercase tracking-wider text-walnut font-semibold block">
+                Atelier Craft Standards
               </span>
               <ul className="space-y-2">
                 {selectedMaterial.attributes.map((attr, aIdx) => (

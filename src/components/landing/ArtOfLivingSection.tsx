@@ -120,13 +120,13 @@ export const ArtOfLivingSection: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25" />
 
               <div className="absolute top-6 left-6 flex items-center space-x-2">
-                <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-mono uppercase tracking-widest text-[#FAF8F5] border border-white/20 font-medium">
-                  [ SUITE ARCHITECTURE · 12°58&apos;N 77°35&apos;E ]
+                <span className="px-3.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-xs font-sans uppercase tracking-wider text-[#FAF8F5] border border-white/20 font-medium">
+                  Residence Architecture · Sanctuary Suite
                 </span>
               </div>
 
               <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl bg-black/70 backdrop-blur-md border border-white/15">
-                <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-wider text-tangerine-light mb-1">
+                <div className="flex items-center space-x-2 text-xs font-sans uppercase tracking-wider text-tangerine-light mb-1 font-semibold">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>The Residence Sanctuary Series</span>
                 </div>
@@ -149,8 +149,8 @@ export const ArtOfLivingSection: React.FC = () => {
                 sizes="224px"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 text-[10px] font-mono font-semibold text-white uppercase tracking-wider">
-                [ JOINERY: ±0.2MM TOLERANCE ]
+              <div className="absolute bottom-3 left-3 right-3 text-xs font-sans font-semibold text-white uppercase tracking-wider">
+                Interlocking Mortise-Tenon Joint
               </div>
             </div>
           </div>
@@ -163,8 +163,8 @@ export const ArtOfLivingSection: React.FC = () => {
                   <Sparkles className="w-3.5 h-3.5 text-tangerine" />
                   <span>Brand Manifesto · The Art of Living</span>
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-wider text-white/60 bg-white/5 px-2.5 py-1 rounded-md border border-white/10">
-                  [ CODEX: FV-PHILOSOPHY ]
+                <span className="font-sans text-xs uppercase tracking-wider text-white/70 bg-white/10 px-3 py-1 rounded-full border border-white/15 font-medium">
+                  Craft Philosophy
                 </span>
               </div>
 
@@ -183,12 +183,12 @@ export const ArtOfLivingSection: React.FC = () => {
               </p>
             </div>
 
-            {/* 3 Notion-Style Bento Commitment Cards */}
+            {/* 3 Editorial Commitment Rows */}
             <div className="art-commitments-grid space-y-3.5 pt-4 border-t border-white/12">
               <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-2.5 py-0.5 rounded-sm border border-tangerine/30 font-semibold">
-                    [ SPEC: KILN-DRIED HARDWOOD ]
+                  <span className="font-sans text-xs uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-3 py-0.5 rounded-full border border-tangerine/30 font-semibold">
+                    Kiln-Dried Hardwood
                   </span>
                   <span className="font-serif text-lg font-bold text-white/60">01</span>
                 </div>
@@ -202,8 +202,8 @@ export const ArtOfLivingSection: React.FC = () => {
 
               <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-2.5 py-0.5 rounded-sm border border-tangerine/30 font-semibold">
-                    [ SPEC: ERGONOMICS · 112° RECLINE ]
+                  <span className="font-sans text-xs uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-3 py-0.5 rounded-full border border-tangerine/30 font-semibold">
+                    Ergonomics · 112° Recline
                   </span>
                   <span className="font-serif text-lg font-bold text-white/60">02</span>
                 </div>
@@ -217,8 +217,8 @@ export const ArtOfLivingSection: React.FC = () => {
 
               <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-2.5 py-0.5 rounded-sm border border-tangerine/30 font-semibold">
-                    [ SPEC: RADIUS ±0.5MM · CHILD-SAFE ]
+                  <span className="font-sans text-xs uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-3 py-0.5 rounded-full border border-tangerine/30 font-semibold">
+                    Hand-Smoothed Radii · Child-Safe
                   </span>
                   <span className="font-serif text-lg font-bold text-white/60">03</span>
                 </div>

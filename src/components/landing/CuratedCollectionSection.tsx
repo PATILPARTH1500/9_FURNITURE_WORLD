@@ -127,8 +127,8 @@ export const CuratedCollectionSection: React.FC = () => {
                 <Sparkles className="w-3.5 h-3.5 text-tangerine" />
                 <span>Curated Series · 2026 Collection</span>
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-walnut/80 bg-white/60 px-2.5 py-1 rounded-md border border-checkerboard/10">
-                [ ARCHITECTURAL LOOKBOOK · ED. IV ]
+              <span className="font-sans text-xs uppercase tracking-wider text-walnut/80 bg-white/60 px-3 py-1 rounded-full border border-checkerboard/10 font-medium">
+                Atelier Lookbook
               </span>
             </div>
             <AnimatedHeading
@@ -169,10 +169,10 @@ export const CuratedCollectionSection: React.FC = () => {
                 >
                   <div className="space-y-3.5 pointer-events-auto">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-[10px] uppercase tracking-widest text-mustard font-semibold bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                        [ SERIES: FV-01 · SANCTUARY ]
+                      <span className="font-sans text-xs uppercase tracking-wider text-mustard font-semibold bg-black/60 backdrop-blur-md px-3.5 py-1 rounded-full border border-white/20">
+                        Series 01 · Sanctuary
                       </span>
-                      <span className="text-white/80 font-mono text-[10px] uppercase bg-black/40 px-2 py-0.5 rounded-sm border border-white/10">
+                      <span className="text-white/80 font-sans text-xs uppercase bg-black/40 px-2.5 py-1 rounded-full border border-white/10 font-medium">
                         {COLLECTIONS_DATA[0].productCount} Designs
                       </span>
                     </div>
@@ -184,16 +184,16 @@ export const CuratedCollectionSection: React.FC = () => {
                       {COLLECTIONS_DATA[0].subtitle}
                     </p>
 
-                    {/* Notion-style Blueprint spec tags */}
-                    <div className="flex flex-wrap gap-1.5 pt-1 text-[10px] font-mono text-white/70">
-                      <span className="px-2 py-0.5 rounded-sm bg-white/10 backdrop-blur-xs border border-white/10">
-                        PROPORTION: LOW-PROFILE
+                    {/* Editorial Craft Notes */}
+                    <div className="flex flex-wrap gap-2 pt-1 text-xs font-sans text-white/80">
+                      <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15">
+                        Low-Profile Seating
                       </span>
-                      <span className="px-2 py-0.5 rounded-sm bg-white/10 backdrop-blur-xs border border-white/10">
-                        TEXTILE: BOUCLÉ & OAK
+                      <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15">
+                        Tactile Bouclé & Oak
                       </span>
-                      <span className="px-2 py-0.5 rounded-sm bg-white/10 backdrop-blur-xs border border-white/10">
-                        JOINERY: MORTISE & TENON
+                      <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15">
+                        Mortise & Tenon
                       </span>
                     </div>
 
@@ -210,8 +210,8 @@ export const CuratedCollectionSection: React.FC = () => {
           {/* Stacked Concept Duo (Cols 8-12) */}
           <div className="lg:col-span-5 flex flex-col gap-6 lg:gap-8">
             {COLLECTIONS_DATA.slice(1, 3).map((col, idx) => {
-              const seriesCode = idx === 0 ? 'FV-02 · MONOLITH' : 'FV-03 · HORIZONS';
-              const specBadge = idx === 0 ? 'SOLID SMOKED WALNUT' : 'VELVET & PEACH LINEN';
+              const seriesCode = idx === 0 ? 'Series 02 · Monolith' : 'Series 03 · Horizons';
+              const specBadge = idx === 0 ? 'Solid Smoked Walnut' : 'Velvet & Peach Linen';
               return (
                 <div key={col.id} className="collection-concept-panel flex-1">
                   <Link
@@ -226,10 +226,10 @@ export const CuratedCollectionSection: React.FC = () => {
                     >
                       <div className="space-y-2 pointer-events-auto">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-[9px] uppercase tracking-widest text-mustard font-semibold bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20 inline-block">
-                            [ SERIES: {seriesCode} ]
+                          <span className="font-sans text-xs uppercase tracking-wider text-mustard font-semibold bg-black/60 backdrop-blur-md px-3 py-0.5 rounded-full border border-white/20 inline-block">
+                            {seriesCode}
                           </span>
-                          <span className="text-white/70 font-mono text-[9px] uppercase">
+                          <span className="text-white/80 font-sans text-xs">
                             {specBadge}
                           </span>
                         </div>
@@ -239,7 +239,7 @@ export const CuratedCollectionSection: React.FC = () => {
                         <p className="font-sans text-xs text-cream-light/80 font-light line-clamp-1">
                           {col.subtitle}
                         </p>
-                        <div className="pt-1 flex items-center space-x-1 text-[11px] font-sans uppercase tracking-wider text-mustard group-hover:text-white transition-colors font-medium">
+                        <div className="pt-1 flex items-center space-x-1 text-xs font-sans uppercase tracking-wider text-mustard group-hover:text-white transition-colors font-medium">
                           <TextRoll>View Series</TextRoll>
                           <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                         </div>
@@ -258,8 +258,8 @@ export const CuratedCollectionSection: React.FC = () => {
             <div>
               <div className="flex items-center space-x-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
-                <span className="text-[11px] font-mono uppercase tracking-widest text-walnut font-semibold">
-                  [ SHOWROOM FLOOR · CATALOGUE BENTO ]
+                <span className="text-xs font-sans uppercase tracking-wider text-walnut font-semibold">
+                  Showroom Floor · Signature Collection
                 </span>
               </div>
               <h3 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold mt-1">
@@ -305,7 +305,6 @@ export const CuratedCollectionSection: React.FC = () => {
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => {
                 const isAdded = addedProductId === product.id;
-                const sku = product.variants[0]?.sku || `FV-${product.id.slice(0, 4).toUpperCase()}`;
                 const woodName = product.materials.woodOptions[0]?.name.split(' ')[0] || 'Oak';
 
                 return (
@@ -338,10 +337,10 @@ export const CuratedCollectionSection: React.FC = () => {
                           />
                         </Link>
 
-                        {/* Top Badges with Notion SKU Code */}
+                        {/* Top Badges */}
                         <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-                          <span className="font-mono text-[10px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-xs text-checkerboard border border-checkerboard/10 shadow-2xs">
-                            {sku}
+                          <span className="font-sans text-xs uppercase tracking-wider font-semibold px-3 py-1 rounded-full bg-white/95 backdrop-blur-xs text-checkerboard border border-checkerboard/10 shadow-2xs">
+                            {product.category}
                           </span>
                           <span className="font-serif text-sm font-semibold text-checkerboard bg-white/95 backdrop-blur-xs px-3 py-0.5 rounded-full border border-checkerboard/10 shadow-2xs">
                             {formatPrice(product.price)}
@@ -394,8 +393,8 @@ export const CuratedCollectionSection: React.FC = () => {
                             </span>
                           </div>
 
-                          <span className="font-mono text-[10px] text-olive font-semibold bg-olive/10 px-2 py-0.5 rounded-full border border-olive/20">
-                            IN STOCK · 48H
+                          <span className="font-sans text-[11px] text-olive font-semibold bg-olive/10 px-2.5 py-0.5 rounded-full border border-olive/20">
+                            In Stock · Ready to Ship
                           </span>
                         </div>
 

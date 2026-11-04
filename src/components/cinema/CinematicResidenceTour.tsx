@@ -598,8 +598,8 @@ export const CinematicResidenceTour: React.FC = () => {
             aria-live="polite"
           >
             <div className="max-w-md w-full space-y-5 bg-white/80 p-8 sm:p-10 rounded-3xl border border-checkerboard/10 shadow-warm">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-tangerine font-semibold flex items-center justify-center space-x-1.5">
-                <Sparkles className="w-3 h-3 text-tangerine" />
+              <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold flex items-center justify-center space-x-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-tangerine" />
                 <span>Furniture Village · Living Tour</span>
               </span>
 
@@ -622,9 +622,9 @@ export const CinematicResidenceTour: React.FC = () => {
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[10px] font-mono text-walnut/70">
-                  <span>Honest Materials & Joinery</span>
-                  <span>{scene0BufferedPct > 0 ? `${scene0BufferedPct}%` : 'Calibrating...'}</span>
+                <div className="flex justify-between text-xs font-sans text-walnut/70">
+                  <span>Natural Timber & Joinery</span>
+                  <span>{scene0BufferedPct > 0 ? `${scene0BufferedPct}%` : 'Loading...'}</span>
                 </div>
               </div>
             </div>

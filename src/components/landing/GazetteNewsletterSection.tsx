@@ -60,9 +60,9 @@ export const GazetteNewsletterSection: React.FC = () => {
           {/* Subtle Ambient Grain & Top Accent Strip */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-tangerine via-mustard to-rust" />
 
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cream border border-checkerboard/10 text-[10px] font-mono uppercase tracking-[0.18em] text-walnut font-medium">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cream border border-checkerboard/10 text-xs font-sans uppercase tracking-wider text-walnut font-medium">
             <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-            <span>[ PRIVATE DISPATCH · VOL. IV / 2026 ]</span>
+            <span>Private Dispatch · Volume IV</span>
           </div>
 
           <div className="space-y-3 max-w-xl mx-auto">
@@ -103,8 +103,8 @@ export const GazetteNewsletterSection: React.FC = () => {
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-[10px] font-mono uppercase tracking-wider text-walnut/70">
-                [ DISPATCHED QUARTERLY · ZERO SPAM · INSTANT ONE-CLICK OPT-OUT ]
+              <p className="text-xs font-sans text-walnut/70">
+                Dispatched quarterly · Zero spam · Unsubscribe anytime
               </p>
             </form>
           )}

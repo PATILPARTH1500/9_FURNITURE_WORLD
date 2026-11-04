@@ -77,8 +77,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                 <Sparkles className="w-3.5 h-3.5 text-tangerine" />
                 <span>Family Lounge Story · Scene 04</span>
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-walnut/80 bg-white/70 px-2.5 py-1 rounded-md border border-checkerboard/10">
-                [ COLLECTIBLE ATELIER · SCALE 1:18 ]
+              <span className="font-sans text-xs uppercase tracking-wider text-walnut/80 bg-white/70 px-3 py-1 rounded-full border border-checkerboard/10 font-medium">
+                Collectible Atelier · Scale 1:18
               </span>
             </div>
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-checkerboard font-semibold tracking-tight leading-[1.08]">
@@ -101,7 +101,7 @@ export const CollectibleToyCarSection: React.FC = () => {
           </div>
         </div>
 
-        {/* 4-Item Curated Architectural Grid with Bento Proportions & Notion Tags */}
+        {/* 4-Item Curated Architectural Grid */}
         <div className="toycar-grid grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8">
           {/* Card 1: Vintage Grand Prix Racer (Col 1-7) */}
           <div className="toycar-card md:col-span-7">
@@ -117,8 +117,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 58vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  [ SCALE: 1:18 · VINTAGE MONOPOSTO ]
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
+                  Scale 1:18 · Vintage Monoposto
                 </div>
               </div>
 
@@ -127,8 +127,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                   <h3 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold group-hover:text-tangerine transition-colors">
                     The Monoposto Grand Prix Racer
                   </h3>
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-tangerine font-semibold bg-tangerine/10 px-2.5 py-0.5 rounded-full border border-tangerine/20 w-fit">
-                    HAND-POLISHED ENAMEL
+                  <span className="text-xs font-sans uppercase tracking-wider text-tangerine font-semibold bg-tangerine/10 px-3 py-0.5 rounded-full border border-tangerine/20 w-fit">
+                    Hand-Polished Enamel
                   </span>
                 </div>
                 <p className="font-sans text-xs sm:text-sm text-walnut leading-relaxed">
@@ -152,8 +152,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 42vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  [ TIMBER: 100% SOLID AMERICAN WALNUT ]
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
+                  Solid American Walnut
                 </div>
               </div>
 
@@ -182,8 +182,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 66vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  [ ATMOSPHERE: FAMILY LOUNGE · SCENE 04 ]
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
+                  Family Lounge Atmosphere · Scene 04
                 </div>
               </div>
 
@@ -192,9 +192,9 @@ export const CollectibleToyCarSection: React.FC = () => {
                   <h3 className="font-serif text-2xl text-checkerboard font-semibold group-hover:text-olive transition-colors">
                     Where Design Meets Daily Wonder
                   </h3>
-                  <div className="flex items-center space-x-1.5 text-xs font-mono text-olive font-semibold bg-olive/10 px-2.5 py-0.5 rounded-full border border-olive/20">
+                  <div className="flex items-center space-x-1.5 text-xs font-sans text-olive font-semibold bg-olive/10 px-3 py-1 rounded-full border border-olive/20">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>NON-TOXIC PLANT HARDWAX</span>
+                    <span>Non-Toxic Plant Hardwax</span>
                   </div>
                 </div>
                 <p className="font-sans text-xs sm:text-sm text-walnut leading-relaxed">
@@ -218,8 +218,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 34vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  [ AXLES: SOLID TURNED BRASS ]
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
+                  Turned Solid Brass Axles
                 </div>
               </div>
 
@@ -237,8 +237,8 @@ export const CollectibleToyCarSection: React.FC = () => {
 
         {/* Bottom Banner Triggering Scene 04 */}
         <div className="mt-14 pt-8 border-t border-checkerboard/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs font-mono text-walnut uppercase tracking-wider">
-            [ VOLUME IV RESIDENCE COLLECTION · HANDCRAFTED HARDWOODS & NATURAL WAXES ]
+          <p className="text-xs font-sans text-walnut uppercase tracking-wider font-medium">
+            Residence Living Collection · Handcrafted Hardwoods & Natural Waxes
           </p>
           <MagneticButton
             href="/#lounge"

@@ -52,22 +52,22 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
       {/* Subtle fine paper grain overlay */}
       <div className="absolute inset-0 bg-fine-grain pointer-events-none" />
 
-      {/* Top Architectural Notion-Style Badge & Series Code */}
+      {/* Top Architectural Brand Bar */}
       <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-checkerboard/10">
         <div className="inline-flex items-center space-x-2">
-          <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-tangerine font-semibold bg-white/90 px-3 py-1 rounded-full border border-tangerine/20 shadow-2xs inline-flex items-center space-x-1.5">
-            <Sparkles className="w-3 h-3 text-tangerine" />
+          <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/90 px-3.5 py-1 rounded-full border border-tangerine/20 shadow-2xs inline-flex items-center space-x-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-tangerine" />
             <span>Furniture Village · Atelier Showroom</span>
           </span>
-          <span className="hidden md:inline-block font-mono text-[10px] uppercase tracking-wider text-walnut/70 bg-cream-dark px-2.5 py-1 rounded-md border border-checkerboard/10">
-            [ CODEX: FV-2026 ]
+          <span className="hidden md:inline-block font-sans text-xs uppercase tracking-wider text-walnut/70 bg-cream-dark px-3 py-1 rounded-full border border-checkerboard/10">
+            2026 Residence Collection
           </span>
         </div>
 
-        <div className="flex items-center space-x-4 text-xs font-mono text-walnut/80">
-          <span className="flex items-center space-x-1">
+        <div className="flex items-center space-x-4 text-xs font-sans text-walnut/80">
+          <span className="flex items-center space-x-1.5">
             <Compass className="w-3.5 h-3.5 text-tangerine" />
-            <span>Bengaluru Flagship (12°58&apos;N 77°35&apos;E)</span>
+            <span>Bengaluru Flagship · Indiranagar</span>
           </span>
           <span className="hidden sm:inline text-walnut/30">|</span>
           <span className="hidden sm:inline font-medium">Five Continuous Living Suites</span>
@@ -162,21 +162,21 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
             <div className="absolute inset-0 bg-gradient-to-t from-checkerboard/85 via-checkerboard/20 to-transparent" />
 
             {/* Inset Corner Metadata Tag */}
-            <div className="absolute top-4 right-4 bg-checkerboard/75 backdrop-blur-md text-white font-mono text-[10px] uppercase px-3 py-1 rounded-full border border-white/20 flex items-center space-x-1.5">
-              <Box className="w-3 h-3 text-tangerine" />
-              <span>SUITE · 01 : SANCTUARY</span>
+            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white font-sans text-xs uppercase px-3 py-1 rounded-full border border-white/20 flex items-center space-x-1.5">
+              <Box className="w-3.5 h-3.5 text-tangerine" />
+              <span>Suite 01 · Sanctuary</span>
             </div>
 
             {/* Bottom In-Image Story Badge */}
-            <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-checkerboard/10 shadow-retro">
-              <div className="flex items-center justify-between mb-1 text-[11px] font-mono">
-                <span className="text-tangerine font-semibold uppercase tracking-wider flex items-center space-x-1">
-                  <Layers className="w-3 h-3 text-tangerine" />
+            <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-black/60 backdrop-blur-md border border-white/15 text-white">
+              <div className="flex items-center justify-between mb-1 text-xs font-sans">
+                <span className="text-tangerine-light font-semibold uppercase tracking-wider flex items-center space-x-1.5">
+                  <Layers className="w-3.5 h-3.5 text-tangerine" />
                   <span>Cinematic Residence Tour</span>
                 </span>
-                <span className="text-walnut">5 Spaces</span>
+                <span className="text-white/80">Five Curated Suites</span>
               </div>
-              <p className="font-serif text-sm sm:text-base text-checkerboard font-medium leading-snug">
+              <p className="font-serif text-sm sm:text-base text-[#FAF8F5] font-medium leading-snug">
                 Living Room · Dining Room · Kitchen · Family Lounge · Master Bedroom
               </p>
             </div>
@@ -193,7 +193,7 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
 
         <button
           onClick={handleScrollToTour}
-          className="inline-flex items-center space-x-2 text-checkerboard/80 hover:text-tangerine font-mono text-[11px] uppercase tracking-widest transition-colors py-1 group"
+          className="inline-flex items-center space-x-2 text-checkerboard/80 hover:text-tangerine font-sans text-xs uppercase tracking-wider font-semibold transition-colors py-1 group"
         >
           <span>Scroll into Cinematic Residence</span>
           <ArrowDown className="w-3.5 h-3.5 text-tangerine transition-transform group-hover:translate-y-1" />
