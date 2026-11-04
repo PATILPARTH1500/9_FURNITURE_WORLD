@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight, Compass, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Compass, Sparkles, CheckCircle2 } from 'lucide-react';
 import { MagneticButton, TextRoll } from '@/components/ui/motion';
 import { AmbientParticles } from '@/components/ui/AmbientParticles';
 
@@ -38,7 +38,7 @@ export const ArtOfLivingSection: React.FC = () => {
       );
 
       gsap.fromTo(
-        '.art-commitment-item',
+        '.art-commitment-card',
         { opacity: 0, y: 20 },
         {
           opacity: 1,
@@ -47,7 +47,7 @@ export const ArtOfLivingSection: React.FC = () => {
           stagger: 0.08,
           ease: 'power2.out',
           scrollTrigger: {
-            trigger: '.art-commitments-list',
+            trigger: '.art-commitments-grid',
             start: 'top 90%',
             once: true,
             fastScrollEnd: true,
@@ -58,7 +58,7 @@ export const ArtOfLivingSection: React.FC = () => {
       if (imageSpreadRef.current) {
         gsap.fromTo(
           imageSpreadRef.current,
-          { clipPath: 'inset(10% 0% 10% 0%)', opacity: 0.8 },
+          { clipPath: 'inset(8% 0% 8% 0%)', opacity: 0.8 },
           {
             clipPath: 'inset(0% 0% 0% 0%)',
             opacity: 1,
@@ -73,7 +73,7 @@ export const ArtOfLivingSection: React.FC = () => {
           }
         );
 
-        // Subtle Parallax on Overlapping Macro Detail Inset (Animmaster Reference)
+        // Subtle Parallax on Overlapping Macro Detail Inset
         gsap.to('.art-macro-inset', {
           y: -24,
           ease: 'none',
@@ -117,15 +117,19 @@ export const ArtOfLivingSection: React.FC = () => {
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter brightness-[0.92]"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25" />
 
-              <div className="absolute top-6 left-6">
-                <span className="px-3 py-1 rounded-full bg-black/50 backdrop-blur-md text-[10px] font-sans uppercase tracking-widest text-[#FAF8F5] border border-white/20 font-medium">
-                  The Residence Series
+              <div className="absolute top-6 left-6 flex items-center space-x-2">
+                <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10px] font-mono uppercase tracking-widest text-[#FAF8F5] border border-white/20 font-medium">
+                  [ SUITE ARCHITECTURE · 12°58&apos;N 77°35&apos;E ]
                 </span>
               </div>
 
-              <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl bg-black/60 backdrop-blur-md border border-white/15">
+              <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl bg-black/70 backdrop-blur-md border border-white/15">
+                <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-wider text-tangerine-light mb-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>The Residence Sanctuary Series</span>
+                </div>
                 <p className="font-serif text-lg text-white font-medium">
                   The Light-Filled Residence Sanctuary
                 </p>
@@ -144,9 +148,9 @@ export const ArtOfLivingSection: React.FC = () => {
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                 sizes="224px"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute bottom-3 left-3 right-3 text-[11px] font-sans font-semibold text-white uppercase tracking-wider">
-                Precision Joinery Detail
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
+              <div className="absolute bottom-3 left-3 right-3 text-[10px] font-mono font-semibold text-white uppercase tracking-wider">
+                [ JOINERY: ±0.2MM TOLERANCE ]
               </div>
             </div>
           </div>
@@ -154,10 +158,15 @@ export const ArtOfLivingSection: React.FC = () => {
           {/* Right Column: Editorial Narrative & Commitments (Cols 7-12) */}
           <div className="lg:col-span-6 space-y-8 art-narrative">
             <div className="space-y-4">
-              <span className="font-sans text-xs tracking-wider uppercase text-tangerine-light font-semibold bg-white/10 px-3.5 py-1.5 rounded-full border border-tangerine/30 inline-flex items-center space-x-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-                <span>Brand Manifesto · The Art of Living</span>
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-sans text-xs tracking-wider uppercase text-tangerine-light font-semibold bg-white/10 px-3.5 py-1.5 rounded-full border border-tangerine/30 inline-flex items-center space-x-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-tangerine" />
+                  <span>Brand Manifesto · The Art of Living</span>
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-wider text-white/60 bg-white/5 px-2.5 py-1 rounded-md border border-white/10">
+                  [ CODEX: FV-PHILOSOPHY ]
+                </span>
+              </div>
 
               <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[#FAF8F5] font-semibold tracking-tight leading-[1.08]">
                 Furniture Made to Be Lived In, <br />
@@ -167,55 +176,58 @@ export const ArtOfLivingSection: React.FC = () => {
 
             <div className="space-y-4 text-[#D0C4B4] font-sans text-sm sm:text-base leading-relaxed">
               <p>
-                At Furniture World, we reject cold, delicate showroom pieces designed only for photoshoots. Real homes are meant for morning tea, energetic family dinners, afternoon reading, and quiet moments of stillness.
+                At Furniture Village, we reject cold, delicate showroom pieces designed only for photoshoots. Real homes are meant for morning tea, energetic family dinners, afternoon reading, and quiet moments of stillness.
               </p>
               <p>
                 We take inspiration from optimistic 1970s residences: organic curved contours, solid European oak, rich smoked walnut, and joyful burnt-orange accents. Every timber corner is hand-smoothed so children and pets can move freely around your home.
               </p>
             </div>
 
-            {/* 3 Numbered Commitments */}
-            <div className="art-commitments-list space-y-4 pt-4 border-t border-white/12">
-              <div className="art-commitment-item flex items-start space-x-4">
-                <span className="font-serif text-2xl font-semibold text-tangerine shrink-0">
-                  01
-                </span>
-                <div>
-                  <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
-                    100% Solid Kiln-Dried Hardwood
-                  </h4>
-                  <p className="text-xs font-sans text-[#A69A8A] mt-0.5">
-                    Solid European White Oak and Smoked Walnut. Never synthetic wood foils or hollow particleboard.
-                  </p>
+            {/* 3 Notion-Style Bento Commitment Cards */}
+            <div className="art-commitments-grid space-y-3.5 pt-4 border-t border-white/12">
+              <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-2.5 py-0.5 rounded-sm border border-tangerine/30 font-semibold">
+                    [ SPEC: KILN-DRIED HARDWOOD ]
+                  </span>
+                  <span className="font-serif text-lg font-bold text-white/60">01</span>
                 </div>
+                <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
+                  100% Solid European Oak & Smoked Walnut
+                </h4>
+                <p className="text-xs font-sans text-[#A69A8A] leading-relaxed">
+                  Kiln-dried hardwoods selected for medullary grain richness. Never synthetic wood foils or hollow particleboard.
+                </p>
               </div>
 
-              <div className="art-commitment-item flex items-start space-x-4">
-                <span className="font-serif text-2xl font-semibold text-tangerine shrink-0">
-                  02
-                </span>
-                <div>
-                  <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
-                    Calibrated Human Comfort
-                  </h4>
-                  <p className="text-xs font-sans text-[#A69A8A] mt-0.5">
-                    Relaxed 112° reclines and multi-density foam cores that support natural spine curvature for hours of relaxation.
-                  </p>
+              <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-2.5 py-0.5 rounded-sm border border-tangerine/30 font-semibold">
+                    [ SPEC: ERGONOMICS · 112° RECLINE ]
+                  </span>
+                  <span className="font-serif text-lg font-bold text-white/60">02</span>
                 </div>
+                <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
+                  Calibrated Human Comfort & Spine Support
+                </h4>
+                <p className="text-xs font-sans text-[#A69A8A] leading-relaxed">
+                  Relaxed 112° reclines and multi-density foam cores that support natural spine curvature for hours of relaxation.
+                </p>
               </div>
 
-              <div className="art-commitment-item flex items-start space-x-4">
-                <span className="font-serif text-2xl font-semibold text-tangerine shrink-0">
-                  03
-                </span>
-                <div>
-                  <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
-                    Organic Plant Wax Finishing
-                  </h4>
-                  <p className="text-xs font-sans text-[#A69A8A] mt-0.5">
-                    Hand-applied botanical wax oils that protect without sealing the wood under plastic, allowing the grain to breathe.
-                  </p>
+              <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-2.5 py-0.5 rounded-sm border border-tangerine/30 font-semibold">
+                    [ SPEC: RADIUS ±0.5MM · CHILD-SAFE ]
+                  </span>
+                  <span className="font-serif text-lg font-bold text-white/60">03</span>
                 </div>
+                <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
+                  Child-Safe Radii & Organic Hardwax Oils
+                </h4>
+                <p className="text-xs font-sans text-[#A69A8A] leading-relaxed">
+                  Hand-applied botanical wax oils that protect without sealing the wood under plastic, allowing the grain to breathe naturally with zero toxic VOCs.
+                </p>
               </div>
             </div>
 

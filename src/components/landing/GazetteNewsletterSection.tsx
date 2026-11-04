@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mail, ArrowRight, Check, Sparkles } from 'lucide-react';
-import { BRAND_CONFIG } from '@/config/brand';
 
 export const GazetteNewsletterSection: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -61,14 +60,14 @@ export const GazetteNewsletterSection: React.FC = () => {
           {/* Subtle Ambient Grain & Top Accent Strip */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-tangerine via-mustard to-rust" />
 
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-cream border border-checkerboard/10 text-[11px] font-sans uppercase tracking-[0.2em] text-walnut font-medium">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cream border border-checkerboard/10 text-[10px] font-mono uppercase tracking-[0.18em] text-walnut font-medium">
             <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-            <span>Seasonal Architectural Dispatch</span>
+            <span>[ PRIVATE DISPATCH · VOL. IV / 2026 ]</span>
           </div>
 
           <div className="space-y-3 max-w-xl mx-auto">
             <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight">
-              The {BRAND_CONFIG.name} Gazette
+              The Furniture Village Gazette
             </h3>
             <p className="font-sans text-sm sm:text-base text-walnut leading-relaxed font-normal">
               Receive our seasonal architectural gazette, early access to limited timber releases, invitations to private showroom previews, and thoughtful essays on home craft.
@@ -104,8 +103,8 @@ export const GazetteNewsletterSection: React.FC = () => {
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-[11px] font-sans text-walnut/70">
-                Dispatched quarterly. Zero spam. Unsubscribe at any time with one click.
+              <p className="text-[10px] font-mono uppercase tracking-wider text-walnut/70">
+                [ DISPATCHED QUARTERLY · ZERO SPAM · INSTANT ONE-CLICK OPT-OUT ]
               </p>
             </form>
           )}
@@ -114,4 +113,3 @@ export const GazetteNewsletterSection: React.FC = () => {
     </section>
   );
 };
-

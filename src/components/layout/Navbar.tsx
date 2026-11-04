@@ -56,10 +56,10 @@ export const Navbar: React.FC = () => {
         ref={navRef}
         className={`pointer-events-auto w-full max-w-[1440px] transition-all duration-300 ease-out ${
           mobileMenuOpen
-            ? 'rounded-3xl bg-[#FAF8F5]/98 shadow-[0_12px_40px_rgba(40,30,20,0.12)] py-3 sm:py-4 px-4 sm:px-6'
+            ? 'rounded-3xl bg-[#FAF8F5] border border-checkerboard/12 shadow-[0_16px_50px_rgba(40,30,20,0.18)] py-3 sm:py-4 px-4 sm:px-6'
             : scrolled
-            ? 'rounded-full bg-[#FAF8F5]/95 backdrop-blur-xl shadow-[0_8px_32px_rgba(40,30,20,0.08)] py-2 sm:py-2.5 px-3 sm:px-5 lg:px-8'
-            : 'rounded-full bg-[#FAF8F5]/90 backdrop-blur-lg shadow-[0_6px_28px_rgba(40,30,20,0.06)] py-2 sm:py-2.5 px-3 sm:px-5 lg:px-8'
+            ? 'rounded-full bg-[#FAF8F5]/95 backdrop-blur-xl border border-checkerboard/8 shadow-[0_8px_32px_rgba(40,30,20,0.08)] py-2 sm:py-2.5 px-3 sm:px-5 lg:px-8'
+            : 'rounded-full bg-[#FAF8F5]/90 backdrop-blur-lg border border-checkerboard/8 shadow-[0_6px_28px_rgba(40,30,20,0.06)] py-2 sm:py-2.5 px-3 sm:px-5 lg:px-8'
         }`}
       >
         <div className="flex items-center justify-between gap-1.5 sm:gap-2 lg:gap-4">

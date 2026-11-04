@@ -69,14 +69,19 @@ export const CollectibleToyCarSection: React.FC = () => {
       <AmbientParticles count={16} tint="gold" opacity={0.3} />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        {/* Section Header */}
+        {/* Section Header with Notion Blueprint Tag */}
         <div className="toycar-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/12 gap-8">
           <div className="space-y-4 max-w-xl">
-            <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/80 px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-flex items-center space-x-1.5 shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-              <span>Family Lounge Story · Scene 04</span>
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-checkerboard font-semibold tracking-tight leading-[1.1]">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/90 px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-flex items-center space-x-1.5 shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-tangerine" />
+                <span>Family Lounge Story · Scene 04</span>
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-walnut/80 bg-white/70 px-2.5 py-1 rounded-md border border-checkerboard/10">
+                [ COLLECTIBLE ATELIER · SCALE 1:18 ]
+              </span>
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-checkerboard font-semibold tracking-tight leading-[1.08]">
               Playful Nostalgia, <br />
               <span className="italic font-normal text-walnut">Crafted as Art.</span>
             </h2>
@@ -96,7 +101,7 @@ export const CollectibleToyCarSection: React.FC = () => {
           </div>
         </div>
 
-        {/* 4-Item Curated Architectural Grid */}
+        {/* 4-Item Curated Architectural Grid with Bento Proportions & Notion Tags */}
         <div className="toycar-grid grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8">
           {/* Card 1: Vintage Grand Prix Racer (Col 1-7) */}
           <div className="toycar-card md:col-span-7">
@@ -112,18 +117,18 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 58vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  Collectible Object · 01
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
+                  [ SCALE: 1:18 · VINTAGE MONOPOSTO ]
                 </div>
               </div>
 
               <div className="p-6 sm:p-8 space-y-3">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <h3 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold group-hover:text-tangerine transition-colors">
                     The Monoposto Grand Prix Racer
                   </h3>
-                  <span className="text-xs uppercase font-sans tracking-wider text-walnut font-medium">
-                    Hand-Polished Enamel
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-tangerine font-semibold bg-tangerine/10 px-2.5 py-0.5 rounded-full border border-tangerine/20 w-fit">
+                    HAND-POLISHED ENAMEL
                   </span>
                 </div>
                 <p className="font-sans text-xs sm:text-sm text-walnut leading-relaxed">
@@ -147,8 +152,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 42vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  Nordic Heritage · 02
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
+                  [ TIMBER: 100% SOLID AMERICAN WALNUT ]
                 </div>
               </div>
 
@@ -177,8 +182,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 66vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  Lounge Atmosphere · 03
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
+                  [ ATMOSPHERE: FAMILY LOUNGE · SCENE 04 ]
                 </div>
               </div>
 
@@ -187,9 +192,9 @@ export const CollectibleToyCarSection: React.FC = () => {
                   <h3 className="font-serif text-2xl text-checkerboard font-semibold group-hover:text-olive transition-colors">
                     Where Design Meets Daily Wonder
                   </h3>
-                  <div className="flex items-center space-x-1.5 text-xs font-sans text-olive font-medium">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span>Non-Toxic Finishes</span>
+                  <div className="flex items-center space-x-1.5 text-xs font-mono text-olive font-semibold bg-olive/10 px-2.5 py-0.5 rounded-full border border-olive/20">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>NON-TOXIC PLANT HARDWAX</span>
                   </div>
                 </div>
                 <p className="font-sans text-xs sm:text-sm text-walnut leading-relaxed">
@@ -213,8 +218,8 @@ export const CollectibleToyCarSection: React.FC = () => {
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   sizes="(max-width: 768px) 100vw, 34vw"
                 />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-sans uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
-                  Detail View · 04
+                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider text-checkerboard font-semibold shadow-2xs border border-checkerboard/10">
+                  [ AXLES: SOLID TURNED BRASS ]
                 </div>
               </div>
 
@@ -223,7 +228,7 @@ export const CollectibleToyCarSection: React.FC = () => {
                   Precision Metal & Timber Joinery
                 </h3>
                 <p className="font-sans text-xs text-walnut leading-relaxed">
-                  Turned solid brass axels, hand-stitched leather seat pads, and chamfered edges designed for generations.
+                  Turned solid brass axles, hand-stitched leather seat pads, and chamfered edges designed for generations.
                 </p>
               </div>
             </SpotlightCard>
@@ -232,8 +237,8 @@ export const CollectibleToyCarSection: React.FC = () => {
 
         {/* Bottom Banner Triggering Scene 04 */}
         <div className="mt-14 pt-8 border-t border-checkerboard/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs font-sans text-walnut">
-            Part of the Volume IV Residence Collection · Handcrafted in solid hardwoods & natural waxes.
+          <p className="text-xs font-mono text-walnut uppercase tracking-wider">
+            [ VOLUME IV RESIDENCE COLLECTION · HANDCRAFTED HARDWOODS & NATURAL WAXES ]
           </p>
           <MagneticButton
             href="/#lounge"
@@ -247,4 +252,3 @@ export const CollectibleToyCarSection: React.FC = () => {
     </section>
   );
 };
-
