@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ChevronLeft, ChevronRight, Quote, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import { AnimatedHeading, MagneticButton, SpotlightCard } from '@/components/ui/motion';
 
 interface ReviewItem {
@@ -167,7 +167,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
     <section
       id="customer-reviews"
       ref={sectionRef}
-      className="relative z-20 bg-gradient-to-b from-[#FAF8F5] via-[#F4E9D8] to-[#FAF8F5] py-24 sm:py-32 border-t border-checkerboard/12 overflow-hidden"
+      className="relative z-20 bg-[#FBF9F5] py-24 sm:py-32 border-t border-stone-200/80 overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -177,33 +177,25 @@ export const CustomerReviewsCarousel: React.FC = () => {
       aria-label="Customer stories and reviews carousel"
       aria-roledescription="carousel"
     >
-      {/* Decorative Oversized Quotation Mark in Background */}
-      <div
-        className="absolute -right-6 top-6 sm:top-10 font-serif text-[180px] sm:text-[280px] leading-none text-tangerine/[0.06] select-none pointer-events-none -scale-x-100 hidden md:block"
-        aria-hidden="true"
-      >
-        “
-      </div>
-
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Header with Controls */}
-        <div className="reviews-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
+        <div className="reviews-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-stone-200/80 gap-8">
           <div className="space-y-4 max-w-xl">
-            <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/80 px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-flex items-center space-x-1.5 shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-tangerine" />
+            <span className="font-sans text-[11px] tracking-widest uppercase text-[#C84D1B] font-semibold bg-[#C84D1B]/10 px-3.5 py-1.5 rounded-full border border-[#C84D1B]/20 inline-flex items-center space-x-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
               <span>Real Homes · Customer Experiences</span>
             </span>
             <AnimatedHeading
               text="Loved in Real Homes Across India."
               highlightText="Across India."
-              highlightClassName="italic text-walnut font-normal"
-              className="font-serif text-4xl sm:text-5xl md:text-6xl text-checkerboard font-semibold tracking-tight leading-[1.12]"
+              highlightClassName="italic text-[#57534E] font-normal"
+              className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#1A1816] font-light tracking-tight leading-[1.12]"
             />
           </div>
 
           <div className="flex items-center space-x-4">
-            <p className="hidden lg:block text-xs font-sans text-walnut/75">
-              Impressions from flagship showroom visitors and direct home deliveries.
+            <p className="hidden lg:block text-xs font-sans text-[#78716C]">
+              Impressions from flagship showroom visitors and direct residence deliveries.
             </p>
 
             <div className="flex items-center space-x-2">
@@ -211,7 +203,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
                 onClick={prevSlide}
                 magneticStrength={0.3}
                 maxDistance={8}
-                className="p-3 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
+                className="p-3 rounded-full border border-stone-200/80 bg-white hover:bg-[#1A1816] text-[#1A1816] hover:text-white transition-all shadow-2xs focus:outline-hidden"
                 ariaLabel="Previous customer story"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -221,7 +213,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
                 onClick={nextSlide}
                 magneticStrength={0.3}
                 maxDistance={8}
-                className="p-3 rounded-full border border-checkerboard/15 bg-white/90 hover:bg-white text-checkerboard hover:text-tangerine hover:border-tangerine transition-all shadow-2xs focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine"
+                className="p-3 rounded-full border border-stone-200/80 bg-white hover:bg-[#1A1816] text-[#1A1816] hover:text-white transition-all shadow-2xs focus:outline-hidden"
                 ariaLabel="Next customer story"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -251,12 +243,12 @@ export const CustomerReviewsCarousel: React.FC = () => {
                 aria-hidden={idx !== currentIndex}
               >
                 <SpotlightCard
-                  className="group bg-white/95 backdrop-blur-xs rounded-3xl border border-checkerboard/12 p-8 sm:p-12 shadow-[0_16px_40px_rgba(41,37,31,0.06)] hover:shadow-[0_24px_50px_rgba(41,37,31,0.12)] transition-all duration-500"
+                  className="group bg-white rounded-2xl border border-stone-200/80 p-8 sm:p-12 shadow-[0_8px_30px_rgba(26,24,22,0.05)] hover:shadow-[0_16px_40px_rgba(26,24,22,0.08)] transition-all duration-500"
                   contentClassName="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
-                  spotlightColor="rgba(244, 81, 11, 0.07)"
+                  spotlightColor="rgba(200, 77, 27, 0.04)"
                 >
                   {/* Left Column: Room Photograph */}
-                  <div className="lg:col-span-5 relative aspect-[4/3] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream">
+                  <div className="lg:col-span-5 relative aspect-[4/3] rounded-xl overflow-hidden border border-stone-200/80 bg-[#F2EFE9]">
                     <Image
                       src={review.roomPhoto}
                       alt={`${review.author}'s ${review.itemPurchased}`}
@@ -268,26 +260,26 @@ export const CustomerReviewsCarousel: React.FC = () => {
 
                   {/* Right Column: Review Text & Attribution */}
                   <div className="lg:col-span-7 space-y-6">
-                    <Quote className="w-10 h-10 text-tangerine/30 -mb-2 transition-transform duration-300 group-hover:translate-x-1" />
+                    <Quote className="w-10 h-10 text-[#C84D1B]/25 -mb-2" />
                     <blockquote
                       data-testid="customer-review-quote"
-                      className="font-serif text-xl sm:text-2xl lg:text-[1.65rem] text-checkerboard leading-snug font-medium"
+                      className="font-serif text-xl sm:text-2xl lg:text-[1.65rem] text-[#1A1816] leading-snug font-light"
                     >
-                      “{review.quote}”
+                      &ldquo;{review.quote}&rdquo;
                     </blockquote>
 
-                    <div className="pt-4 border-t border-checkerboard/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="pt-4 border-t border-stone-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
-                        <p className="font-serif text-lg text-checkerboard font-semibold">
+                        <p className="font-serif text-lg text-[#1A1816] font-medium">
                           {review.author}
                         </p>
-                        <p className="font-sans text-xs text-walnut mt-0.5">
+                        <p className="font-sans text-xs text-[#78716C] mt-0.5">
                           {review.location}
                         </p>
                       </div>
 
                       <div className="sm:text-right">
-                        <span className="inline-block text-[11px] font-sans font-medium text-tangerine bg-tangerine/10 px-3 py-1 rounded-full border border-tangerine/20">
+                        <span className="inline-block text-[11px] font-sans font-medium text-[#C84D1B] bg-[#C84D1B]/10 px-3 py-1 rounded-full border border-[#C84D1B]/20">
                           {review.itemPurchased}
                         </span>
                       </div>
@@ -299,10 +291,10 @@ export const CustomerReviewsCarousel: React.FC = () => {
           </div>
         </div>
 
-        {/* Dots Indicators & Transparent Disclaimer */}
+        {/* Dots Indicators */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[11px] font-sans text-walnut/75">
-            * Curated customer impressions & styling stories from Furniture Village preview patrons.
+          <p className="text-xs font-sans text-[#78716C]">
+            * Curated patron reflections & living stories from Furniture Village residence installations.
           </p>
 
           <div className="flex items-center space-x-2">
@@ -311,7 +303,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
                 key={dotIdx}
                 onClick={() => setCurrentIndex(dotIdx)}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  dotIdx === currentIndex ? 'w-8 bg-tangerine' : 'w-2 bg-checkerboard/20 hover:bg-checkerboard/40'
+                  dotIdx === currentIndex ? 'w-8 bg-[#1A1816]' : 'w-2 bg-stone-300 hover:bg-stone-400'
                 }`}
                 aria-label={`Go to slide ${dotIdx + 1}`}
               />

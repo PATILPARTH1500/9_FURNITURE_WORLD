@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from '@/components/common/Link';
-import { Compass, ArrowRight, Home, Sparkles } from 'lucide-react';
+import { ArrowRight, Home, Sparkles } from 'lucide-react';
 
 export default function NotFoundPage() {
   const showroomSpaces = [
@@ -15,9 +15,11 @@ export default function NotFoundPage() {
       <div className="absolute inset-0 bg-fine-grain pointer-events-none" />
 
       <div className="max-w-2xl mx-auto space-y-6 relative z-10">
-        <div className="inline-flex items-center space-x-1.5 font-mono text-[11px] uppercase tracking-widest text-tangerine font-semibold bg-white px-3.5 py-1.5 rounded-full border border-tangerine/20 shadow-2xs">
-          <Compass className="w-3.5 h-3.5 text-tangerine" />
-          <span>Architectural Wayfinding · 404</span>
+        <div className="flex items-center justify-center space-x-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
+          <span className="font-sans text-xs uppercase tracking-widest text-tangerine font-semibold">
+            Wayfinding · 404
+          </span>
         </div>
 
         <h1 className="font-serif text-6xl sm:text-8xl md:text-9xl font-semibold text-checkerboard tracking-tight">
@@ -35,7 +37,7 @@ export default function NotFoundPage() {
 
         {/* Quick wayfinding destinations */}
         <div className="pt-4 pb-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-walnut font-semibold block mb-3">
+          <span className="font-sans text-xs uppercase tracking-wider text-walnut font-semibold block mb-3">
             Navigate to Active Showroom Galleries
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">

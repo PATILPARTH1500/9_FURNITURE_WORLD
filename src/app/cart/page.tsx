@@ -50,16 +50,19 @@ export default function CartPage() {
         {/* Header */}
         <div className="mb-12 flex flex-col sm:flex-row sm:items-end justify-between pb-6 border-b border-checkerboard/10 gap-4">
           <div>
-            <span className="font-mono text-[10px] tracking-widest uppercase text-tangerine font-semibold block">
-              Curated Order Bag
-            </span>
-            <h1 className="font-serif text-4xl sm:text-5xl text-checkerboard font-semibold mt-1">
+            <div className="flex items-center space-x-2 mb-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
+              <span className="font-sans text-xs tracking-widest uppercase text-tangerine font-semibold">
+                Curated Order Bag
+              </span>
+            </div>
+            <h1 className="font-serif text-4xl sm:text-5xl text-checkerboard font-semibold">
               Your Architectural Selection
             </h1>
           </div>
           <Link
             href="/collections"
-            className="inline-flex items-center space-x-2 text-xs uppercase tracking-wider text-checkerboard/80 hover:text-tangerine font-mono font-medium transition-colors"
+            className="inline-flex items-center space-x-2 text-xs uppercase tracking-wider text-checkerboard/80 hover:text-tangerine font-sans font-semibold transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Continue Exploring Collections</span>
@@ -69,16 +72,16 @@ export default function CartPage() {
         {orderConfirmation ? (
           <div className="max-w-xl mx-auto py-16 text-center space-y-6 bg-white/95 backdrop-blur-xs rounded-2xl border border-checkerboard/10 p-12 shadow-retro">
             <CheckCircle2 className="w-16 h-16 text-olive mx-auto stroke-[1.5]" />
-            <span className="font-mono text-xs uppercase tracking-wider text-tangerine font-semibold block">
+            <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold block">
               Order Confirmed & Scheduled
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl text-checkerboard font-semibold">
               Thank You for Your Order
             </h2>
             <p className="text-sm text-checkerboard/80 font-normal leading-relaxed">
-              Order reference <span className="font-mono text-checkerboard font-bold bg-cream px-2 py-0.5 rounded border border-checkerboard/10">{orderConfirmation}</span> has been confirmed. Our Bengaluru atelier concierge will contact you within 24 hours to coordinate white-glove delivery and room assembly.
+              Order reference <span className="font-sans text-checkerboard font-bold bg-cream px-2 py-0.5 rounded border border-checkerboard/10">{orderConfirmation}</span> has been confirmed. Our Bengaluru atelier concierge will contact you within 24 hours to coordinate white-glove delivery and room assembly.
             </p>
-            <div className="p-4 bg-cream/70 rounded-xl border border-checkerboard/10 text-xs font-mono text-checkerboard/80 text-left space-y-1.5">
+            <div className="p-4 bg-cream/70 rounded-xl border border-checkerboard/10 text-xs font-sans text-checkerboard/80 text-left space-y-1.5">
               <p className="font-semibold text-checkerboard">Included White-Glove Inclusions:</p>
               <p>• Placement in your designated room of choice</p>
               <p>• Full solid timber inspection and unboxing</p>
@@ -153,7 +156,7 @@ export default function CartPage() {
             <div className="lg:col-span-8 space-y-6">
               {/* Free shipping progress bar */}
               <div className="p-5 bg-white/95 backdrop-blur-xs rounded-2xl border border-checkerboard/10 shadow-sm space-y-2">
-                <div className="flex items-center justify-between text-xs font-mono">
+                <div className="flex items-center justify-between text-xs font-sans">
                   <span className="flex items-center space-x-2 text-checkerboard font-semibold">
                     <Truck className="w-4 h-4 text-tangerine" />
                     <span>
@@ -195,11 +198,11 @@ export default function CartPage() {
                           <h3 className="font-serif text-xl text-checkerboard tracking-wide font-medium">
                             {item.productName}
                           </h3>
-                          <span className="font-mono text-base font-bold text-checkerboard">
+                          <span className="font-serif text-lg font-semibold text-checkerboard">
                             {formatPrice(item.unitPrice * item.quantity)}
                           </span>
                         </div>
-                        <p className="text-xs text-walnut font-mono mt-1">
+                        <p className="text-xs text-walnut mt-1">
                           Finishes: {item.woodFinish} {item.fabricFinish ? `· ${item.fabricFinish}` : ''}
                         </p>
                       </div>
@@ -213,7 +216,7 @@ export default function CartPage() {
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="px-3 font-mono text-xs font-semibold">{item.quantity}</span>
+                          <span className="px-3 font-sans text-xs font-semibold">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.id, 1)}
                             className="px-3 py-1.5 hover:text-tangerine transition-colors"
@@ -225,7 +228,7 @@ export default function CartPage() {
 
                         <button
                           onClick={() => removeItem(item.id)}
-                          className="text-walnut/70 hover:text-coral transition-colors flex items-center space-x-1.5 text-xs font-mono font-medium"
+                          className="text-walnut/70 hover:text-coral transition-colors flex items-center space-x-1.5 text-xs font-sans font-medium"
                           aria-label="Remove item"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -243,7 +246,7 @@ export default function CartPage() {
               <div className="bg-white/95 backdrop-blur-xs rounded-2xl border border-checkerboard/10 p-8 space-y-6 shadow-retro">
                 <div className="flex items-center space-x-2 border-b border-checkerboard/10 pb-4">
                   <Sparkles className="w-4 h-4 text-tangerine" />
-                  <h2 className="font-mono text-xs uppercase tracking-wider text-checkerboard font-semibold">
+                  <h2 className="font-sans text-xs uppercase tracking-wider text-checkerboard font-semibold">
                     Order Summary
                   </h2>
                 </div>
@@ -251,11 +254,11 @@ export default function CartPage() {
                 <div className="space-y-3 text-xs font-sans">
                   <div className="flex justify-between text-walnut">
                     <span>Curated Subtotal</span>
-                    <span className="font-mono text-checkerboard font-semibold">{formatPrice(subtotal)}</span>
+                    <span className="font-sans text-checkerboard font-semibold">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-walnut">
                     <span>White-Glove Room Delivery</span>
-                    <span className="font-mono text-checkerboard font-semibold">
+                    <span className="font-sans text-checkerboard font-semibold">
                       {qualifiesForFreeShipping ? (
                         <span className="text-olive font-bold">Complimentary</span>
                       ) : (
@@ -265,7 +268,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between text-walnut">
                     <span>Taxes (GST)</span>
-                    <span className="font-mono text-checkerboard font-medium">Included in Total</span>
+                    <span className="font-sans text-checkerboard font-medium">Included in Total</span>
                   </div>
                   <div className="flex justify-between text-base pt-4 border-t border-checkerboard/10 font-bold">
                     <span className="font-serif tracking-wide text-checkerboard">Total Amount</span>
@@ -284,10 +287,10 @@ export default function CartPage() {
                   {!isSubmitting && <ArrowRight className="w-4 h-4" />}
                 </button>
 
-                <div className="pt-2 text-[11px] text-walnut font-mono space-y-2 border-t border-checkerboard/10">
+                <div className="pt-2 text-[11px] text-walnut font-sans space-y-2 border-t border-checkerboard/10">
                   <div className="flex items-center space-x-2">
                     <ShieldCheck className="w-4 h-4 text-tangerine shrink-0" />
-                    <span>10-year structural frame guarantee</span>
+                    <span className="font-medium">10-year structural frame guarantee</span>
                   </div>
                   <p>Our dedicated two-person logistics team unpacks and installs every piece in your desired room.</p>
                 </div>

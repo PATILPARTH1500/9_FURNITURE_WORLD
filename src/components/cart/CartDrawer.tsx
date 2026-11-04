@@ -47,7 +47,7 @@ export const CartDrawer: React.FC = () => {
               <h3 className="font-serif text-2xl font-semibold text-checkerboard">
                 Your Shopping Bag
               </h3>
-              <span className="font-mono text-xs text-walnut font-medium bg-cream px-2 py-0.5 rounded-full border border-checkerboard/10">
+              <span className="font-sans text-xs text-walnut font-semibold bg-cream px-2 py-0.5 rounded-full border border-checkerboard/10">
                 {items.reduce((acc, i) => acc + i.quantity, 0)}
               </span>
             </div>
@@ -80,7 +80,7 @@ export const CartDrawer: React.FC = () => {
                   </span>
                 </span>
               )}
-              <span className="font-mono text-[11px] font-bold text-tangerine">{progressPercent}%</span>
+              <span className="font-sans text-[11px] font-bold text-tangerine">{progressPercent}%</span>
             </div>
             <div className="h-1.5 w-full bg-cream rounded-full overflow-hidden border border-checkerboard/5">
               <div

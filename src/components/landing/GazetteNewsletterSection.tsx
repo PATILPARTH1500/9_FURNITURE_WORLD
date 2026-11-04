@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Mail, ArrowRight, Check, Sparkles } from 'lucide-react';
+import { Mail, ArrowRight, Check } from 'lucide-react';
 
 export const GazetteNewsletterSection: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -57,12 +57,11 @@ export const GazetteNewsletterSection: React.FC = () => {
     >
       <div className="max-w-4xl mx-auto px-6 md:px-12 relative z-10">
         <div className="gazette-card rounded-3xl bg-white border border-checkerboard/12 p-8 sm:p-14 shadow-retro relative overflow-hidden text-center space-y-7">
-          {/* Subtle Ambient Grain & Top Accent Strip */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-tangerine via-mustard to-rust" />
-
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-cream border border-checkerboard/10 text-xs font-sans uppercase tracking-wider text-walnut font-medium">
-            <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-            <span>Private Dispatch · Volume IV</span>
+          <div className="flex items-center justify-center space-x-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
+            <span className="font-mono text-xs uppercase tracking-widest text-tangerine font-semibold">
+              The Gazette
+            </span>
           </div>
 
           <div className="space-y-3 max-w-xl mx-auto">

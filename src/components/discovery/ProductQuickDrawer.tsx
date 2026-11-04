@@ -112,13 +112,13 @@ export const ProductQuickDrawer: React.FC = () => {
               sizes="(max-width: 768px) 100vw, 400px"
               priority
             />
-            <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs border border-checkerboard/10 px-3 py-1 rounded-full text-xs font-sans font-semibold tracking-wide text-checkerboard shadow-2xs">
-              {product.category}
-            </div>
           </div>
 
           {/* Titles & Price */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
+            <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold block">
+              {product.category}
+            </span>
             <div className="flex items-baseline justify-between gap-4">
               <h2 className="font-serif text-2xl md:text-3xl text-checkerboard font-semibold">
                 {product.name}

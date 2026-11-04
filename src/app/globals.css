@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --background: #F4E9D8;
-  --foreground: #29251F;
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-cormorant: var(--font-serif);
+  --background: #FBF9F5;
+  --foreground: #1A1816;
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
   --font-inter: var(--font-sans);
 }
 
@@ -18,22 +18,22 @@
 
   html {
     scroll-behavior: smooth;
-    background-color: #F4E9D8;
-    color: #29251F;
+    background-color: #FBF9F5;
+    color: #1A1816;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     min-height: 100vh;
-    background-color: #F4E9D8;
-    color: #29251F;
+    background-color: #FBF9F5;
+    color: #1A1816;
     font-family: var(--font-sans);
     overflow-x: clip;
   }
 
   ::selection {
-    background-color: #F4510B;
+    background-color: #C84D1B;
     color: #FFFFFF;
   }
 }

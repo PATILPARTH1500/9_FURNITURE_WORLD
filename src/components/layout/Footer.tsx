@@ -5,10 +5,10 @@ import { ArrowUpRight, Phone, Mail } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#15120F] text-[#FAF8F5] border-t border-white/10 pt-20 pb-12 relative overflow-hidden">
+    <footer className="bg-[#161412] text-[#FBF9F5] border-t border-white/10 pt-20 pb-12 relative overflow-hidden">
       {/* Background brand watermark */}
       <div
-        className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.03] text-[12vw] font-serif leading-none tracking-tight font-bold text-white uppercase whitespace-nowrap"
+        className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.025] text-[12vw] font-serif leading-none tracking-tight font-light text-white uppercase whitespace-nowrap"
         aria-hidden="true"
       >
         {BRAND_CONFIG.name}
@@ -18,14 +18,14 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10">
           {/* Brand Column */}
           <div className="md:col-span-5 space-y-5">
-            <h3 className="font-serif text-3xl sm:text-4xl tracking-tight text-[#FAF8F5] font-semibold">
+            <h3 className="font-serif text-3xl sm:text-4xl tracking-tight text-[#FBF9F5] font-light">
               {BRAND_CONFIG.name}
             </h3>
-            <p className="text-[#C8BCAC] text-sm sm:text-base leading-relaxed max-w-md font-normal">
+            <p className="text-[#A8A29E] text-sm sm:text-base leading-relaxed max-w-md font-normal">
               {BRAND_CONFIG.subtext}
             </p>
             <div className="pt-2">
-              <span className="inline-block text-xs uppercase tracking-wider text-tangerine-light font-semibold bg-white/10 px-3.5 py-1.5 rounded-full border border-tangerine/30 shadow-2xs">
+              <span className="inline-block text-[11px] uppercase tracking-widest text-white/90 font-medium bg-white/10 px-3.5 py-1.5 rounded-full border border-white/15">
                 {BRAND_CONFIG.announcement}
               </span>
             </div>
@@ -33,36 +33,36 @@ export const Footer: React.FC = () => {
 
           {/* Showrooms Column */}
           <div className="md:col-span-3 space-y-4 text-xs">
-            <h4 className="text-xs uppercase tracking-wider text-[#FAF8F5] font-semibold">
+            <h4 className="text-xs uppercase tracking-widest text-[#FBF9F5] font-medium">
               Experience Stores
             </h4>
-            <div className="space-y-4 text-[#C8BCAC]">
+            <div className="space-y-4 text-[#A8A29E]">
               <div>
-                <p className="text-[#FAF8F5] font-semibold">Bengaluru Flagship</p>
+                <p className="text-[#FBF9F5] font-medium">Bengaluru Flagship</p>
                 <p className="font-normal mt-0.5">{BRAND_CONFIG.contact.address}</p>
               </div>
               <div>
-                <p className="text-[#FAF8F5] font-semibold">Customer Experience</p>
-                <p className="font-normal mt-0.5">Walk-in consultations, solid wood samples, and tactile fabric swatches available.</p>
+                <p className="text-[#FBF9F5] font-medium">Customer Experience</p>
+                <p className="font-normal mt-0.5">Private walkthroughs, solid timber samples, and tactile fabric swatches available.</p>
               </div>
             </div>
           </div>
 
           {/* Navigation Column */}
           <div className="md:col-span-2 space-y-4 text-xs">
-            <h4 className="text-xs uppercase tracking-wider text-[#FAF8F5] font-semibold">
+            <h4 className="text-xs uppercase tracking-widest text-[#FBF9F5] font-medium">
               Explore
             </h4>
-            <ul className="space-y-2.5 text-[#C8BCAC]">
+            <ul className="space-y-2.5 text-[#A8A29E]">
               {BRAND_CONFIG.navigation.map((item) => (
                 <li key={item.label}>
                   <Link
                     href={item.href}
-                    className="hover:text-tangerine-light transition-colors text-[#C8BCAC] inline-block py-0.5 font-medium relative group"
+                    className="hover:text-white transition-colors text-[#A8A29E] inline-block py-0.5 font-normal relative group"
                   >
                     <span>{item.label}</span>
                     <span
-                      className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-tangerine rounded-full transition-all duration-300 ease-out group-hover:w-full"
+                      className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out group-hover:w-full"
                       aria-hidden="true"
                     />
                   </Link>
@@ -71,17 +71,17 @@ export const Footer: React.FC = () => {
               <li>
                 <Link
                   href="/collections"
-                  className="hover:text-coral transition-colors text-tangerine-light font-medium inline-flex items-center space-x-1 py-0.5 relative group"
+                  className="hover:text-white transition-colors text-[#FBF9F5] font-medium inline-flex items-center space-x-1 py-0.5 relative group"
                 >
                   <span className="relative">
                     All Furniture
                     <span
-                      className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-tangerine rounded-full transition-all duration-300 ease-out group-hover:w-full"
+                      className="absolute bottom-0 left-0 w-0 h-[1px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out group-hover:w-full"
                       aria-hidden="true"
                     />
                   </span>
                   <ArrowUpRight
-                    className="w-3.5 h-3.5 text-tangerine-light transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    className="w-3.5 h-3.5 text-[#C84D1B] transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                     aria-hidden="true"
                   />
                 </Link>
@@ -91,22 +91,22 @@ export const Footer: React.FC = () => {
 
           {/* Customer Care */}
           <div className="md:col-span-2 space-y-4 text-xs">
-            <h4 className="text-xs uppercase tracking-wider text-[#FAF8F5] font-semibold">
+            <h4 className="text-xs uppercase tracking-widest text-[#FBF9F5] font-medium">
               Help & Support
             </h4>
-            <div className="space-y-2.5 text-[#C8BCAC]">
+            <div className="space-y-2.5 text-[#A8A29E]">
               <a
                 href={`mailto:${BRAND_CONFIG.contact.email}`}
-                className="hover:text-tangerine-light transition-colors flex items-center space-x-1.5"
+                className="hover:text-white transition-colors flex items-center space-x-1.5"
               >
-                <Mail className="w-3.5 h-3.5 text-tangerine" />
+                <Mail className="w-3.5 h-3.5 text-[#C84D1B]" />
                 <span>{BRAND_CONFIG.contact.email}</span>
               </a>
               <p className="flex items-center space-x-1.5">
-                <Phone className="w-3.5 h-3.5 text-tangerine" />
+                <Phone className="w-3.5 h-3.5 text-[#C84D1B]" />
                 <span>{BRAND_CONFIG.contact.phone}</span>
               </p>
-              <p className="text-[11px] text-[#A69A8A] pt-1">
+              <p className="text-[11px] text-[#78716C] pt-1">
                 Mon — Sat: 9:30 AM – 6:30 PM IST
               </p>
             </div>
@@ -114,17 +114,17 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#A69A8A] gap-4">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#78716C] gap-4">
           <div className="space-y-1 text-center md:text-left">
             <p>© {new Date().getFullYear()} {BRAND_CONFIG.name}. All rights reserved.</p>
-            <p className="text-[11px] text-[#8C8072]">
+            <p className="text-[11px] text-[#57534E]">
               {BRAND_CONFIG.contact.legalEntity} · GSTIN: {BRAND_CONFIG.contact.gstin}
             </p>
           </div>
           <div className="flex space-x-6">
-            <span className="hover:text-tangerine-light cursor-pointer transition-colors">Quality Guarantee</span>
-            <span className="hover:text-tangerine-light cursor-pointer transition-colors">Care Guide</span>
-            <span className="hover:text-tangerine-light cursor-pointer transition-colors">Privacy Policy</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Quality Guarantee</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Care Guide</span>
+            <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
           </div>
         </div>
       </div>

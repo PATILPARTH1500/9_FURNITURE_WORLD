@@ -91,20 +91,18 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   ];
 
   return (
-    <main className="min-h-screen bg-cream text-checkerboard pt-28 pb-24 relative overflow-hidden bg-architectural-grid">
-      <div className="absolute inset-0 bg-fine-grain pointer-events-none" />
-
+    <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-28 pb-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Navigation Breadcrumb */}
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono text-checkerboard/70 gap-2 border-b border-checkerboard/10 pb-4">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-sans text-[#78716C] gap-2 border-b border-stone-200/80 pb-4">
           <nav aria-label="Breadcrumb" className="flex items-center space-x-2">
-            <Link href="/" className="hover:text-tangerine transition-colors">Home</Link>
+            <Link href="/" className="hover:text-[#1A1816] transition-colors">Home</Link>
             <span>/</span>
-            <Link href="/collections" className="hover:text-tangerine transition-colors">Collections</Link>
+            <Link href="/collections" className="hover:text-[#1A1816] transition-colors">Collections</Link>
             <span>/</span>
-            <span className="text-checkerboard font-semibold">{product.name}</span>
+            <span className="text-[#1A1816] font-medium">{product.name}</span>
           </nav>
-          <span className="uppercase tracking-wider text-xs font-semibold text-walnut">
+          <span className="uppercase tracking-widest text-[11px] font-semibold text-[#C84D1B]">
             {product.category}
           </span>
         </div>
@@ -117,10 +115,10 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             <div className="flex items-center space-x-2 text-xs font-sans tracking-wide overflow-x-auto pb-1">
               <button
                 onClick={() => setActiveTab('photos')}
-                className={`py-2 px-4 rounded-xl border transition-all flex items-center space-x-2 ${
+                className={`py-2 px-4 rounded-full border transition-all flex items-center space-x-2 ${
                   activeTab === 'photos'
-                    ? 'border-tangerine bg-tangerine text-white font-semibold shadow-xs'
-                    : 'border-checkerboard/15 bg-white text-checkerboard/70 hover:text-checkerboard hover:border-checkerboard/30 font-medium'
+                    ? 'border-[#1A1816] bg-[#1A1816] text-white font-medium shadow-xs'
+                    : 'border-stone-200/80 bg-white text-[#57534E] hover:text-[#1A1816] font-normal'
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -129,10 +127,10 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
               <button
                 onClick={() => setActiveTab('video')}
-                className={`py-2 px-4 rounded-xl border transition-all flex items-center space-x-2 ${
+                className={`py-2 px-4 rounded-full border transition-all flex items-center space-x-2 ${
                   activeTab === 'video'
-                    ? 'border-tangerine bg-tangerine text-white font-semibold shadow-xs'
-                    : 'border-checkerboard/15 bg-white text-checkerboard/70 hover:text-checkerboard hover:border-checkerboard/30 font-medium'
+                    ? 'border-[#1A1816] bg-[#1A1816] text-white font-medium shadow-xs'
+                    : 'border-stone-200/80 bg-white text-[#57534E] hover:text-[#1A1816] font-normal'
                 }`}
               >
                 <Film className="w-3.5 h-3.5" />
@@ -144,7 +142,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             {activeTab === 'photos' ? (
               <div className="space-y-4">
                 {/* Main Large Photo */}
-                <div className="relative aspect-[4/3] rounded-2xl border border-checkerboard/10 overflow-hidden bg-white shadow-retro">
+                <div className="relative aspect-[4/3] rounded-2xl border border-stone-200/80 overflow-hidden bg-white shadow-[0_4px_20px_rgba(26,24,22,0.04)]">
                   <Image
                     src={product.images[selectedPhoto]}
                     alt={`${product.name} - ${selectedPhoto}`}
@@ -161,10 +159,10 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                     <button
                       key={opt.key}
                       onClick={() => setSelectedPhoto(opt.key)}
-                      className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-all ${
+                      className={`relative aspect-square rounded-xl overflow-hidden border transition-all ${
                         selectedPhoto === opt.key
-                          ? 'border-tangerine ring-2 ring-tangerine/30 scale-102 shadow-xs'
-                          : 'border-checkerboard/10 hover:border-checkerboard/30 opacity-80 hover:opacity-100 bg-white'
+                          ? 'border-[#1A1816] ring-1 ring-[#1A1816] shadow-2xs'
+                          : 'border-stone-200/80 hover:border-stone-400 opacity-80 hover:opacity-100 bg-white'
                       }`}
                     >
                       <Image
@@ -183,7 +181,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               </div>
             ) : (
               /* Room Tour Video */
-              <div className="relative aspect-video w-full rounded-2xl border border-checkerboard/10 bg-black overflow-hidden shadow-xl">
+              <div className="relative aspect-video w-full rounded-2xl border border-stone-200/80 bg-black overflow-hidden shadow-xl">
                 <video
                   src={roomTourVideo.src}
                   poster={roomTourVideo.poster}
@@ -198,53 +196,53 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             )}
 
             {/* Design & Craftsmanship Story */}
-            <div className="p-8 bg-white/95 backdrop-blur-xs rounded-2xl border border-checkerboard/10 shadow-sm space-y-3">
-              <span className="font-mono text-[11px] uppercase tracking-wider text-tangerine font-semibold block">
+            <div className="p-8 bg-white rounded-2xl border border-stone-200/80 shadow-[0_4px_20px_rgba(26,24,22,0.03)] space-y-3">
+              <span className="font-sans text-[11px] uppercase tracking-widest text-[#C84D1B] font-semibold block">
                 Design & Material Philosophy
               </span>
-              <p className="font-serif text-lg md:text-xl text-checkerboard italic font-normal leading-relaxed">
+              <p className="font-serif text-lg md:text-xl text-[#1A1816] italic font-light leading-relaxed">
                 &ldquo;{product.architecturalStatement}&rdquo;
               </p>
-              <div className="pt-2 flex items-center justify-between text-xs text-walnut border-t border-checkerboard/10 font-medium">
+              <div className="pt-2 flex items-center justify-between text-xs text-[#78716C] border-t border-stone-200/80 font-normal">
                 <span>Designed by {product.designer}</span>
-                <span className="font-mono text-tangerine">{product.year} Atelier Release</span>
+                <span className="font-sans text-[#C84D1B] font-medium">{product.year} Atelier Release</span>
               </div>
             </div>
 
             {/* Architectural Blueprint Specifications */}
-            <div className="p-8 bg-white/95 backdrop-blur-xs rounded-2xl border border-checkerboard/10 shadow-sm space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-checkerboard/10">
+            <div className="p-8 bg-white rounded-2xl border border-stone-200/80 shadow-[0_4px_20px_rgba(26,24,22,0.03)] space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-stone-200/80">
                 <div className="flex items-center space-x-2">
-                  <Ruler className="w-4 h-4 text-tangerine" />
-                  <h3 className="font-mono text-xs uppercase tracking-wider text-checkerboard font-semibold">
+                  <Ruler className="w-4 h-4 text-[#C84D1B]" />
+                  <h3 className="font-sans text-xs uppercase tracking-widest text-[#1A1816] font-medium">
                     Architectural Blueprint & Dimensions
                   </h3>
                 </div>
-                <span className="font-mono text-[11px] text-walnut">Metric (cm / kg)</span>
+                <span className="font-sans text-xs text-[#78716C]">Metric (cm / kg)</span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-sans">
-                <div className="p-3 bg-cream/50 rounded-xl border border-checkerboard/10 text-center">
-                  <span className="text-walnut block text-[10px] font-mono uppercase tracking-wider">Width</span>
-                  <span className="text-checkerboard font-serif text-lg font-bold">{product.dimensions.widthCm} cm</span>
+                <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                  <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Width</span>
+                  <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.widthCm} cm</span>
                 </div>
-                <div className="p-3 bg-cream/50 rounded-xl border border-checkerboard/10 text-center">
-                  <span className="text-walnut block text-[10px] font-mono uppercase tracking-wider">Depth</span>
-                  <span className="text-checkerboard font-serif text-lg font-bold">{product.dimensions.depthCm} cm</span>
+                <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                  <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Depth</span>
+                  <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.depthCm} cm</span>
                 </div>
-                <div className="p-3 bg-cream/50 rounded-xl border border-checkerboard/10 text-center">
-                  <span className="text-walnut block text-[10px] font-mono uppercase tracking-wider">Height</span>
-                  <span className="text-checkerboard font-serif text-lg font-bold">{product.dimensions.heightCm} cm</span>
+                <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                  <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Height</span>
+                  <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.heightCm} cm</span>
                 </div>
-                <div className="p-3 bg-cream/50 rounded-xl border border-checkerboard/10 text-center">
-                  <span className="text-walnut block text-[10px] font-mono uppercase tracking-wider">Net Weight</span>
-                  <span className="text-checkerboard font-serif text-lg font-bold">{product.dimensions.weightKg} kg</span>
+                <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                  <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Net Weight</span>
+                  <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.weightKg} kg</span>
                 </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-between text-[11px] font-mono text-walnut">
+              <div className="pt-2 flex items-center justify-between text-xs font-sans text-[#78716C]">
                 <span className="flex items-center space-x-1.5">
-                  <Award className="w-3.5 h-3.5 text-tangerine" />
+                  <Award className="w-3.5 h-3.5 text-[#C84D1B]" />
                   <span>FSC® 100% Certified Sustainable Timber</span>
                 </span>
                 <span>Crafted in Karnataka, India</span>
@@ -254,37 +252,37 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
           {/* Right Column: Pricing, Finishes & Shopping Actions */}
           <div className="lg:col-span-5 space-y-8">
-            <div className="space-y-3 pb-6 border-b border-checkerboard/10">
-              <span className="font-mono text-xs tracking-wider uppercase text-tangerine font-semibold">
+            <div className="space-y-3 pb-6 border-b border-stone-200/80">
+              <span className="font-sans text-xs tracking-widest uppercase text-[#C84D1B] font-semibold">
                 {product.subtitle}
               </span>
-              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight">
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#1A1816] font-light tracking-tight">
                 {product.name}
               </h1>
               <div className="flex items-baseline space-x-3 pt-2">
-                <span className="font-sans text-3xl text-checkerboard font-bold">
+                <span className="font-sans text-3xl text-[#1A1816] font-semibold">
                   {formatPrice(product.price, true)}
                 </span>
-                <span className="text-xs font-sans text-olive font-semibold bg-olive/10 px-2.5 py-1 rounded-full border border-olive/20">
+                <span className="text-xs font-sans text-[#2B5238] font-semibold bg-[#2B5238]/10 px-3 py-1 rounded-full border border-[#2B5238]/20">
                   In Stock · White Glove Setup
                 </span>
               </div>
-              <p className="text-xs text-walnut">
+              <p className="text-xs text-[#78716C]">
                 Inclusive of all applicable GST, delivery to room of choice, and full packaging removal.
               </p>
             </div>
 
-            <p className="text-sm text-checkerboard/85 font-normal leading-relaxed">
+            <p className="text-sm text-[#57534E] font-normal leading-relaxed">
               {product.description}
             </p>
 
             {/* Finish Selection */}
-            <div className="space-y-6 pt-4 border-t border-checkerboard/10">
+            <div className="space-y-6 pt-4 border-t border-stone-200/80">
               {/* Wood finish */}
               <div className="space-y-3">
                 <div className="flex justify-between text-xs font-sans">
-                  <span className="uppercase text-walnut font-medium">Wood Finish</span>
-                  <span className="text-checkerboard font-semibold">{selectedWood.name}</span>
+                  <span className="uppercase text-[#78716C] font-medium tracking-wider">Wood Finish</span>
+                  <span className="text-[#1A1816] font-medium">{selectedWood.name}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {WOOD_MATERIALS.map((wood) => (
@@ -293,18 +291,18 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                       onClick={() => setSelectedWood(wood.id)}
                       className={`p-3 rounded-xl border text-left transition-all ${
                         selectedWoodId === wood.id
-                          ? 'border-tangerine bg-tangerine/5 ring-1 ring-tangerine shadow-xs'
-                          : 'border-checkerboard/15 hover:border-checkerboard/30 bg-white'
+                          ? 'border-[#1A1816] bg-[#1A1816]/5 ring-1 ring-[#1A1816] shadow-2xs'
+                          : 'border-stone-200/80 hover:border-stone-400 bg-white'
                       }`}
                     >
                       <div className="flex items-center space-x-2 mb-1.5">
                         <span
-                          className="w-3.5 h-3.5 rounded-full border border-black/20"
+                          className="w-3.5 h-3.5 rounded-full border border-black/15"
                           style={{ backgroundColor: wood.colorHex }}
                         />
-                        {selectedWoodId === wood.id && <Check className="w-3 h-3 text-tangerine ml-auto" />}
+                        {selectedWoodId === wood.id && <Check className="w-3 h-3 text-[#1A1816] ml-auto" />}
                       </div>
-                      <p className="text-xs font-medium text-checkerboard truncate">{wood.name}</p>
+                      <p className="text-xs font-medium text-[#1A1816] truncate">{wood.name}</p>
                     </button>
                   ))}
                 </div>
@@ -314,8 +312,8 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               {product.materials.upholsteryOptions.length > 0 && (
                 <div className="space-y-3">
                   <div className="flex justify-between text-xs font-sans">
-                    <span className="uppercase text-walnut font-medium">Tactile Fabric</span>
-                    <span className="text-checkerboard font-semibold">{selectedFabric.name}</span>
+                    <span className="uppercase text-[#78716C] font-medium tracking-wider">Tactile Fabric</span>
+                    <span className="text-[#1A1816] font-medium">{selectedFabric.name}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     {UPHOLSTERY_MATERIALS.map((fab) => (
@@ -324,18 +322,18 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                         onClick={() => setSelectedFabric(fab.id)}
                         className={`p-3 rounded-xl border text-left transition-all ${
                           selectedFabricId === fab.id
-                            ? 'border-tangerine bg-tangerine/5 ring-1 ring-tangerine shadow-xs'
-                            : 'border-checkerboard/15 hover:border-checkerboard/30 bg-white'
+                            ? 'border-[#1A1816] bg-[#1A1816]/5 ring-1 ring-[#1A1816] shadow-2xs'
+                            : 'border-stone-200/80 hover:border-stone-400 bg-white'
                         }`}
                       >
                         <div className="flex items-center space-x-2 mb-1.5">
                           <span
-                            className="w-3.5 h-3.5 rounded-full border border-black/20"
+                            className="w-3.5 h-3.5 rounded-full border border-black/15"
                             style={{ backgroundColor: fab.colorHex }}
                           />
-                          {selectedFabricId === fab.id && <Check className="w-3 h-3 text-tangerine ml-auto" />}
+                          {selectedFabricId === fab.id && <Check className="w-3 h-3 text-[#1A1816] ml-auto" />}
                         </div>
-                        <p className="text-xs font-medium text-checkerboard truncate">{fab.name}</p>
+                        <p className="text-xs font-medium text-[#1A1816] truncate">{fab.name}</p>
                       </button>
                     ))}
                   </div>
@@ -344,20 +342,20 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             </div>
 
             {/* Quantity and Add to Bag */}
-            <div className="space-y-4 pt-6 border-t border-checkerboard/10">
+            <div className="space-y-4 pt-6 border-t border-stone-200/80">
               <div className="flex items-center space-x-4">
-                <div className="flex items-center border border-checkerboard/20 bg-white rounded-xl px-3 py-3 shadow-sm">
+                <div className="flex items-center border border-stone-200/80 bg-white rounded-xl px-3 py-3 shadow-2xs">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-1 hover:text-tangerine transition-colors text-walnut"
+                    className="p-1 hover:text-[#1A1816] transition-colors text-[#78716C]"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="px-4 font-sans text-sm font-bold text-checkerboard">{quantity}</span>
+                  <span className="px-4 font-sans text-sm font-semibold text-[#1A1816]">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="p-1 hover:text-tangerine transition-colors text-walnut"
+                    className="p-1 hover:text-[#1A1816] transition-colors text-[#78716C]"
                     aria-label="Increase quantity"
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -366,28 +364,28 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-tangerine hover:bg-coral text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-bold transition-all duration-300 shadow-warm hover:shadow-lg active:scale-98"
+                  className="flex-1 bg-[#1A1816] hover:bg-[#C84D1B] text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-semibold transition-all duration-300 shadow-sm hover:shadow-md active:scale-98"
                 >
                   Add to Bag · {formatPrice(product.price * quantity)}
                 </button>
               </div>
 
               {/* Customer Promises */}
-              <div className="grid grid-cols-2 gap-4 pt-4 text-xs text-walnut font-sans bg-white/70 p-4 rounded-xl border border-checkerboard/10">
+              <div className="grid grid-cols-2 gap-4 pt-4 text-xs text-[#57534E] font-sans bg-white p-4 rounded-xl border border-stone-200/80">
                 <div className="flex items-center space-x-2">
-                  <ShieldCheck className="w-4 h-4 text-tangerine shrink-0" />
+                  <ShieldCheck className="w-4 h-4 text-[#C84D1B] shrink-0" />
                   <span>10-Year Frame Warranty</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Truck className="w-4 h-4 text-tangerine shrink-0" />
+                  <Truck className="w-4 h-4 text-[#C84D1B] shrink-0" />
                   <span>Room-of-Choice Delivery</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RotateCcw className="w-4 h-4 text-tangerine shrink-0" />
+                  <RotateCcw className="w-4 h-4 text-[#C84D1B] shrink-0" />
                   <span>30-Day Easy Returns</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Check className="w-4 h-4 text-tangerine shrink-0" />
+                  <Check className="w-4 h-4 text-[#C84D1B] shrink-0" />
                   <span>Free Setup & Assembly</span>
                 </div>
               </div>
@@ -396,19 +394,19 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
         </div>
 
         {/* Complete the Living Space: Companion Pieces */}
-        <div className="mt-28 pt-16 border-t border-checkerboard/15">
-          <div className="flex items-end justify-between mb-8 pb-4 border-b border-checkerboard/10">
+        <div className="mt-28 pt-16 border-t border-stone-200/80">
+          <div className="flex items-end justify-between mb-8 pb-4 border-b border-stone-200/80">
             <div>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-tangerine font-semibold block">
+              <span className="font-sans text-[11px] uppercase tracking-widest text-[#C84D1B] font-semibold block">
                 Harmonious Living
               </span>
-              <h2 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold mt-1">
+              <h2 className="font-serif text-2xl sm:text-3xl text-[#1A1816] font-light mt-1">
                 Complete the Living Space
               </h2>
             </div>
             <Link
               href="/collections"
-              className="font-mono text-xs text-tangerine hover:text-coral transition-colors font-semibold flex items-center space-x-1"
+              className="font-sans text-xs text-[#C84D1B] hover:text-[#A73D12] transition-colors font-medium flex items-center space-x-1"
             >
               <span>Explore All Suites</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
@@ -420,38 +418,38 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               <Link
                 key={rel.id}
                 href={`/products/${rel.slug}`}
-                className="group flex flex-col rounded-2xl border border-checkerboard/10 bg-white/95 backdrop-blur-xs overflow-hidden hover:border-tangerine/60 transition-all duration-300 shadow-retro hover:shadow-warm"
+                className="group flex flex-col rounded-2xl border border-stone-200/80 bg-white overflow-hidden hover:border-[#1A1816]/30 transition-all duration-500 shadow-[0_4px_20px_rgba(26,24,22,0.03)] hover:shadow-[0_12px_32px_rgba(26,24,22,0.08)]"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-cream-dark">
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#F2EFE9]">
                   <Image
                     src={rel.images.hero}
                     alt={rel.name}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 group-hover:scale-104"
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    <span className="font-sans text-[10px] uppercase tracking-wider text-tangerine font-semibold block mb-1">
+                    <span className="font-sans text-[10px] uppercase tracking-widest text-[#C84D1B] font-semibold block mb-1">
                       {rel.category}
                     </span>
-                    <div className="flex items-baseline justify-between">
-                      <h4 className="font-serif text-lg text-checkerboard group-hover:text-tangerine transition-colors font-semibold">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <h4 className="font-serif text-lg text-[#1A1816] group-hover:text-[#C84D1B] transition-colors font-normal">
                         {rel.name}
                       </h4>
-                      <span className="font-sans text-sm font-bold text-tangerine">
+                      <span className="font-sans text-sm font-semibold text-[#1A1816]">
                         {formatPrice(rel.price)}
                       </span>
                     </div>
-                    <p className="text-xs text-walnut mt-1 line-clamp-1">{rel.subtitle}</p>
+                    <p className="text-xs text-[#78716C] mt-1 line-clamp-1">{rel.subtitle}</p>
                   </div>
-                  <div className="pt-3 border-t border-checkerboard/10 flex items-center justify-between text-xs">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-checkerboard font-semibold group-hover:text-tangerine flex items-center space-x-1">
+                  <div className="pt-3 border-t border-stone-200/80 flex items-center justify-between text-xs">
+                    <span className="font-sans text-xs uppercase tracking-wider text-[#1A1816] font-medium group-hover:text-[#C84D1B] flex items-center space-x-1">
                       <span>View Details</span>
-                      <ArrowUpRight className="w-3 h-3 text-tangerine" />
+                      <ArrowUpRight className="w-3 h-3 text-[#C84D1B]" />
                     </span>
-                    <span className="text-[11px] text-walnut font-medium">{rel.designer}</span>
+                    <span className="text-xs text-[#78716C] font-normal">{rel.designer}</span>
                   </div>
                 </div>
               </Link>

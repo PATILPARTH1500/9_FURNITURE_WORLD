@@ -29,111 +29,110 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: prefersReduced ? 0 : 0.09,
+        staggerChildren: prefersReduced ? 0 : 0.08,
         delayChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: prefersReduced ? 0 : 20 },
+    hidden: { opacity: 0, y: prefersReduced ? 0 : 16 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
+        duration: 0.7,
         ease: [0.16, 1, 0.3, 1],
       },
     },
   };
 
   return (
-    <section className="relative min-h-[92vh] sm:min-h-screen w-full bg-cream text-checkerboard flex flex-col justify-between pt-28 sm:pt-32 pb-12 sm:pb-16 px-4 sm:px-8 md:px-12 lg:px-16 overflow-hidden bg-architectural-grid">
-      {/* Subtle fine paper grain overlay */}
-      <div className="absolute inset-0 bg-fine-grain pointer-events-none" />
-
-      {/* Main Hero Visual & Editorial Content Grid */}
+    <section className="relative min-h-[95vh] sm:min-h-screen w-full bg-[#FBF9F5] text-[#1A1816] flex flex-col justify-between pt-28 sm:pt-36 pb-12 sm:pb-16 px-6 sm:px-8 md:px-12 lg:px-16 overflow-hidden">
+      {/* Main Architectural Hero Composition */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative z-10 max-w-7xl mx-auto w-full py-8 sm:py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center"
+        className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center my-auto"
       >
-        {/* Left Column: Editorial Headline & Brand Manifesto */}
+        {/* Left Column: Editorial Headline & Manifesto */}
         <div className="lg:col-span-7 space-y-6 sm:space-y-8">
-          <motion.div variants={itemVariants} className="space-y-3 sm:space-y-4">
+          <motion.div variants={itemVariants} className="space-y-4">
             <div className="flex items-center space-x-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
-              <span className="font-mono text-xs uppercase tracking-widest text-tangerine font-semibold">
-                The Architecture of Comfort
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
+              <span className="font-sans text-xs uppercase tracking-[0.2em] text-[#C84D1B] font-semibold">
+                Furniture Village · 2026 Collection
               </span>
             </div>
-            <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl xl:text-8xl text-checkerboard font-semibold tracking-tight leading-[1.05]">
-              Furniture <br />
-              <span className="italic font-normal text-walnut">Village</span>
+
+            <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-[5rem] text-[#1A1816] font-normal tracking-tight leading-[1.05]">
+              The Architecture <br />
+              <span className="italic font-light text-[#57534E]">of Comfort.</span>
             </h1>
-            <p className="font-sans text-base sm:text-lg md:text-xl text-checkerboard/85 max-w-xl font-normal leading-relaxed pt-2">
-              Where architectural precision meets everyday family warmth. Sculpted European oak, honest American walnut, and tactile bouclé crafted for modern living.
+
+            <p className="font-sans text-base sm:text-lg text-[#57534E] max-w-xl font-normal leading-relaxed pt-2">
+              Sculpted European white oak, honest American black walnut, and tactile bouclé. Thoughtfully crafted in Bangalore for relaxed everyday living and generational longevity.
             </p>
           </motion.div>
 
-          {/* Action CTAs with Motion.dev tactile feedback */}
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+          {/* Action CTAs */}
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
             <motion.button
-              whileHover={prefersReduced ? {} : { scale: 1.02 }}
+              whileHover={prefersReduced ? {} : { scale: 1.01 }}
               whileTap={prefersReduced ? {} : { scale: 0.98 }}
               onClick={handleScrollToTour}
-              className="inline-flex items-center justify-center space-x-2 px-7 py-4 rounded-full bg-tangerine hover:bg-coral text-white font-sans text-xs uppercase tracking-wider font-bold shadow-warm hover:shadow-lg transition-all group"
+              className="inline-flex items-center justify-center space-x-2.5 px-8 py-4 rounded-full bg-[#1A1816] hover:bg-[#C84D1B] text-white font-sans text-xs uppercase tracking-wider font-semibold shadow-sm transition-all duration-300 group cursor-pointer"
             >
               <span>Explore Residence Tour</span>
               <motion.div
                 animate={prefersReduced ? {} : { y: [0, 3, 0] }}
-                transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+                transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
               >
-                <ArrowDown className="w-4 h-4 text-white" />
+                <ArrowDown className="w-4 h-4 text-white/90" />
               </motion.div>
             </motion.button>
 
             <motion.div
-              whileHover={prefersReduced ? {} : { scale: 1.02 }}
+              whileHover={prefersReduced ? {} : { scale: 1.01 }}
               whileTap={prefersReduced ? {} : { scale: 0.98 }}
             >
               <Link
                 href="/collections"
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-4 rounded-full bg-white/90 hover:bg-white text-checkerboard border border-checkerboard/15 font-sans text-xs uppercase tracking-wider font-semibold shadow-2xs hover:shadow-sm transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-4 rounded-full bg-white hover:bg-[#F2EFE9] text-[#1A1816] border border-[#1A1816]/15 font-sans text-xs uppercase tracking-wider font-semibold shadow-2xs transition-all duration-300"
               >
                 <span>View Full Catalogue</span>
-                <ArrowUpRight className="w-4 h-4 text-tangerine" />
+                <ArrowUpRight className="w-4 h-4 text-[#C84D1B]" />
               </Link>
             </motion.div>
           </motion.div>
 
-          {/* Notion-Style Hallmarks Spec Strip */}
-          <motion.div variants={itemVariants} className="grid grid-cols-3 gap-3 pt-6 border-t border-checkerboard/10 max-w-lg text-xs font-sans">
-            <div className="p-3 bg-white/60 rounded-xl border border-checkerboard/5">
-              <span className="font-serif text-lg sm:text-xl font-bold text-checkerboard block">05</span>
-              <span className="text-[11px] text-walnut font-medium">Living Suites</span>
+          {/* Hallmark Specifications Strip */}
+          <motion.div variants={itemVariants} className="grid grid-cols-3 gap-4 pt-8 border-t border-[#1A1816]/10 max-w-lg text-xs font-sans">
+            <div className="space-y-0.5">
+              <span className="font-serif text-2xl font-normal text-[#1A1816] block">05</span>
+              <span className="text-[11px] uppercase tracking-wider text-[#57534E] font-medium">Curated Suites</span>
             </div>
-            <div className="p-3 bg-white/60 rounded-xl border border-checkerboard/5">
-              <span className="font-serif text-lg sm:text-xl font-bold text-checkerboard block">10-Yr</span>
-              <span className="text-[11px] text-walnut font-medium">Frame Guarantee</span>
+            <div className="space-y-0.5">
+              <span className="font-serif text-2xl font-normal text-[#1A1816] block">10-Yr</span>
+              <span className="text-[11px] uppercase tracking-wider text-[#57534E] font-medium">Frame Guarantee</span>
             </div>
-            <div className="p-3 bg-white/60 rounded-xl border border-checkerboard/5">
-              <span className="font-serif text-lg sm:text-xl font-bold text-checkerboard block">White-Glove</span>
-              <span className="text-[11px] text-walnut font-medium">Room Setup</span>
+            <div className="space-y-0.5">
+              <span className="font-serif text-2xl font-normal text-[#1A1816] block">White-Glove</span>
+              <span className="text-[11px] uppercase tracking-wider text-[#57534E] font-medium">In-Home Assembly</span>
             </div>
           </motion.div>
         </div>
 
         {/* Right Column: Architectural Hero Image */}
         <motion.div variants={itemVariants} className="lg:col-span-5 relative">
-          <div className="relative aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5] rounded-3xl overflow-hidden border border-checkerboard/15 shadow-warm bg-cream-dark">
+          <div className="relative aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5] rounded-3xl overflow-hidden border border-[#1A1816]/10 shadow-[0_16px_48px_rgba(26,24,22,0.06)] bg-[#F2EFE9] group">
             <Image
               src="/images/collections/collection-sanctuary-seating.webp"
               alt="Furniture Village Residence Showroom — Sanctuary Seating Suite"
               fill
               priority
-              className="object-cover transition-transform duration-700 ease-out hover:scale-103"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-103"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
             />
           </div>
@@ -141,18 +140,18 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
       </motion.div>
 
       {/* Bottom Scroll Wayfinding Cue */}
-      <div className="relative z-10 max-w-7xl mx-auto w-full pt-4 flex flex-col sm:flex-row items-center justify-between text-xs text-walnut border-t border-checkerboard/10 gap-3">
+      <div className="max-w-7xl mx-auto w-full pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#57534E] border-t border-[#1A1816]/10 gap-3">
         <div className="flex items-center space-x-2">
-          <ShieldCheck className="w-4 h-4 text-tangerine shrink-0" />
-          <span>FSC® Certified Natural Hardwoods & Heirloom Joinery</span>
+          <ShieldCheck className="w-4 h-4 text-[#4C583E] shrink-0" />
+          <span>FSC® Certified Solid Hardwoods & Traditional Mortise-Tenon Joinery</span>
         </div>
 
         <button
           onClick={handleScrollToTour}
-          className="inline-flex items-center space-x-2 text-checkerboard/80 hover:text-tangerine font-sans text-xs uppercase tracking-wider font-semibold transition-colors py-1 group"
+          className="inline-flex items-center space-x-2 text-[#1A1816] hover:text-[#C84D1B] font-sans text-xs uppercase tracking-wider font-semibold transition-colors py-1 group cursor-pointer"
         >
           <span>Scroll into Cinematic Residence</span>
-          <ArrowDown className="w-3.5 h-3.5 text-tangerine transition-transform group-hover:translate-y-1" />
+          <ArrowDown className="w-3.5 h-3.5 text-[#C84D1B] transition-transform group-hover:translate-y-1" />
         </button>
       </div>
     </section>

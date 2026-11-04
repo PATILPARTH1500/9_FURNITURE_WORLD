@@ -5,14 +5,13 @@ import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { ArrowUpRight, ShoppingBag, Check, Sparkles, Eye, Layers } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight, ShoppingBag, Check, Eye } from 'lucide-react';
 import { PRODUCTS_CATALOG, COLLECTIONS_DATA } from '@/data/catalog';
 import { Product } from '@/types';
 import { formatPrice } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
 import { useSceneStore } from '@/store/useSceneStore';
-import { AnimatedHeading, SpotlightCard, TextRoll, DirectionAwareHover } from '@/components/ui/motion';
 import dynamic from '@/components/common/dynamic';
 
 const ProductQuickDrawer = dynamic(
@@ -28,7 +27,6 @@ export const CuratedCollectionSection: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
   const [addedProductId, setAddedProductId] = useState<string | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const prefersReduced = useReducedMotion();
 
   const filteredProducts = PRODUCTS_CATALOG.filter((p) => {
     if (activeCategory === 'all') return true;
@@ -79,28 +77,10 @@ export const CuratedCollectionSection: React.FC = () => {
         {
           opacity: 1,
           y: 0,
-          duration: 0.45,
+          duration: 0.5,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 92%',
-            once: true,
-            fastScrollEnd: true,
-          },
-        }
-      );
-
-      gsap.fromTo(
-        '.collection-concept-panel',
-        { opacity: 0, y: 24 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.45,
-          stagger: 0.08,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: '.collection-concepts-grid',
             start: 'top 90%',
             once: true,
             fastScrollEnd: true,
@@ -116,164 +96,131 @@ export const CuratedCollectionSection: React.FC = () => {
     <section
       id="collection"
       ref={sectionRef}
-      className="relative z-20 bg-[#F4E9D8] text-checkerboard py-24 sm:py-32 border-t border-checkerboard/12 overflow-hidden bg-architectural-grid"
+      className="relative z-20 bg-[#FBF9F5] text-[#1A1816] py-24 sm:py-32 border-t border-[#1A1816]/10 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        {/* Section 03: Editorial Header */}
-        <div className="collection-header flex flex-col md:flex-row md:items-end justify-between mb-14 pb-8 border-b border-checkerboard/15 gap-8">
-          <div className="space-y-4 max-w-xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-sans text-xs tracking-wider uppercase text-tangerine font-semibold bg-white/90 px-3.5 py-1.5 rounded-full border border-tangerine/20 inline-flex items-center space-x-1.5 shadow-2xs">
-                <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-                <span>Curated Series · 2026 Collection</span>
-              </span>
-              <span className="font-sans text-xs uppercase tracking-wider text-walnut/80 bg-white/60 px-3 py-1 rounded-full border border-checkerboard/10 font-medium">
-                Atelier Lookbook
+        {/* Section Header */}
+        <div className="collection-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-[#1A1816]/10 gap-8">
+          <div className="space-y-3 max-w-xl">
+            <div className="flex items-center space-x-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
+              <span className="font-sans text-xs tracking-[0.2em] uppercase text-[#C84D1B] font-semibold">
+                Permanent Showroom Catalogue
               </span>
             </div>
-            <AnimatedHeading
-              text="Three Living Concepts."
-              highlightText="Living Concepts."
-              highlightClassName="italic text-walnut font-normal"
-              className="font-serif text-4xl sm:text-5xl md:text-6xl text-checkerboard font-semibold tracking-tight leading-[1.08]"
-            />
+            <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[#1A1816] font-normal tracking-tight leading-[1.08]">
+              Curated Collections <br />
+              <span className="italic font-light text-[#57534E]">& Living Suites.</span>
+            </h2>
           </div>
           <div className="space-y-3 max-w-md">
-            <p className="font-sans text-sm sm:text-base text-walnut leading-relaxed font-normal">
-              Each series is conceived around how family gathers, rests, and celebrates. Built in solid timber and finished in tactile natural upholstery.
+            <p className="font-sans text-sm sm:text-base text-[#57534E] leading-relaxed font-normal">
+              Each series is conceived around how family gathers, rests, and celebrates. Handcrafted from sustainably harvested timber and tactile upholstery.
             </p>
             <Link
               href="/collections"
-              className="inline-flex items-center space-x-1.5 text-xs font-sans uppercase tracking-wider text-tangerine hover:text-coral font-semibold group"
+              className="inline-flex items-center space-x-1.5 text-xs font-sans uppercase tracking-wider text-[#C84D1B] hover:text-[#1A1816] font-semibold group transition-colors"
             >
-              <span>Explore All Curated Collections</span>
+              <span>Explore All Suites</span>
               <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </div>
         </div>
 
-        {/* 1. Asymmetric 3-Concept Showcase Grid with Apple Scale + Notion Blueprint Tags */}
-        <div className="collection-concepts-grid grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-24">
-          {/* Large Hero Concept Panel (Cols 1-7) */}
+        {/* 1. Asymmetric 3-Suite Lookbook Showcase Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-24">
+          {/* Sanctuary Living Suite (Col 1-7) */}
           {COLLECTIONS_DATA[0] && (
-            <div className="collection-concept-panel lg:col-span-7">
+            <div className="lg:col-span-7">
               <Link
                 href={`/collections/${COLLECTIONS_DATA[0].slug}`}
-                className="block group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine rounded-3xl"
+                className="group block relative h-[480px] sm:h-[540px] rounded-3xl overflow-hidden border border-[#1A1816]/10 shadow-[0_16px_40px_rgba(26,24,22,0.06)] bg-[#1A1816] focus:outline-hidden"
               >
-                <DirectionAwareHover
-                  imageUrl={COLLECTIONS_DATA[0].coverImage}
-                  imageAlt={COLLECTIONS_DATA[0].title}
-                  className="h-[460px] sm:h-[510px] lg:h-[560px] w-full border border-checkerboard/15 shadow-retro hover:shadow-warm transition-all duration-500 hover:border-tangerine bg-[#29251F]"
+                <Image
+                  src={COLLECTIONS_DATA[0].coverImage}
+                  alt={COLLECTIONS_DATA[0].title}
+                  fill
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-104 filter brightness-[0.85]"
                   sizes="(max-width: 1024px) 100vw, 58vw"
-                >
-                  <div className="space-y-3.5 pointer-events-auto">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-sans text-xs uppercase tracking-wider text-mustard font-semibold bg-black/60 backdrop-blur-md px-3.5 py-1 rounded-full border border-white/20">
-                        Series 01 · Sanctuary
-                      </span>
-                      <span className="text-white/80 font-sans text-xs uppercase bg-black/40 px-2.5 py-1 rounded-full border border-white/10 font-medium">
-                        {COLLECTIONS_DATA[0].productCount} Designs
-                      </span>
-                    </div>
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-                    <h3 className="font-serif text-3xl sm:text-4xl text-white group-hover:text-mustard-light transition-colors font-medium tracking-tight">
-                      {COLLECTIONS_DATA[0].title}
-                    </h3>
-                    <p className="font-sans text-xs sm:text-sm text-cream-light/90 font-light max-w-lg leading-relaxed">
-                      {COLLECTIONS_DATA[0].subtitle}
-                    </p>
-
-                    {/* Editorial Craft Notes */}
-                    <div className="flex flex-wrap gap-2 pt-1 text-xs font-sans text-white/80">
-                      <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15">
-                        Low-Profile Seating
-                      </span>
-                      <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15">
-                        Tactile Bouclé & Oak
-                      </span>
-                      <span className="px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15">
-                        Mortise & Tenon
-                      </span>
-                    </div>
-
-                    <div className="pt-2 flex items-center space-x-1.5 text-xs font-sans uppercase tracking-wider text-mustard group-hover:text-white transition-colors font-medium">
-                      <TextRoll>Enter Collection Lookbook</TextRoll>
-                      <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </div>
+                <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-10 space-y-3 text-white">
+                  <span className="font-sans text-xs uppercase tracking-widest text-[#E7C89F] font-semibold block">
+                    Suite 01 · {COLLECTIONS_DATA[0].productCount} Handcrafted Pieces
+                  </span>
+                  <h3 className="font-serif text-3xl sm:text-4xl text-white font-normal tracking-tight">
+                    {COLLECTIONS_DATA[0].title}
+                  </h3>
+                  <p className="font-sans text-xs sm:text-sm text-white/80 max-w-lg leading-relaxed line-clamp-2">
+                    {COLLECTIONS_DATA[0].subtitle}
+                  </p>
+                  <div className="pt-2 flex items-center space-x-1.5 text-xs font-sans uppercase tracking-wider text-[#FAF8F5] font-semibold group-hover:text-[#E7C89F] transition-colors">
+                    <span>Inspect Suite Lookbook</span>
+                    <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>
-                </DirectionAwareHover>
+                </div>
               </Link>
             </div>
           )}
 
-          {/* Stacked Concept Duo (Cols 8-12) */}
-          <div className="lg:col-span-5 flex flex-col gap-6 lg:gap-8">
-            {COLLECTIONS_DATA.slice(1, 3).map((col, idx) => {
-              const seriesCode = idx === 0 ? 'Series 02 · Monolith' : 'Series 03 · Horizons';
-              const specBadge = idx === 0 ? 'Solid Smoked Walnut' : 'Velvet & Peach Linen';
-              return (
-                <div key={col.id} className="collection-concept-panel flex-1">
-                  <Link
-                    href={`/collections/${col.slug}`}
-                    className="block group focus:outline-hidden focus-visible:ring-2 focus-visible:ring-tangerine rounded-3xl"
-                  >
-                    <DirectionAwareHover
-                      imageUrl={col.coverImage}
-                      imageAlt={col.title}
-                      className="h-[220px] sm:h-[245px] lg:h-[264px] w-full border border-checkerboard/15 shadow-retro hover:shadow-warm transition-all duration-500 hover:border-tangerine bg-[#29251F]"
-                      sizes="(max-width: 1024px) 100vw, 42vw"
-                    >
-                      <div className="space-y-2 pointer-events-auto">
-                        <div className="flex items-center gap-2">
-                          <span className="font-sans text-xs uppercase tracking-wider text-mustard font-semibold bg-black/60 backdrop-blur-md px-3 py-0.5 rounded-full border border-white/20 inline-block">
-                            {seriesCode}
-                          </span>
-                          <span className="text-white/80 font-sans text-xs">
-                            {specBadge}
-                          </span>
-                        </div>
-                        <h3 className="font-serif text-xl sm:text-2xl text-white group-hover:text-mustard-light transition-colors font-medium">
-                          {col.title}
-                        </h3>
-                        <p className="font-sans text-xs text-cream-light/80 font-light line-clamp-1">
-                          {col.subtitle}
-                        </p>
-                        <div className="pt-1 flex items-center space-x-1 text-xs font-sans uppercase tracking-wider text-mustard group-hover:text-white transition-colors font-medium">
-                          <TextRoll>View Series</TextRoll>
-                          <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </div>
-                      </div>
-                    </DirectionAwareHover>
-                  </Link>
-                </div>
-              );
-            })}
+          {/* Stacked Duo Suites (Col 8-12) */}
+          <div className="lg:col-span-5 flex flex-col gap-8">
+            {COLLECTIONS_DATA.slice(1, 3).map((col, idx) => (
+              <div key={col.id} className="flex-1">
+                <Link
+                  href={`/collections/${col.slug}`}
+                  className="group block relative h-[225px] sm:h-[254px] rounded-3xl overflow-hidden border border-[#1A1816]/10 shadow-[0_12px_32px_rgba(26,24,22,0.05)] bg-[#1A1816] focus:outline-hidden"
+                >
+                  <Image
+                    src={col.coverImage}
+                    alt={col.title}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-104 filter brightness-[0.82]"
+                    sizes="(max-width: 1024px) 100vw, 42vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+
+                  <div className="absolute bottom-0 left-0 right-0 p-6 space-y-2 text-white">
+                    <span className="font-sans text-[11px] uppercase tracking-widest text-[#E7C89F] font-semibold block">
+                      Suite 0{idx + 2} · {col.productCount} Pieces
+                    </span>
+                    <h3 className="font-serif text-2xl text-white font-normal">
+                      {col.title}
+                    </h3>
+                    <div className="flex items-center space-x-1 text-xs font-sans uppercase tracking-wider text-[#FAF8F5] font-semibold group-hover:text-[#E7C89F] transition-colors">
+                      <span>View Suite</span>
+                      <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Section 04: Showroom Floor Interactive Bento Grid */}
-        <div className="space-y-10 pt-6">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-checkerboard/12">
+        {/* 2. Showroom Floor: Curated Product Grid */}
+        <div className="space-y-12 pt-6">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-6 border-b border-[#1A1816]/10">
             <div>
               <div className="flex items-center space-x-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
-                <span className="text-xs font-sans uppercase tracking-wider text-walnut font-semibold">
-                  Showroom Floor · Signature Collection
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
+                <span className="text-xs font-sans uppercase tracking-[0.16em] text-[#C84D1B] font-semibold">
+                  Individual Pieces
                 </span>
               </div>
-              <h3 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold mt-1">
-                Signature Handcrafted Furniture
+              <h3 className="font-serif text-3xl sm:text-4xl text-[#1A1816] font-normal mt-1">
+                Showroom Floor Works
               </h3>
             </div>
 
-            {/* Category Filter Tabs with Motion.dev Animated Pill Indicator */}
-            <div className="flex items-center space-x-1 sm:space-x-2 overflow-x-auto pb-1 scrollbar-none">
+            {/* Category Filter Tabs */}
+            <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none">
               {(
                 [
-                  { id: 'all', label: 'All Pieces' },
-                  { id: 'seating', label: 'Sofas & Seating' },
-                  { id: 'tables', label: 'Dining & Accent Tables' },
+                  { id: 'all', label: 'All Works' },
+                  { id: 'seating', label: 'Seating & Sofas' },
+                  { id: 'tables', label: 'Dining Tables' },
                   { id: 'lighting', label: 'Lighting & Storage' },
                 ] as const
               ).map((tab) => {
@@ -283,16 +230,9 @@ export const CuratedCollectionSection: React.FC = () => {
                     key={tab.id}
                     onClick={() => setActiveCategory(tab.id)}
                     className={`relative px-4 py-2 rounded-full text-xs font-sans uppercase tracking-wider font-semibold transition-colors duration-200 whitespace-nowrap focus:outline-hidden ${
-                      isActive ? 'text-white' : 'text-checkerboard/75 hover:text-checkerboard'
+                      isActive ? 'text-white bg-[#1A1816]' : 'text-[#57534E] hover:text-[#1A1816] bg-white border border-[#1A1816]/10'
                     }`}
                   >
-                    {isActive && (
-                      <motion.span
-                        layoutId="catalog-active-pill"
-                        className="absolute inset-0 rounded-full bg-tangerine shadow-warm -z-10"
-                        transition={{ type: 'spring', stiffness: 380, damping: 28 }}
-                      />
-                    )}
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -300,7 +240,7 @@ export const CuratedCollectionSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Product Grid with Motion.dev Bento Cards & Notion Blueprint Details */}
+          {/* Product Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => {
@@ -311,124 +251,114 @@ export const CuratedCollectionSection: React.FC = () => {
                   <motion.div
                     key={product.id}
                     layout
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
                     transition={{ duration: 0.3 }}
+                    className="group flex flex-col bg-white rounded-3xl border border-[#1A1816]/10 overflow-hidden hover:border-[#C84D1B]/40 transition-all duration-300 shadow-[0_8px_30px_rgba(26,24,22,0.04)] hover:shadow-[0_16px_40px_rgba(26,24,22,0.08)] h-full"
                   >
-                    <SpotlightCard
-                      className="group flex flex-col bg-white rounded-3xl border border-checkerboard/12 overflow-hidden hover:border-tangerine/50 transition-all duration-400 shadow-xs hover:shadow-warm hover:-translate-y-1.5 h-full"
-                      contentClassName="flex flex-col h-full"
-                      spotlightColor="rgba(244, 81, 11, 0.08)"
-                    >
-                      {/* Image Container with Floating Action Triggers */}
-                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#FAF7F2] border-b border-checkerboard/8">
-                        <Link
-                          href={`/products/${product.slug}`}
-                          className="block w-full h-full"
-                          aria-label={`View ${product.name} details`}
-                        >
-                          <Image
-                            src={product.images.hero}
-                            alt={product.name}
-                            fill
-                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-106"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          />
-                        </Link>
+                    {/* Image Container with Restrained Hover Feedback */}
+                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F2EFE9] border-b border-[#1A1816]/6">
+                      <Link
+                        href={`/products/${product.slug}`}
+                        className="block w-full h-full"
+                        aria-label={`View ${product.name} details`}
+                      >
+                        <Image
+                          src={product.images.hero}
+                          alt={product.name}
+                          fill
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-104"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                      </Link>
 
-                        {/* Quick Inspect Floating Overlay Trigger */}
-                        <motion.button
-                          type="button"
-                          whileHover={prefersReduced ? {} : { scale: 1.1 }}
-                          whileTap={prefersReduced ? {} : { scale: 0.9 }}
-                          onClick={() => handleInspect(product.id)}
-                          className="absolute bottom-3.5 right-3.5 p-2.5 rounded-full bg-white/95 hover:bg-white text-checkerboard hover:text-tangerine border border-checkerboard/15 shadow-2xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 focus:opacity-100 cursor-pointer"
-                          aria-label={`Inspect ${product.name} specifications`}
-                          title="Quick Inspect"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </motion.button>
-                      </div>
+                      {/* Quick Inspect Trigger */}
+                      <button
+                        type="button"
+                        onClick={() => handleInspect(product.id)}
+                        className="absolute bottom-4 right-4 p-2.5 rounded-full bg-white/95 hover:bg-white text-[#1A1816] hover:text-[#C84D1B] border border-[#1A1816]/10 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 focus:opacity-100 cursor-pointer"
+                        aria-label={`Quick view ${product.name}`}
+                        title="Quick View"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                    </div>
 
-                      {/* Product Content & Swatches */}
-                      <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                        <div className="space-y-1.5">
-                          <div className="flex items-center space-x-1.5 text-[10px] font-mono uppercase tracking-wider text-walnut/70">
-                            <Layers className="w-3 h-3 text-tangerine" />
-                            <span>{product.category}</span>
-                            <span>·</span>
-                            <span>{woodName} Timber</span>
-                          </div>
-                          <div className="flex items-baseline justify-between gap-2">
-                            <h4 className="font-serif text-xl text-checkerboard font-semibold group-hover:text-tangerine transition-colors">
-                              <Link href={`/products/${product.slug}`}>{product.name}</Link>
-                            </h4>
-                            <span className="font-serif text-base font-semibold text-checkerboard shrink-0">
-                              {formatPrice(product.price)}
-                            </span>
-                          </div>
-                          <p className="font-sans text-xs text-walnut line-clamp-2 leading-relaxed">
-                            {product.subtitle}
-                          </p>
-                        </div>
+                    {/* Product Card Body */}
+                    <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+                      <div className="space-y-1.5">
+                        <span className="font-sans text-[11px] uppercase tracking-[0.16em] text-[#C84D1B] font-semibold block">
+                          {product.category} · {woodName} Timber
+                        </span>
 
-                        {/* Wood Finishes Preview Swatches & Stock Status */}
-                        <div className="pt-2 border-t border-checkerboard/8 flex items-center justify-between">
-                          <div className="flex items-center space-x-1.5">
-                            {product.materials.woodOptions.slice(0, 3).map((w) => (
-                              <span
-                                key={w.id}
-                                title={w.name}
-                                className={`w-3.5 h-3.5 rounded-full border border-checkerboard/20 ${w.swatchTone}`}
-                              />
-                            ))}
-                            <span className="text-[10px] font-sans text-walnut/70 uppercase tracking-wider ml-1">
-                              {product.materials.woodOptions[0]?.name.split(' ')[0] || 'Natural'}
-                            </span>
-                          </div>
-
-                          <span className="font-sans text-[11px] text-olive font-semibold bg-olive/10 px-2.5 py-0.5 rounded-full border border-olive/20">
-                            In Stock · Ready to Ship
+                        <div className="flex items-baseline justify-between gap-3">
+                          <h4 className="font-serif text-xl sm:text-2xl text-[#1A1816] font-normal group-hover:text-[#C84D1B] transition-colors">
+                            <Link href={`/products/${product.slug}`}>{product.name}</Link>
+                          </h4>
+                          <span className="font-sans text-base font-semibold text-[#1A1816] shrink-0">
+                            {formatPrice(product.price)}
                           </span>
                         </div>
 
-                        {/* Actions Row */}
-                        <div className="pt-2 flex items-center space-x-2">
-                          <motion.button
-                            type="button"
-                            whileHover={prefersReduced ? {} : { scale: 1.01 }}
-                            whileTap={prefersReduced ? {} : { scale: 0.98 }}
-                            onClick={(e) => handleQuickAdd(product, e)}
-                            className={`flex-1 flex items-center justify-center space-x-2 py-3 rounded-full text-xs font-sans uppercase tracking-wider font-semibold transition-all duration-300 cursor-pointer ${
-                              isAdded
-                                ? 'bg-olive text-white'
-                                : 'bg-checkerboard hover:bg-tangerine text-white shadow-2xs hover:shadow-warm'
-                            }`}
-                          >
-                            {isAdded ? (
-                              <>
-                                <Check className="w-3.5 h-3.5" />
-                                <span>Added to Bag</span>
-                              </>
-                            ) : (
-                              <>
-                                <ShoppingBag className="w-3.5 h-3.5" />
-                                <span>Quick Add</span>
-                              </>
-                            )}
-                          </motion.button>
-
-                          <Link
-                            href={`/products/${product.slug}`}
-                            className="p-3 rounded-full border border-checkerboard/15 hover:border-tangerine text-checkerboard hover:text-tangerine transition-colors"
-                            aria-label={`View ${product.name} details`}
-                          >
-                            <ArrowUpRight className="w-4 h-4" />
-                          </Link>
-                        </div>
+                        <p className="font-sans text-xs text-[#57534E] line-clamp-2 leading-relaxed pt-1">
+                          {product.subtitle}
+                        </p>
                       </div>
-                    </SpotlightCard>
+
+                      {/* Swatches & In-Stock Indicator */}
+                      <div className="pt-3 border-t border-[#1A1816]/8 flex items-center justify-between">
+                        <div className="flex items-center space-x-1.5">
+                          {product.materials.woodOptions.slice(0, 3).map((w) => (
+                            <span
+                              key={w.id}
+                              title={w.name}
+                              className={`w-3 h-3 rounded-full border border-black/15 ${w.swatchTone}`}
+                            />
+                          ))}
+                          <span className="text-[10px] font-sans text-[#666059] uppercase tracking-wider ml-1">
+                            {product.materials.woodOptions.length} Wood Options
+                          </span>
+                        </div>
+
+                        <span className="font-sans text-[11px] text-[#4C583E] font-semibold bg-[#4C583E]/10 px-2.5 py-0.5 rounded-full border border-[#4C583E]/20">
+                          In Stock · Ready to Ship
+                        </span>
+                      </div>
+
+                      {/* Actions Row */}
+                      <div className="pt-2 flex items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={(e) => handleQuickAdd(product, e)}
+                          className={`flex-1 flex items-center justify-center space-x-2 py-3 rounded-full text-xs font-sans uppercase tracking-wider font-semibold transition-all duration-300 cursor-pointer ${
+                            isAdded
+                              ? 'bg-[#4C583E] text-white'
+                              : 'bg-[#1A1816] hover:bg-[#C84D1B] text-white shadow-2xs'
+                          }`}
+                        >
+                          {isAdded ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              <span>Added to Bag</span>
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingBag className="w-3.5 h-3.5" />
+                              <span>Add to Bag</span>
+                            </>
+                          )}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleInspect(product.id)}
+                          className="px-4 py-3 rounded-full text-xs font-sans uppercase tracking-wider font-semibold border border-[#1A1816]/15 hover:border-[#1A1816] text-[#1A1816] bg-white hover:bg-[#F2EFE9] transition-all cursor-pointer"
+                        >
+                          <span>Details</span>
+                        </button>
+                      </div>
+                    </div>
                   </motion.div>
                 );
               })}
@@ -437,6 +367,7 @@ export const CuratedCollectionSection: React.FC = () => {
         </div>
       </div>
 
+      {/* Shoppable Product Quick Drawer */}
       <ProductQuickDrawer />
     </section>
   );

@@ -2,11 +2,10 @@
 
 import React, { useEffect, useRef } from 'react';
 import Image from '@/components/common/Image';
+import Link from '@/components/common/Link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight, Compass } from 'lucide-react';
-import { MagneticButton, TextRoll } from '@/components/ui/motion';
-import { AmbientParticles } from '@/components/ui/AmbientParticles';
+import { ArrowUpRight } from 'lucide-react';
 
 export const ArtOfLivingSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -26,11 +25,11 @@ export const ArtOfLivingSection: React.FC = () => {
         {
           opacity: 1,
           y: 0,
-          duration: 0.5,
+          duration: 0.6,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 88%',
+            start: 'top 85%',
             once: true,
             fastScrollEnd: true,
           },
@@ -38,53 +37,34 @@ export const ArtOfLivingSection: React.FC = () => {
       );
 
       gsap.fromTo(
-        '.art-commitment-card',
-        { opacity: 0, y: 20 },
+        '.art-commitment-item',
+        { opacity: 0, y: 16 },
         {
           opacity: 1,
           y: 0,
           duration: 0.45,
-          stagger: 0.08,
+          stagger: 0.1,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: '.art-commitments-grid',
-            start: 'top 90%',
+            start: 'top 88%',
             once: true,
             fastScrollEnd: true,
           },
         }
       );
 
-      if (imageSpreadRef.current) {
-        gsap.fromTo(
-          imageSpreadRef.current,
-          { clipPath: 'inset(8% 0% 8% 0%)', opacity: 0.8 },
-          {
-            clipPath: 'inset(0% 0% 0% 0%)',
-            opacity: 1,
-            duration: 0.85,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: imageSpreadRef.current,
-              start: 'top 88%',
-              once: true,
-              fastScrollEnd: true,
-            },
-          }
-        );
-
-        // Subtle Parallax on Overlapping Macro Detail Inset
-        gsap.to('.art-macro-inset', {
-          y: -24,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: imageSpreadRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1,
-          },
-        });
-      }
+      // Subtle parallax on macro joinery detail
+      gsap.to('.art-macro-inset', {
+        y: -20,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: imageSpreadRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -94,133 +74,115 @@ export const ArtOfLivingSection: React.FC = () => {
     <section
       id="art-of-living"
       ref={sectionRef}
-      className="relative z-20 bg-[#1C1612] text-[#FAF8F5] py-28 sm:py-36 border-t border-white/10 overflow-hidden bg-architectural-grid-dark"
+      className="relative z-20 bg-[#161412] text-[#FBF9F5] py-28 sm:py-36 border-t border-white/10 overflow-hidden"
     >
-      {/* Restrained Ambient Particles Floating in Warm Darkness */}
-      <AmbientParticles count={18} tint="mixed" opacity={0.35} />
-
-      {/* Ambient Radial Warmth on Deep Espresso */}
-      <div
-        className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(244,81,11,0.08),transparent_70%)] pointer-events-none select-none"
-        aria-hidden="true"
-      />
-
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Layered Architectural Photography Composition (Cols 1-6) */}
+          {/* Left Column: Layered Architectural Photography */}
           <div ref={imageSpreadRef} className="lg:col-span-6 relative">
             <div className="relative aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] w-full rounded-3xl overflow-hidden border border-white/12 shadow-[0_24px_60px_rgba(0,0,0,0.5)] bg-black/40 group">
               <Image
                 src="/images/film/interior-villa.webp"
                 alt="Architectural Villa Living Room with Handcrafted Furniture"
                 fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter brightness-[0.92]"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-104 filter brightness-[0.92]"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
 
-            {/* Overlapping Floating Macro Joinery Inset with Scrubbed Parallax */}
-            <div className="art-macro-inset hidden sm:block absolute -bottom-8 -right-8 w-48 sm:w-56 aspect-square rounded-2xl overflow-hidden border-2 border-white/20 shadow-[0_16px_40px_rgba(0,0,0,0.6)] bg-black/60 group">
+            {/* Overlapping Macro Joinery Inset */}
+            <div className="art-macro-inset hidden sm:block absolute -bottom-8 -right-8 w-48 sm:w-56 aspect-square rounded-2xl overflow-hidden border-2 border-white/20 shadow-[0_20px_48px_rgba(0,0,0,0.6)] bg-black/60 group">
               <Image
                 src="/images/film/macro-joinery.webp"
                 alt="Precision Interlocking Mortise and Tenon Timber Joint"
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                className="object-cover transition-transform duration-700 group-hover:scale-108"
                 sizes="224px"
               />
             </div>
           </div>
 
-          {/* Right Column: Editorial Narrative & Commitments (Cols 7-12) */}
+          {/* Right Column: Editorial Narrative & Commitments */}
           <div className="lg:col-span-6 space-y-8 art-narrative">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
-                <span className="font-mono text-xs uppercase tracking-widest text-tangerine-light font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
+                <span className="font-sans text-xs uppercase tracking-[0.2em] text-[#E7C89F] font-semibold">
                   Craft Philosophy
                 </span>
               </div>
 
-              <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[#FAF8F5] font-semibold tracking-tight leading-[1.08]">
+              <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[#FAF8F5] font-normal tracking-tight leading-[1.08]">
                 Furniture Made to Be Lived In, <br />
-                <span className="italic font-normal text-tangerine-light">Not Just Looked At.</span>
+                <span className="italic font-light text-[#E7C89F]">Not Just Looked At.</span>
               </h2>
             </div>
 
-            <div className="space-y-4 text-[#D0C4B4] font-sans text-sm sm:text-base leading-relaxed">
+            <div className="space-y-4 text-[#D0C4B4] font-sans text-sm sm:text-base leading-relaxed font-normal">
               <p>
-                At Furniture Village, we reject cold, delicate showroom pieces designed only for photoshoots. Real homes are meant for morning tea, energetic family dinners, afternoon reading, and quiet moments of stillness.
+                We reject cold, fragile showroom pieces built solely for exhibitions. Real homes are meant for morning coffee, family dinners, late-night reading, and quiet moments of stillness.
               </p>
               <p>
-                We take inspiration from optimistic 1970s residences: organic curved contours, solid European oak, rich smoked walnut, and joyful burnt-orange accents. Every timber corner is hand-smoothed so children and pets can move freely around your home.
+                Every timber edge is calibrated with soft, child-safe radii. We use kiln-dried European white oak, American black walnut, and organic cold-pressed wax finishes that let the natural grain breathe without toxic VOCs.
               </p>
             </div>
 
-            {/* 3 Editorial Commitment Rows */}
-            <div className="art-commitments-grid space-y-3.5 pt-4 border-t border-white/12">
-              <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-sans text-xs uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-3 py-0.5 rounded-full border border-tangerine/30 font-semibold">
-                    Kiln-Dried Hardwood
-                  </span>
-                  <span className="font-serif text-lg font-bold text-white/60">01</span>
+            {/* 3 Editorial Craftsmanship Commitments */}
+            <div className="art-commitments-grid space-y-4 pt-6 border-t border-white/12">
+              <div className="art-commitment-item p-5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[#C84D1B]/50 transition-colors duration-300">
+                <div className="flex items-baseline justify-between mb-1.5">
+                  <h3 className="font-serif text-lg sm:text-xl text-[#FAF8F5] font-medium">
+                    Solid Hardwood Joinery
+                  </h3>
+                  <span className="font-serif text-base text-[#E7C89F] font-light">01</span>
                 </div>
-                <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
-                  100% Solid European Oak & Smoked Walnut
-                </h4>
                 <p className="text-xs font-sans text-[#A69A8A] leading-relaxed">
-                  Kiln-dried hardwoods selected for medullary grain richness. Never synthetic wood foils or hollow particleboard.
+                  Kiln-dried European Oak and Smoked Walnut joined by hand with traditional mortise-and-tenon joints. Zero particleboard or synthetic foils.
                 </p>
               </div>
 
-              <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-sans text-xs uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-3 py-0.5 rounded-full border border-tangerine/30 font-semibold">
-                    Ergonomics · 112° Recline
-                  </span>
-                  <span className="font-serif text-lg font-bold text-white/60">02</span>
+              <div className="art-commitment-item p-5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[#C84D1B]/50 transition-colors duration-300">
+                <div className="flex items-baseline justify-between mb-1.5">
+                  <h3 className="font-serif text-lg sm:text-xl text-[#FAF8F5] font-medium">
+                    Calibrated 112° Human Recline
+                  </h3>
+                  <span className="font-serif text-base text-[#E7C89F] font-light">02</span>
                 </div>
-                <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
-                  Calibrated Human Comfort & Spine Support
-                </h4>
                 <p className="text-xs font-sans text-[#A69A8A] leading-relaxed">
-                  Relaxed 112° reclines and multi-density foam cores that support natural spine curvature for hours of relaxation.
+                  Ergonomically tuned seat pitch and multi-density natural latex foam cores that support natural spine posture for hours of comfortable living.
                 </p>
               </div>
 
-              <div className="art-commitment-card p-4 sm:p-5 rounded-2xl bg-white/[0.04] border border-white/10 hover:border-tangerine/50 transition-colors duration-300 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-sans text-xs uppercase tracking-wider text-tangerine-light bg-tangerine/15 px-3 py-0.5 rounded-full border border-tangerine/30 font-semibold">
-                    Hand-Smoothed Radii · Child-Safe
-                  </span>
-                  <span className="font-serif text-lg font-bold text-white/60">03</span>
+              <div className="art-commitment-item p-5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-[#C84D1B]/50 transition-colors duration-300">
+                <div className="flex items-baseline justify-between mb-1.5">
+                  <h3 className="font-serif text-lg sm:text-xl text-[#FAF8F5] font-medium">
+                    Zero-VOC Botanical Hardwaxes
+                  </h3>
+                  <span className="font-serif text-base text-[#E7C89F] font-light">03</span>
                 </div>
-                <h4 className="font-serif text-lg text-[#FAF8F5] font-semibold">
-                  Child-Safe Radii & Organic Hardwax Oils
-                </h4>
                 <p className="text-xs font-sans text-[#A69A8A] leading-relaxed">
-                  Hand-applied botanical wax oils that protect without sealing the wood under plastic, allowing the grain to breathe naturally with zero toxic VOCs.
+                  Hand-rubbed natural plant oil and beeswax finishes that protect the timber against daily spills while deepening in patina over generations.
                 </p>
               </div>
             </div>
 
             {/* CTAs */}
             <div className="pt-4 flex flex-wrap items-center gap-4">
-              <MagneticButton
+              <Link
                 href="/collections"
-                className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-8 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg inline-flex items-center"
+                className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#C84D1B] hover:bg-[#D9531E] text-white font-semibold px-8 py-4 rounded-full shadow-sm transition-all duration-300"
               >
-                <TextRoll>Explore Our Craftsmanship</TextRoll>
-                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </MagneticButton>
+                <span>Explore Full Collection</span>
+                <ArrowUpRight className="w-4 h-4 text-white" />
+              </Link>
 
-              <MagneticButton
+              <Link
                 href="/collections/sanctuary-seating"
-                className="group space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/20 border border-white/20 text-[#FAF8F5] font-medium px-6 py-4 rounded-full transition-all duration-300 inline-flex items-center"
+                className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/15 border border-white/20 text-[#FAF8F5] font-semibold px-7 py-4 rounded-full transition-all duration-300"
               >
-                <TextRoll>View Living Series</TextRoll>
-                <Compass className="w-4 h-4 text-tangerine" />
-              </MagneticButton>
+                <span>View Living Suite</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-white/70" />
+              </Link>
             </div>
           </div>
         </div>

@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from '@/components/common/Image';
+import Link from '@/components/common/Link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Layers, ShieldCheck, Check, ArrowUpRight } from 'lucide-react';
-import { AnimatedHeading, SpotlightCard, MagneticButton, TextRoll } from '@/components/ui/motion';
+import { ShieldCheck, Check, ArrowUpRight } from 'lucide-react';
 
 interface MaterialStory {
   id: string;
@@ -23,16 +23,16 @@ const MATERIALS_STORIES: MaterialStory[] = [
   {
     id: 'oak-walnut',
     category: 'Timber Selection',
-    name: 'Solid European Oak & Smoked Walnut',
+    name: 'Solid European White Oak & Smoked Walnut',
     materialType: 'Natural Hardwood',
     specCode: 'FSC® Certified Timber',
     image: '/images/film/macro-joinery.webp',
     description:
       'We work only with kiln-dried solid hardwood, never synthetic wood foils or hollow particleboard. Natural medullary rays and rich grain patterns give every table and chair a unique, living character that deepens over generations.',
     attributes: [
-      'Kiln-dried European timber (moisture ≤ 8.5%)',
-      'Matte natural plant wax-oil botanical finish',
-      'Zero synthetic veneers or plastic wraps',
+      'Kiln-dried European timber (equilibrium moisture ≤ 8.5%)',
+      'Matte natural plant wax-oil botanical hardwax',
+      'Zero synthetic veneers, plastic wraps, or formaldehyde adhesives',
     ],
     technicalData: [
       { label: 'Density', value: '720 kg/m³' },
@@ -50,8 +50,8 @@ const MATERIALS_STORIES: MaterialStory[] = [
     description:
       'Crafted from high-density looped yarns that create a plush, nubby texture that feels warm and cozy. Engineered with natural soil resistance and high rub counts to stay beautiful through daily family living.',
     attributes: [
-      'High Martindale abrasion resistance (>50,000)',
-      'Deep multi-tonal cream looped texture',
+      'High Martindale abrasion resistance (>50,000 double rubs)',
+      'Deep multi-tonal cream looped texture with natural wool blend',
       'Breathable, family-friendly soil-resistant weave',
     ],
     technicalData: [
@@ -70,14 +70,14 @@ const MATERIALS_STORIES: MaterialStory[] = [
     description:
       'Every leg, rail, and stretcher is fitted with interlocking timber joints and reinforced by concealed steel anchoring pins. This traditional joinery prevents creaks, wobbles, and structural loosening over time.',
     attributes: [
-      'Traditional wood-to-wood interlocking tenons',
-      'Concealed heavy-duty internal steel anchors',
-      '10-year structural frame guarantee',
+      'Traditional wood-to-wood interlocking mortise-and-tenons',
+      'Concealed heavy-duty internal steel anchors at critical stress points',
+      '10-year structural frame warranty on all seating and tables',
     ],
     technicalData: [
-      { label: 'Tolerance', value: '±0.5 mm Hand-Shaved' },
+      { label: 'Tolerance', value: '±0.5 mm Hand-Calibrated' },
       { label: 'Tensile Load', value: '1,450 kgf Joint Resistance' },
-      { label: 'Adhesive', value: 'Type 1 Waterproof Polyurethane' },
+      { label: 'Adhesive', value: 'Waterproof Polyurethane Type 1' },
     ],
   },
   {
@@ -90,9 +90,9 @@ const MATERIALS_STORIES: MaterialStory[] = [
     description:
       'Our supple cognac leathers and olive velvets are selected for their soft hand-feel and durability. Double-stitched seams along every edge ensure shapes remain tailored and refined through decades of lounging.',
     attributes: [
-      'Supple top-grain aniline dye patina finish',
-      'Double-stitched reinforced perimeter seams',
-      'Naturally ages with rich character over time',
+      'Supple top-grain aniline dye patina finish that deepens with use',
+      'Double-stitched reinforced perimeter seams with heavy bonded thread',
+      'Naturally breathable surface with rich natural grain variations',
     ],
     technicalData: [
       { label: 'Thickness', value: '1.3 - 1.5 mm' },
@@ -124,11 +124,11 @@ export const MaterialsCraftSection: React.FC = () => {
         {
           opacity: 1,
           y: 0,
-          duration: 0.45,
+          duration: 0.5,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 92%',
+            start: 'top 88%',
             once: true,
             fastScrollEnd: true,
           },
@@ -137,12 +137,12 @@ export const MaterialsCraftSection: React.FC = () => {
 
       gsap.fromTo(
         '.material-card',
-        { opacity: 0, y: 20 },
+        { opacity: 0, y: 16 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.4,
-          stagger: 0.06,
+          duration: 0.45,
+          stagger: 0.08,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: '.materials-cards-grid',
@@ -163,8 +163,8 @@ export const MaterialsCraftSection: React.FC = () => {
     if (detailPanelRef.current) {
       gsap.fromTo(
         detailPanelRef.current,
-        { opacity: 0.5, y: 8 },
-        { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }
+        { opacity: 0.7, y: 6 },
+        { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }
       );
     }
   };
@@ -173,34 +173,29 @@ export const MaterialsCraftSection: React.FC = () => {
     <section
       id="materials-craft"
       ref={sectionRef}
-      className="relative z-20 bg-[#F3EFE6] py-24 sm:py-32 border-t border-checkerboard/15 overflow-hidden bg-architectural-grid-dense"
+      className="relative z-20 bg-[#FBF9F5] text-[#1A1816] py-24 sm:py-32 border-t border-[#1A1816]/10 overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        {/* Section Header with Notion Blueprint Tag */}
-        <div className="materials-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-checkerboard/15 gap-8">
-          <div className="space-y-4 max-w-xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-sans text-xs tracking-wider uppercase text-[#5E3C26] font-semibold bg-white px-3.5 py-1.5 rounded-full border border-[#5E3C26]/20 inline-flex items-center space-x-1.5 shadow-2xs">
-                <Layers className="w-3.5 h-3.5 text-tangerine" />
-                <span>Tactile Craftsmanship · Real Materials</span>
-              </span>
-              <span className="font-sans text-xs uppercase tracking-wider text-walnut/80 bg-white/70 px-3 py-1 rounded-full border border-checkerboard/10 font-medium">
-                Material Standards
+        {/* Section Header */}
+        <div className="materials-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-[#1A1816]/10 gap-8">
+          <div className="space-y-3 max-w-xl">
+            <div className="flex items-center space-x-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
+              <span className="font-sans text-xs tracking-[0.2em] uppercase text-[#C84D1B] font-semibold">
+                Materiality & Texture
               </span>
             </div>
-            <AnimatedHeading
-              text="Materials That Tell a Story In Every Room."
-              highlightText="In Every Room."
-              highlightClassName="italic text-walnut font-normal"
-              className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight leading-[1.12]"
-            />
+            <h2 className="font-serif text-4xl sm:text-5xl text-[#1A1816] font-normal tracking-tight leading-[1.08]">
+              Materials That Tell a Story <br />
+              <span className="italic font-light text-[#57534E]">In Every Room.</span>
+            </h2>
           </div>
-          <p className="font-sans text-sm sm:text-base text-walnut leading-relaxed max-w-md font-normal">
-            Take a closer look at the timber grain, tactile fabric loops, and interlocking joints that make our furniture rewarding to touch and built to last.
+          <p className="font-sans text-sm sm:text-base text-[#57534E] leading-relaxed max-w-md font-normal">
+            Take a closer look at the medullary timber rays, tactile bouclé loops, and precision interlocking joints that make our furniture rewarding to touch and built to last.
           </p>
         </div>
 
-        {/* 4 Clickable Material Cards Grid */}
+        {/* 4 Clickable Material Cards */}
         <div className="materials-cards-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {MATERIALS_STORIES.map((mat) => {
             const isSelected = mat.id === activeMaterial;
@@ -208,41 +203,41 @@ export const MaterialsCraftSection: React.FC = () => {
               <button
                 key={mat.id}
                 onClick={() => handleSelectMaterial(mat.id)}
-                className={`material-card group text-left rounded-3xl p-5 border transition-all duration-400 flex flex-col justify-between space-y-4 cursor-pointer ${
+                className={`material-card group text-left rounded-3xl p-5 border transition-all duration-300 flex flex-col justify-between space-y-4 cursor-pointer ${
                   isSelected
-                    ? 'bg-white border-tangerine shadow-warm ring-2 ring-tangerine/30 -translate-y-1.5'
-                    : 'bg-white/70 hover:bg-white border-checkerboard/12 hover:border-[#805438]/40 shadow-xs hover:-translate-y-1'
+                    ? 'bg-white border-[#C84D1B] shadow-[0_12px_32px_rgba(200,77,27,0.12)] ring-1 ring-[#C84D1B]/30 -translate-y-1'
+                    : 'bg-white/80 hover:bg-white border-[#1A1816]/10 hover:border-[#1A1816]/30 shadow-xs hover:-translate-y-0.5'
                 }`}
                 aria-pressed={isSelected}
               >
-                <div className="relative aspect-[16/11] w-full rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream">
+                <div className="relative aspect-[16/11] w-full rounded-2xl overflow-hidden border border-[#1A1816]/8 bg-[#F2EFE9]">
                   <Image
                     src={mat.image}
                     alt={mat.name}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-106"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, 25vw"
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <span className="text-xs font-sans uppercase tracking-wider text-tangerine font-semibold block">
+                <div className="space-y-1">
+                  <span className="text-[11px] font-sans uppercase tracking-[0.16em] text-[#C84D1B] font-semibold block">
                     {mat.materialType}
                   </span>
-                  <h3 className="font-serif text-lg text-checkerboard font-semibold leading-snug group-hover:text-tangerine transition-colors">
+                  <h3 className="font-serif text-lg text-[#1A1816] font-medium leading-snug group-hover:text-[#C84D1B] transition-colors">
                     {mat.name}
                   </h3>
                 </div>
 
-                <div className="pt-2 border-t border-checkerboard/10 flex items-center justify-between text-xs font-sans">
-                  <span className={`text-xs uppercase tracking-wider ${isSelected ? 'text-tangerine font-semibold' : 'text-walnut/70'}`}>
-                    {isSelected ? 'Viewing' : 'Inspect'}
+                <div className="pt-2 border-t border-[#1A1816]/8 flex items-center justify-between text-xs font-sans">
+                  <span className={`text-xs uppercase tracking-wider ${isSelected ? 'text-[#C84D1B] font-semibold' : 'text-[#666059]'}`}>
+                    {isSelected ? 'Selected' : 'Inspect Detail'}
                   </span>
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${
                       isSelected
-                        ? 'bg-tangerine text-white scale-110'
-                        : 'bg-checkerboard/10 text-checkerboard/40 group-hover:bg-tangerine/10 group-hover:text-tangerine'
+                        ? 'bg-[#C84D1B] text-white scale-105'
+                        : 'bg-[#1A1816]/5 text-[#1A1816]/40 group-hover:bg-[#C84D1B]/10 group-hover:text-[#C84D1B]'
                     }`}
                   >
                     <Check className="w-3 h-3 stroke-[2.5]" />
@@ -254,14 +249,12 @@ export const MaterialsCraftSection: React.FC = () => {
         </div>
 
         {/* Selected Material Spotlight Inspector Panel */}
-        <SpotlightCard
+        <div
           ref={detailPanelRef}
-          className="bg-white rounded-3xl border border-checkerboard/15 p-8 sm:p-12 shadow-sm"
-          contentClassName="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
-          spotlightColor="rgba(244, 81, 11, 0.08)"
+          className="bg-white rounded-3xl border border-[#1A1816]/10 p-8 sm:p-12 shadow-[0_12px_40px_rgba(26,24,22,0.05)] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center"
         >
           {/* Close-up Macro Photo */}
-          <div className="lg:col-span-6 relative aspect-[16/10] rounded-2xl overflow-hidden border border-checkerboard/10 bg-cream-dark">
+          <div className="lg:col-span-6 relative aspect-[16/10] rounded-2xl overflow-hidden border border-[#1A1816]/10 bg-[#F2EFE9]">
             <Image
               src={selectedMaterial.image}
               alt={selectedMaterial.name}
@@ -271,70 +264,64 @@ export const MaterialsCraftSection: React.FC = () => {
             />
           </div>
 
-          {/* Editorial Specs & Technical Data Bento */}
+          {/* Editorial Specs & Technical Data */}
           <div className="lg:col-span-6 space-y-6">
             <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold">
-                  {selectedMaterial.specCode}
-                </span>
-                <span className="text-walnut/40">·</span>
-                <span className="font-sans text-xs uppercase tracking-wider text-walnut font-medium">
-                  {selectedMaterial.materialType}
-                </span>
-              </div>
-              <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-checkerboard font-semibold leading-tight">
+              <span className="font-sans text-xs uppercase tracking-[0.2em] text-[#C84D1B] font-semibold block">
+                {selectedMaterial.specCode} · {selectedMaterial.materialType}
+              </span>
+              <h3 className="font-serif text-3xl sm:text-4xl text-[#1A1816] font-normal leading-tight">
                 {selectedMaterial.name}
               </h3>
             </div>
 
-            <p className="font-sans text-sm sm:text-base text-checkerboard/85 leading-relaxed font-normal">
+            <p className="font-sans text-sm sm:text-base text-[#57534E] leading-relaxed font-normal">
               {selectedMaterial.description}
             </p>
 
-            {/* Technical Spec Mini Grid */}
-            <div className="grid grid-cols-3 gap-2.5 p-3.5 rounded-2xl bg-cream/60 border border-checkerboard/10 text-xs font-sans">
+            {/* Technical Spec Mini Bento */}
+            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-[#FBF9F5] border border-[#1A1816]/8 text-xs font-sans">
               {selectedMaterial.technicalData.map((tech, idx) => (
                 <div key={idx} className="space-y-0.5">
-                  <span className="text-walnut/70 uppercase block text-[10px] tracking-wide">{tech.label}</span>
-                  <span className="font-semibold text-checkerboard block text-xs">{tech.value}</span>
+                  <span className="text-[#666059] uppercase block text-[10px] tracking-wider font-medium">{tech.label}</span>
+                  <span className="font-semibold text-[#1A1816] block text-xs">{tech.value}</span>
                 </div>
               ))}
             </div>
 
             {/* Quality Checklist */}
-            <div className="space-y-2.5 pt-2 border-t border-checkerboard/10">
-              <span className="font-sans text-xs uppercase tracking-wider text-walnut font-semibold block">
+            <div className="space-y-2.5 pt-2 border-t border-[#1A1816]/10">
+              <span className="font-sans text-xs uppercase tracking-wider text-[#666059] font-semibold block">
                 Atelier Craft Standards
               </span>
               <ul className="space-y-2">
                 {selectedMaterial.attributes.map((attr, aIdx) => (
-                  <li key={aIdx} className="flex items-center space-x-3 text-xs sm:text-sm font-sans text-walnut">
-                    <span className="w-5 h-5 rounded-full bg-olive/15 text-olive flex items-center justify-center shrink-0">
+                  <li key={aIdx} className="flex items-center space-x-3 text-xs sm:text-sm font-sans text-[#57534E]">
+                    <span className="w-5 h-5 rounded-full bg-[#4C583E]/15 text-[#4C583E] flex items-center justify-center shrink-0">
                       <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                     </span>
-                    <span className="font-medium text-checkerboard">{attr}</span>
+                    <span className="font-medium text-[#1A1816]">{attr}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="pt-1 flex items-center space-x-2 text-xs font-sans text-walnut/80">
-              <ShieldCheck className="w-4 h-4 text-olive shrink-0" />
-              <span>Tested for everyday family resistance and generational structural longevity.</span>
+            <div className="pt-1 flex items-center space-x-2 text-xs font-sans text-[#57534E]">
+              <ShieldCheck className="w-4 h-4 text-[#4C583E] shrink-0" />
+              <span>Tested for daily family living resistance and generational structural longevity.</span>
             </div>
 
-            <div className="pt-2 flex items-center">
-              <MagneticButton
+            <div className="pt-2">
+              <Link
                 href="/collections"
-                className="space-x-2 text-xs font-sans uppercase tracking-wider bg-checkerboard hover:bg-tangerine text-white font-medium px-6 py-3.5 rounded-full shadow-2xs hover:shadow-warm transition-all duration-300 inline-flex items-center"
+                className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#1A1816] hover:bg-[#C84D1B] text-white font-semibold px-7 py-3.5 rounded-full shadow-2xs transition-all duration-300"
               >
-                <TextRoll>Explore Handcrafted Pieces</TextRoll>
+                <span>Explore Works in this Material</span>
                 <ArrowUpRight className="w-4 h-4" />
-              </MagneticButton>
+              </Link>
             </div>
           </div>
-        </SpotlightCard>
+        </div>
       </div>
     </section>
   );
