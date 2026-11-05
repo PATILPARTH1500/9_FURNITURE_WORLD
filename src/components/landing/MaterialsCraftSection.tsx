@@ -171,10 +171,11 @@ export const MaterialsCraftSection: React.FC = () => {
 
   return (
     <section
-      id="materials-craft"
+      id="materials"
       ref={sectionRef}
       className="relative z-20 bg-[#FBF9F5] text-[#1A1816] py-24 sm:py-32 border-t border-[#1A1816]/10 overflow-hidden"
     >
+      <span id="materials-craft" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Section Header */}
         <div className="materials-header flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-[#1A1816]/10 gap-8">

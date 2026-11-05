@@ -47,12 +47,12 @@ export const BRAND_CONFIG: BrandConfig = {
     pinterest: "https://pinterest.com",
   },
   navigation: [
-    { label: "Living Room", href: "/#living" },
-    { label: "Dining Room", href: "/#dining" },
-    { label: "Kitchen", href: "/#kitchen" },
-    { label: "Family Lounge", href: "/#lounge" },
-    { label: "Bedroom", href: "/#bedroom" },
-    { label: "All Furniture", href: "/collections" },
+    { label: "Home", href: "/#home" },
+    { label: "Explore Tour", href: "/#explore" },
+    { label: "Collections", href: "/#collections" },
+    { label: "Our Story", href: "/#our-story" },
+    { label: "Materials", href: "/#materials" },
+    { label: "Journal", href: "/#journal" },
   ],
   announcement: "White-glove room delivery & assembly across major Indian cities",
 };

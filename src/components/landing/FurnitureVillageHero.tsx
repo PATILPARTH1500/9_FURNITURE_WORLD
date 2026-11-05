@@ -5,6 +5,8 @@ import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowDown, ArrowUpRight, ShieldCheck } from 'lucide-react';
+import { scrollToSection } from '@/utils/navigation';
+import { Lightfall } from '@/components/ui/Lightfall/Lightfall';
 
 interface FurnitureVillageHeroProps {
   onExploreTour?: () => void;
@@ -18,10 +20,7 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
       onExploreTour();
       return;
     }
-    const tourEl = document.getElementById('residence-tour') || document.getElementById('tour');
-    if (tourEl) {
-      tourEl.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSection('explore');
   };
 
   const containerVariants = {
@@ -48,13 +47,38 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
   };
 
   return (
-    <section className="relative min-h-[95vh] sm:min-h-screen w-full bg-[#FBF9F5] text-[#1A1816] flex flex-col justify-between pt-28 sm:pt-36 pb-12 sm:pb-16 px-6 sm:px-8 md:px-12 lg:px-16 overflow-hidden">
+    <section
+      id="home"
+      className="relative min-h-[95vh] sm:min-h-screen w-full bg-[#FBF9F5] text-[#1A1816] flex flex-col justify-between pt-28 sm:pt-36 pb-12 sm:pb-16 px-6 sm:px-8 md:px-12 lg:px-16 overflow-hidden"
+    >
+      {/* React Bits Lightfall Ambient Background Layer */}
+      <div
+        className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-45 select-none"
+        aria-hidden="true"
+      >
+        <Lightfall
+          colors={['#f97316']}
+          backgroundColor="#fbf9f5"
+          speed={0.3}
+          streakCount={2}
+          streakWidth={0.8}
+          twinkle={0.3}
+          backgroundGlow={0.1}
+          headGlow={0.6}
+          bloom={0.35}
+          mouseInteraction={true}
+          dpr={1.5}
+          lightMode={true}
+          className="w-full h-full"
+        />
+      </div>
+
       {/* Main Architectural Hero Composition */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center my-auto"
+        className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center my-auto relative z-10"
       >
         {/* Left Column: Editorial Headline & Manifesto */}
         <div className="lg:col-span-7 space-y-6 sm:space-y-8">
@@ -140,7 +164,7 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
       </motion.div>
 
       {/* Bottom Scroll Wayfinding Cue */}
-      <div className="max-w-7xl mx-auto w-full pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#57534E] border-t border-[#1A1816]/10 gap-3">
+      <div className="max-w-7xl mx-auto w-full pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#57534E] border-t border-[#1A1816]/10 gap-3 relative z-10">
         <div className="flex items-center space-x-2">
           <ShieldCheck className="w-4 h-4 text-[#4C583E] shrink-0" />
           <span>FSC® Certified Solid Hardwoods & Traditional Mortise-Tenon Joinery</span>
