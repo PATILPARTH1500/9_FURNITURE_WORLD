@@ -41,7 +41,43 @@ export const isMobileViewport = (): boolean => {
 };
 
 /**
- * Resolves the video asset URL, routing to optimized 1080p desktop or 720p mobile variants.
+ * Content SHA-256 hashes for all video and poster media.
+ * Guarantees safe immutable cache invalidation (RFC 7234) when assets are updated.
+ */
+export const VIDEO_CONTENT_HASHES: Record<string, string> = {
+  'desktop/scene-1-living.mp4': '172523eb3f',
+  'desktop/scene-2-dining.mp4': '9f4409ead9',
+  'desktop/scene-3-kitchen.mp4': 'b90e5c9dca',
+  'desktop/scene-4-lounge.mp4': 'd176086a9c',
+  'desktop/scene-5-bedroom.mp4': '522b224750',
+  'mobile/scene-1-living.mp4': '9d2229610d',
+  'mobile/scene-2-dining.mp4': '67f002c580',
+  'mobile/scene-3-kitchen.mp4': '890e72580f',
+  'mobile/scene-4-lounge.mp4': 'ca637e3632',
+  'mobile/scene-5-bedroom.mp4': '8e35a443fc',
+  'posters/scene-1-living.webp': '9cf54088cf',
+  'posters/scene-2-dining.webp': 'b8ddde344b',
+  'posters/scene-3-kitchen.webp': 'ba039f281c',
+  'posters/scene-4-lounge.webp': '01436de8e2',
+  'posters/scene-5-bedroom.webp': '0121e1fad0',
+};
+
+/**
+ * Resolves poster image URL with cache-busting content hash.
+ */
+export const resolvePosterUrl = (posterPath: string): string => {
+  const cleanKey = posterPath.replace(/^\/?(videos\/scenes\/)?/, '').split('?')[0];
+  const hashKey = cleanKey.startsWith('posters/') ? cleanKey : `posters/${cleanKey}`;
+  const hash = VIDEO_CONTENT_HASHES[hashKey];
+  const versionedPath = hash ? `${posterPath}?v=${hash}` : posterPath;
+  if (!VIDEO_CDN_BASE) return versionedPath;
+  const cleanPath = versionedPath.startsWith('/') ? versionedPath : `/${versionedPath}`;
+  return `${VIDEO_CDN_BASE}${cleanPath}`;
+};
+
+/**
+ * Resolves the video asset URL, routing to optimized 1080p desktop or 720p mobile variants
+ * and appending a safe content-hash query parameter for immutable edge caching.
  */
 export const resolveVideoUrl = (path: string, forcedVariant?: 'desktop' | 'mobile'): string => {
   let targetPath = path;
@@ -59,8 +95,13 @@ export const resolveVideoUrl = (path: string, forcedVariant?: 'desktop' | 'mobil
     targetPath = targetPath.replace('/videos/scenes/', `/videos/scenes/${activeVariant}/`);
   }
 
-  if (!VIDEO_CDN_BASE) return targetPath;
-  const cleanPath = targetPath.startsWith('/') ? targetPath : `/${targetPath}`;
+  // Lookup content hash key (e.g. desktop/scene-1-living.mp4)
+  const relKey = targetPath.replace(/^\/?videos\/scenes\//, '').split('?')[0];
+  const hash = VIDEO_CONTENT_HASHES[relKey];
+  const versionedPath = hash ? `${targetPath}?v=${hash}` : targetPath;
+
+  if (!VIDEO_CDN_BASE) return versionedPath;
+  const cleanPath = versionedPath.startsWith('/') ? versionedPath : `/${versionedPath}`;
   return `${VIDEO_CDN_BASE}${cleanPath}`;
 };
 
@@ -97,7 +138,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
     get videoSrcMobile() {
       return resolveVideoUrl('/videos/scenes/scene-1-living.mp4', 'mobile');
     },
-    posterSrc: '/videos/scenes/posters/scene-1-living.webp',
+    posterSrc: resolvePosterUrl('/videos/scenes/posters/scene-1-living.webp'),
     duration: 10.0,
     featuredProductId: 'prod-003',
     isAvailable: true,
@@ -130,7 +171,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
     get videoSrcMobile() {
       return resolveVideoUrl('/videos/scenes/scene-2-dining.mp4', 'mobile');
     },
-    posterSrc: '/videos/scenes/posters/scene-2-dining.webp',
+    posterSrc: resolvePosterUrl('/videos/scenes/posters/scene-2-dining.webp'),
     duration: 10.0,
     featuredProductId: 'prod-002',
     isAvailable: true,
@@ -163,7 +204,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
     get videoSrcMobile() {
       return resolveVideoUrl('/videos/scenes/scene-3-kitchen.mp4', 'mobile');
     },
-    posterSrc: '/videos/scenes/posters/scene-3-kitchen.webp',
+    posterSrc: resolvePosterUrl('/videos/scenes/posters/scene-3-kitchen.webp'),
     duration: 10.0,
     featuredProductId: 'prod-006',
     isAvailable: true,
@@ -196,7 +237,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
     get videoSrcMobile() {
       return resolveVideoUrl('/videos/scenes/scene-4-lounge.mp4', 'mobile');
     },
-    posterSrc: '/videos/scenes/posters/scene-4-lounge.webp',
+    posterSrc: resolvePosterUrl('/videos/scenes/posters/scene-4-lounge.webp'),
     duration: 10.0,
     featuredProductId: 'prod-001',
     isAvailable: true,
@@ -229,7 +270,7 @@ export const CINEMATIC_TOUR_ALL_SCENES: TourSceneConfig[] = [
     get videoSrcMobile() {
       return resolveVideoUrl('/videos/scenes/scene-5-bedroom.mp4', 'mobile');
     },
-    posterSrc: '/videos/scenes/posters/scene-5-bedroom.webp',
+    posterSrc: resolvePosterUrl('/videos/scenes/posters/scene-5-bedroom.webp'),
     duration: 10.0,
     featuredProductId: 'prod-004',
     isAvailable: true,

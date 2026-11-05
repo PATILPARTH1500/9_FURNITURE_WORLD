@@ -20,6 +20,7 @@ export const CinematicResidenceTour: React.FC = () => {
   const progressTextRef = useRef<HTMLSpanElement>(null);
 
   // Mutable progress references decoupled from React render cycle (Page 9 of Guide)
+  const isMountedRef = useRef(true);
   const targetProgressRef = useRef(0);
   const currentProgressRef = useRef(0);
   const activeSceneIndexRef = useRef(0);
@@ -27,8 +28,22 @@ export const CinematicResidenceTour: React.FC = () => {
   // Progressive preloading tracker to avoid redundant load() calls
   const primedScenesRef = useRef<boolean[]>(new Array(totalScenes).fill(false));
 
+  // Per-scene cached DOM styles to prevent redundant style thrashing and compositing invalidations
+  const lastStylesRef = useRef<{
+    opacity: string;
+    visibility: string;
+    zIndex: string;
+    transform: string;
+  }[]>(
+    Array.from({ length: totalScenes }, () => ({
+      opacity: '',
+      visibility: '',
+      zIndex: '',
+      transform: '',
+    }))
+  );
+
   // Discrete state for narrative text & scene sync
-  const [_activeSceneIndex, setActiveSceneIndex] = useState(0);
   const [readyClips, setReadyClips] = useState<boolean[]>(new Array(totalScenes).fill(false));
   const [_isMuted, setIsMuted] = useState(true);
   const [hasInteractedAudio, setHasInteractedAudio] = useState(false);
@@ -43,8 +58,6 @@ export const CinematicResidenceTour: React.FC = () => {
   // Optional Canvas Frame Playback Mode (Page 7 of Guide: Prototype on Scene 01)
   const [useCanvasScene0, setUseCanvasScene0] = useState(false);
   const [canvasScene0Progress, setCanvasScene0Progress] = useState(0);
-
-  const { setActiveRoomIndex } = useSceneStore();
 
   // Web Audio Context for warm ambient room tone
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -95,7 +108,7 @@ export const CinematicResidenceTour: React.FC = () => {
       setHasInteractedAudio(true);
     }
     if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
-      audioCtxRef.current.resume();
+      audioCtxRef.current.resume().catch(() => {});
     }
     setIsMuted((prev) => {
       const next = !prev;
@@ -106,7 +119,7 @@ export const CinematicResidenceTour: React.FC = () => {
     });
   }, [hasInteractedAudio, initAmbientAudio]);
 
-  // Non-blocking seek tracker per scene with frame quantization & rVFC integration
+  // Non-blocking seek tracker per scene with frame quantization & seek pipeline serialization
   const seekTrackersRef = useRef<{
     isSeeking: boolean;
     pendingTime: number | null;
@@ -126,7 +139,7 @@ export const CinematicResidenceTour: React.FC = () => {
   const lastTimeRef = useRef<number>(typeof performance !== 'undefined' ? performance.now() : 0);
   const lastWidthRef = useRef<number>(typeof window !== 'undefined' ? window.innerWidth : 0);
 
-  // Setup requestVideoFrameCallback (rVFC) on supported browsers
+  // Setup requestVideoFrameCallback (rVFC) for compositor frame presentation monitoring & seek dispatch
   const setupRVFC = useCallback((video: HTMLVideoElement, sceneIdx: number) => {
     const tracker = seekTrackersRef.current[sceneIdx];
     if (tracker.rvfcRegistered) return;
@@ -139,6 +152,7 @@ export const CinematicResidenceTour: React.FC = () => {
     if (typeof rvfcVid.requestVideoFrameCallback === 'function') {
       tracker.rvfcRegistered = true;
       const onFrame = (now: number) => {
+        if (!isMountedRef.current) return;
         tracker.isSeeking = false;
         tracker.seekStartTime = 0;
 
@@ -237,6 +251,9 @@ export const CinematicResidenceTour: React.FC = () => {
       try {
         videoRefs.current[0].currentTime = 0;
       } catch {}
+      if (videoRefs.current[0].readyState >= 1) {
+        setupRVFC(videoRefs.current[0], 0);
+      }
     }
     seekTrackersRef.current[0] = {
       isSeeking: false,
@@ -268,22 +285,22 @@ export const CinematicResidenceTour: React.FC = () => {
       const dt = Math.min(0.05, Math.max(0.001, (timeNow - lastTimeRef.current) / 1000));
       lastTimeRef.current = timeNow;
 
-      // Page 12 of Guide: When canvas/tour is completely off-screen, skip expensive decode work
-      if (!isInTourViewportRef.current && targetProgressRef.current === 0) {
+      const target = targetProgressRef.current;
+      let curr = currentProgressRef.current;
+      const delta = target - curr;
+      const snapThreshold = isTouchDevice ? 0.0004 : 0.00008;
+
+      // Page 12 of Guide: When tour is completely off-screen and settled, skip expensive decode work
+      if (!isInTourViewportRef.current && Math.abs(delta) < snapThreshold) {
         rafId = requestAnimationFrame(renderLoop);
         return;
       }
 
-      const target = targetProgressRef.current;
-      let curr = currentProgressRef.current;
-
       // Exponential physically-grounded smoothing:
-      // Desktop retains 13.5 physical inertia; mobile/touch uses responsive 28.0
-      const delta = target - curr;
-      const lambda = prefersReducedMotion ? 28.0 : isTouchDevice ? 28.0 : 13.5;
+      // Desktop uses tuned 18.5 for responsive, low-lag tracking; mobile/touch uses 28.0
+      const lambda = prefersReducedMotion ? 28.0 : isTouchDevice ? 28.0 : 18.5;
       curr += delta * (1 - Math.exp(-lambda * dt));
 
-      const snapThreshold = isTouchDevice ? 0.0004 : 0.00008;
       if (Math.abs(delta) < snapThreshold) {
         curr = target;
       }
@@ -292,9 +309,9 @@ export const CinematicResidenceTour: React.FC = () => {
       // Continuous progression across [0, numScenes]
       const s = curr * numScenes;
 
-      // Update Hairline Progress Bar
+      // Update Hairline Progress Bar via GPU transform (Zero Layout Reflow)
       if (progressBarRef.current) {
-        progressBarRef.current.style.width = `${(curr * 100).toFixed(2)}%`;
+        progressBarRef.current.style.transform = `scaleX(${curr.toFixed(4)})`;
       }
 
       // Discrete room index determination
@@ -305,8 +322,8 @@ export const CinematicResidenceTour: React.FC = () => {
           progressTextRef.current.textContent = `${CINEMATIC_TOUR_SCENES[discreteIdx]?.roomNumber || '01'} / ${totalScenesPad}`;
         }
         activeSceneIndexRef.current = discreteIdx;
-        setActiveSceneIndex(discreteIdx);
-        setActiveRoomIndex(discreteIdx);
+        // Update global scene store directly without triggering React re-renders of the tour component
+        useSceneStore.getState().setActiveRoomIndex(discreteIdx);
 
         // Intelligent decoder lifecycle (Page 13 of Guide):
         // Limit active hardware decoders on mobile to 1-2 concurrent streams max!
@@ -352,8 +369,7 @@ export const CinematicResidenceTour: React.FC = () => {
         const wrapper = videoWrapperRefs.current[k];
         const video = videoRefs.current[k];
         const tracker = seekTrackersRef.current[k];
-        const sceneDuration = CINEMATIC_TOUR_SCENES[k].duration;
-        const actualDuration = video && video.duration && !isNaN(video.duration) ? video.duration : sceneDuration;
+        const sceneDuration = CINEMATIC_TOUR_SCENES[k].duration || 10.0;
 
         // Lifecycle boundaries for scene k
         const sIn = k === 0 ? 0 : k - TRANS_WINDOW;
@@ -373,38 +389,23 @@ export const CinematicResidenceTour: React.FC = () => {
             setCanvasScene0Progress(normProgress);
           }
 
-          // 1. Precise Video Scrubbing with Discrete Frame Quantization & Watchdog
-          const continuousTime = normProgress * Math.max(0, actualDuration - 0.04);
+          // 1. Precise Video Scrubbing with Discrete Frame Quantization
+          const continuousTime = normProgress * Math.max(0, sceneDuration - 0.04);
           // Quantize to 24fps source grid (1 frame = 0.04167s)
           const sourceFrameIdx = Math.round(continuousTime * 24);
           const targetTime = sourceFrameIdx / 24;
 
           if (video && (!useCanvasScene0 || k > 0)) {
-            // Setup rVFC if not yet attached
-            setupRVFC(video, k);
-
             if (video.readyState === 0) {
               video.load();
             } else if (video.readyState >= 1) {
-              // Auto-recovery watchdog: if previous seek stalled (> 140ms), clear isSeeking
-              if (tracker.isSeeking && tracker.seekStartTime && timeNow - tracker.seekStartTime > 140) {
-                tracker.isSeeking = false;
-                tracker.seekStartTime = 0;
-              }
-
-              // Only seek if we have crossed at least ~0.8 of a source frame (0.035s)
-              if (Math.abs(video.currentTime - targetTime) >= 0.035) {
-                if (!tracker.isSeeking) {
-                  tracker.isSeeking = true;
-                  tracker.seekStartTime = timeNow;
-                  tracker.lastTargetTime = targetTime;
-                  try {
-                    video.currentTime = targetTime;
-                  } catch {}
-                } else {
-                  // Video decoder is currently busy: store newest quantized target
-                  tracker.pendingTime = targetTime;
-                }
+              // Fast in-memory hardware gate: Never assign currentTime while hardware decoder is seeking!
+              if (!tracker.isSeeking && targetTime !== tracker.lastTargetTime && Math.abs(video.currentTime - targetTime) >= 0.038) {
+                tracker.isSeeking = true;
+                tracker.lastTargetTime = targetTime;
+                try {
+                  video.currentTime = targetTime;
+                } catch {}
               }
             }
           }
@@ -432,15 +433,32 @@ export const CinematicResidenceTour: React.FC = () => {
           if (wrapper) {
             const roomLocal = Math.max(0, Math.min(1, s - k));
             const scale = prefersReducedMotion ? 1.0 : 1.0 + roomLocal * 0.024;
-            wrapper.style.transform = `scale(${scale.toFixed(4)}) translate3d(0, 0, 0)`;
+            const scaleStr = `scale(${scale.toFixed(4)}) translate3d(0, 0, 0)`;
+            if (lastStylesRef.current[k].transform !== scaleStr) {
+              wrapper.style.transform = scaleStr;
+              lastStylesRef.current[k].transform = scaleStr;
+            }
           }
         }
 
-        // Apply compositing styles directly to DOM
+        // Apply compositing styles directly to DOM only when changed
         if (wrapper) {
-          wrapper.style.opacity = opacity.toFixed(3);
-          wrapper.style.visibility = opacity > 0.005 ? 'visible' : 'hidden';
-          wrapper.style.zIndex = zIndex.toString();
+          const lastStyle = lastStylesRef.current[k];
+          const opStr = opacity.toFixed(3);
+          if (lastStyle.opacity !== opStr) {
+            wrapper.style.opacity = opStr;
+            lastStyle.opacity = opStr;
+          }
+          const visStr = opacity > 0.005 ? 'visible' : 'hidden';
+          if (lastStyle.visibility !== visStr) {
+            wrapper.style.visibility = visStr;
+            lastStyle.visibility = visStr;
+          }
+          const zStr = zIndex.toString();
+          if (lastStyle.zIndex !== zStr) {
+            wrapper.style.zIndex = zStr;
+            lastStyle.zIndex = zStr;
+          }
         }
       }
 
@@ -488,6 +506,7 @@ export const CinematicResidenceTour: React.FC = () => {
     const videosToCleanup = videoRefs.current;
 
     return () => {
+      isMountedRef.current = false;
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('hashchange', handleRoomHash);
@@ -499,7 +518,7 @@ export const CinematicResidenceTour: React.FC = () => {
         audioCtxRef.current.close().catch(() => {});
       }
     };
-  }, [totalScenes, totalScenesPad, setActiveRoomIndex, setupRVFC, useCanvasScene0]);
+  }, [totalScenes, totalScenesPad, setupRVFC, useCanvasScene0]);
 
   return (
     <>
@@ -571,29 +590,14 @@ export const CinematicResidenceTour: React.FC = () => {
                       onSeeking={() => {
                         const tracker = seekTrackersRef.current[idx];
                         tracker.isSeeking = true;
-                        if (!tracker.seekStartTime) {
-                          tracker.seekStartTime = performance.now();
-                        }
                       }}
                       onSeeked={() => {
                         const tracker = seekTrackersRef.current[idx];
                         tracker.isSeeking = false;
-                        tracker.seekStartTime = 0;
-                        if (tracker.pendingTime !== null) {
-                          const nextTime = tracker.pendingTime;
-                          tracker.pendingTime = null;
-                          const vid = videoRefs.current[idx];
-                          if (vid && vid.readyState >= 1 && Math.abs(vid.currentTime - nextTime) >= 0.038) {
-                            tracker.isSeeking = true;
-                            tracker.seekStartTime = performance.now();
-                            tracker.lastTargetTime = nextTime;
-                            try {
-                              vid.currentTime = nextTime;
-                            } catch {}
-                          }
-                        }
                       }}
                       onLoadedData={() => {
+                        const vid = videoRefs.current[idx];
+                        if (vid) setupRVFC(vid, idx);
                         setReadyClips((prev) => {
                           const next = [...prev];
                           next[idx] = true;
@@ -643,8 +647,8 @@ export const CinematicResidenceTour: React.FC = () => {
               <div className="w-24 sm:w-56 h-[2px] sm:h-[3px] bg-white/30 rounded-full relative overflow-hidden backdrop-blur-xs">
                 <div
                   ref={progressBarRef}
-                  className="absolute left-0 top-0 bottom-0 bg-[#C84D1B] rounded-full transition-all duration-75 ease-out"
-                  style={{ width: '0%' }}
+                  className="absolute inset-0 bg-[#C84D1B] rounded-full origin-left will-change-transform"
+                  style={{ transform: 'scaleX(0)' }}
                 />
               </div>
 
