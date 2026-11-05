@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Image from '@/components/common/Image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Sparkles } from 'lucide-react';
 import { CINEMATIC_TOUR_SCENES } from '@/config/cinematicTour';
 import { useSceneStore } from '@/store/useSceneStore';
+import { CanvasFramePlayer } from '@/components/cinema/CanvasFramePlayer';
 
 export const CinematicResidenceTour: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,7 +19,7 @@ export const CinematicResidenceTour: React.FC = () => {
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressTextRef = useRef<HTMLSpanElement>(null);
 
-  // Mutable progress references decoupled from React render cycle
+  // Mutable progress references decoupled from React render cycle (Page 9 of Guide)
   const targetProgressRef = useRef(0);
   const currentProgressRef = useRef(0);
   const activeSceneIndexRef = useRef(0);
@@ -29,26 +29,20 @@ export const CinematicResidenceTour: React.FC = () => {
 
   // Discrete state for narrative text & scene sync
   const [_activeSceneIndex, setActiveSceneIndex] = useState(0);
-  const [_readyClips, setReadyClips] = useState<boolean[]>(new Array(totalScenes).fill(false));
+  const [readyClips, setReadyClips] = useState<boolean[]>(new Array(totalScenes).fill(false));
   const [_isMuted, setIsMuted] = useState(true);
   const [hasInteractedAudio, setHasInteractedAudio] = useState(false);
   const [viewportMode, setViewportMode] = useState<'desktop' | 'mobile'>(() =>
     typeof window !== 'undefined' && window.innerWidth <= 768 ? 'mobile' : 'desktop'
   );
 
-  // Scene 01 Readiness & Branded Preparation Overlay
-  const [isScene0Ready, setIsScene0Ready] = useState(false);
-  const [scene0BufferedPct, setScene0BufferedPct] = useState(0);
+  // Viewport visibility state (Page 12 of Guide: stop rendering when off-screen)
   const [isInTourViewport, setIsInTourViewport] = useState(false);
+  const isInTourViewportRef = useRef(false);
 
-  // Graceful fallback watchdog: never hold the preparation loader indefinitely
-  useEffect(() => {
-    const fallbackTimer = setTimeout(() => {
-      setIsScene0Ready(true);
-    }, 3500);
-
-    return () => clearTimeout(fallbackTimer);
-  }, []);
+  // Optional Canvas Frame Playback Mode (Page 7 of Guide: Prototype on Scene 01)
+  const [useCanvasScene0, setUseCanvasScene0] = useState(false);
+  const [canvasScene0Progress, setCanvasScene0Progress] = useState(0);
 
   const { setActiveRoomIndex } = useSceneStore();
 
@@ -112,12 +106,62 @@ export const CinematicResidenceTour: React.FC = () => {
     });
   }, [hasInteractedAudio, initAmbientAudio]);
 
-  // Non-blocking seek tracker per scene to prevent decoder queue stalls with watchdog timeout
-  const seekTrackersRef = useRef<{ isSeeking: boolean; pendingTime: number | null; lastTargetTime: number; seekStartTime: number }[]>(
-    Array.from({ length: totalScenes }, () => ({ isSeeking: false, pendingTime: null, lastTargetTime: -1, seekStartTime: 0 }))
+  // Non-blocking seek tracker per scene with frame quantization & rVFC integration
+  const seekTrackersRef = useRef<{
+    isSeeking: boolean;
+    pendingTime: number | null;
+    lastTargetTime: number;
+    seekStartTime: number;
+    rvfcRegistered: boolean;
+  }[]>(
+    Array.from({ length: totalScenes }, () => ({
+      isSeeking: false,
+      pendingTime: null,
+      lastTargetTime: -1,
+      seekStartTime: 0,
+      rvfcRegistered: false,
+    }))
   );
+
   const lastTimeRef = useRef<number>(typeof performance !== 'undefined' ? performance.now() : 0);
   const lastWidthRef = useRef<number>(typeof window !== 'undefined' ? window.innerWidth : 0);
+
+  // Setup requestVideoFrameCallback (rVFC) on supported browsers
+  const setupRVFC = useCallback((video: HTMLVideoElement, sceneIdx: number) => {
+    const tracker = seekTrackersRef.current[sceneIdx];
+    if (tracker.rvfcRegistered) return;
+
+    type RVFCVideo = HTMLVideoElement & {
+      requestVideoFrameCallback?: (callback: (now: number, metadata: unknown) => void) => number;
+    };
+    const rvfcVid = video as RVFCVideo;
+
+    if (typeof rvfcVid.requestVideoFrameCallback === 'function') {
+      tracker.rvfcRegistered = true;
+      const onFrame = (now: number) => {
+        tracker.isSeeking = false;
+        tracker.seekStartTime = 0;
+
+        if (tracker.pendingTime !== null) {
+          const nextTime = tracker.pendingTime;
+          tracker.pendingTime = null;
+          if (video.readyState >= 1 && Math.abs(video.currentTime - nextTime) >= 0.038) {
+            tracker.isSeeking = true;
+            tracker.seekStartTime = now;
+            tracker.lastTargetTime = nextTime;
+            try {
+              video.currentTime = nextTime;
+            } catch {}
+          }
+        }
+
+        if (typeof rvfcVid.requestVideoFrameCallback === 'function') {
+          rvfcVid.requestVideoFrameCallback(onFrame);
+        }
+      };
+      rvfcVid.requestVideoFrameCallback(onFrame);
+    }
+  }, []);
 
   // Main GSAP ScrollTrigger & Continuous Frame Synchronization Engine
   useEffect(() => {
@@ -127,13 +171,21 @@ export const CinematicResidenceTour: React.FC = () => {
     const numScenes = CINEMATIC_TOUR_SCENES.length;
     if (numScenes === 0) return;
 
+    // Check for canvas prototype query param or global toggle (Page 7 evaluation)
+    if (
+      window.location.search.includes('mode=canvas') ||
+      (window as unknown as { __cinematicTourMode?: string }).__cinematicTourMode === 'canvas'
+    ) {
+      setUseCanvasScene0(true);
+    }
+
     // Prevent ScrollTrigger from refreshing when mobile address bars expand/collapse vertically
     ScrollTrigger.config({ ignoreMobileResize: true });
 
     // Transition overlap window (16% of room scroll distance)
     const TRANS_WINDOW = 0.16;
 
-    // Check reduced motion preference
+    // Check reduced motion preference (Page 14 of Guide)
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Adaptive device profile: coarse touch devices follow the finger with higher responsivity
@@ -154,30 +206,47 @@ export const CinematicResidenceTour: React.FC = () => {
       scrub: true,
       anticipatePin: 1,
       fastScrollEnd: true,
-      onEnter: () => setIsInTourViewport(true),
-      onEnterBack: () => setIsInTourViewport(true),
-      onLeave: () => setIsInTourViewport(false),
-      onLeaveBack: () => setIsInTourViewport(false),
+      onEnter: () => {
+        setIsInTourViewport(true);
+        isInTourViewportRef.current = true;
+      },
+      onEnterBack: () => {
+        setIsInTourViewport(true);
+        isInTourViewportRef.current = true;
+      },
+      onLeave: () => {
+        setIsInTourViewport(false);
+        isInTourViewportRef.current = false;
+      },
+      onLeaveBack: () => {
+        setIsInTourViewport(false);
+        isInTourViewportRef.current = false;
+      },
       onUpdate: (self) => {
         targetProgressRef.current = Math.max(0, Math.min(0.9999, self.progress));
         if (self.progress > 0.001) {
           setIsInTourViewport(true);
+          isInTourViewportRef.current = true;
         }
       },
     });
 
-    // Prime ONLY Scene 00 in paused state.
-    // CRITICAL: Do NOT set currentTime = 0 on unprimed scenes (scenes 1..4),
-    // which would trigger aggressive pre-fetching on all 5 MP4s at once!
+    // Prime ONLY Scene 00 in paused state
     if (videoRefs.current[0]) {
       videoRefs.current[0].pause();
       try {
         videoRefs.current[0].currentTime = 0;
       } catch {}
     }
-    seekTrackersRef.current[0] = { isSeeking: false, pendingTime: null, lastTargetTime: -1, seekStartTime: 0 };
+    seekTrackersRef.current[0] = {
+      isSeeking: false,
+      pendingTime: null,
+      lastTargetTime: 0,
+      seekStartTime: 0,
+      rvfcRegistered: false,
+    };
 
-    // Expose runtime debugging hook for automated test suites
+    // Expose runtime debugging & benchmark hook for automated test suites
     if (typeof window !== 'undefined') {
       (window as unknown as { __cinematicTour: unknown }).__cinematicTour = {
         targetProgressRef,
@@ -186,6 +255,7 @@ export const CinematicResidenceTour: React.FC = () => {
         seekTrackersRef,
         videoRefs,
         ScrollTrigger,
+        setUseCanvasScene0,
       };
     }
 
@@ -193,16 +263,22 @@ export const CinematicResidenceTour: React.FC = () => {
     let lastSceneIdx = -1;
     lastTimeRef.current = performance.now();
 
-    // 60-120 FPS frame-rate independent continuous render loop
+    // 60-120 FPS continuous render loop (Page 9 of Guide)
     const renderLoop = (timeNow: number) => {
       const dt = Math.min(0.05, Math.max(0.001, (timeNow - lastTimeRef.current) / 1000));
       lastTimeRef.current = timeNow;
+
+      // Page 12 of Guide: When canvas/tour is completely off-screen, skip expensive decode work
+      if (!isInTourViewportRef.current && targetProgressRef.current === 0) {
+        rafId = requestAnimationFrame(renderLoop);
+        return;
+      }
 
       const target = targetProgressRef.current;
       let curr = currentProgressRef.current;
 
       // Exponential physically-grounded smoothing:
-      // Desktop retains exact 13.5 physical inertia; mobile/touch uses responsive 28.0
+      // Desktop retains 13.5 physical inertia; mobile/touch uses responsive 28.0
       const delta = target - curr;
       const lambda = prefersReducedMotion ? 28.0 : isTouchDevice ? 28.0 : 13.5;
       curr += delta * (1 - Math.exp(-lambda * dt));
@@ -232,7 +308,8 @@ export const CinematicResidenceTour: React.FC = () => {
         setActiveSceneIndex(discreteIdx);
         setActiveRoomIndex(discreteIdx);
 
-        // Intelligent decoder lifecycle: manage buffer for adjacent scenes
+        // Intelligent decoder lifecycle (Page 13 of Guide):
+        // Limit active hardware decoders on mobile to 1-2 concurrent streams max!
         for (let j = 0; j < numScenes; j++) {
           const isNear = (j === discreteIdx) || (j === discreteIdx - 1) || (j === discreteIdx + 1 && primedScenesRef.current[j]);
           const vid = videoRefs.current[j];
@@ -244,13 +321,17 @@ export const CinematicResidenceTour: React.FC = () => {
               }
             } else {
               if (!vid.paused) vid.pause();
+              // On mobile, aggressively unload distant decoders to free GPU VRAM
+              if (isTouchDevice && Math.abs(j - discreteIdx) >= 2) {
+                vid.preload = 'none';
+              }
             }
           }
         }
       }
 
       // Intelligent Progressive Next-Scene Preloading:
-      // When user passes 50% through current scene, begin fetching the immediate next scene
+      // When user passes 50% through current scene, prime the immediate next scene
       const nextSceneIdx = discreteIdx + 1;
       if (nextSceneIdx < numScenes && !primedScenesRef.current[nextSceneIdx]) {
         const localProgress = s - discreteIdx;
@@ -284,22 +365,35 @@ export const CinematicResidenceTour: React.FC = () => {
         let zIndex = 2;
 
         if (s >= sIn && s <= sOut) {
-          // 1. Precise Video Scrubbing with Non-Blocking Hardware Decoder Queues & Watchdog
           const span = sOut - sIn;
           const normProgress = Math.max(0, Math.min(1, (s - sIn) / span));
-          const targetTime = normProgress * Math.max(0, actualDuration - 0.04);
 
-          if (video) {
+          // If Scene 0 is using Canvas Frame Playback, update its progress
+          if (k === 0 && useCanvasScene0) {
+            setCanvasScene0Progress(normProgress);
+          }
+
+          // 1. Precise Video Scrubbing with Discrete Frame Quantization & Watchdog
+          const continuousTime = normProgress * Math.max(0, actualDuration - 0.04);
+          // Quantize to 24fps source grid (1 frame = 0.04167s)
+          const sourceFrameIdx = Math.round(continuousTime * 24);
+          const targetTime = sourceFrameIdx / 24;
+
+          if (video && (!useCanvasScene0 || k > 0)) {
+            // Setup rVFC if not yet attached
+            setupRVFC(video, k);
+
             if (video.readyState === 0) {
               video.load();
             } else if (video.readyState >= 1) {
-              // Auto-recovery watchdog: if previous seek stalled (> 180ms), clear isSeeking
-              if (tracker.isSeeking && tracker.seekStartTime && timeNow - tracker.seekStartTime > 180) {
+              // Auto-recovery watchdog: if previous seek stalled (> 140ms), clear isSeeking
+              if (tracker.isSeeking && tracker.seekStartTime && timeNow - tracker.seekStartTime > 140) {
                 tracker.isSeeking = false;
                 tracker.seekStartTime = 0;
               }
 
-              if (Math.abs(video.currentTime - targetTime) > 0.015) {
+              // Only seek if we have crossed at least ~0.8 of a source frame (0.035s)
+              if (Math.abs(video.currentTime - targetTime) >= 0.035) {
                 if (!tracker.isSeeking) {
                   tracker.isSeeking = true;
                   tracker.seekStartTime = timeNow;
@@ -308,7 +402,7 @@ export const CinematicResidenceTour: React.FC = () => {
                     video.currentTime = targetTime;
                   } catch {}
                 } else {
-                  // Video decoder is busy: record newest target (latest-target-wins)
+                  // Video decoder is currently busy: store newest quantized target
                   tracker.pendingTime = targetTime;
                 }
               }
@@ -405,24 +499,23 @@ export const CinematicResidenceTour: React.FC = () => {
         audioCtxRef.current.close().catch(() => {});
       }
     };
-  }, [totalScenes, totalScenesPad, setActiveRoomIndex]);
-
-  const showPreparationTransition = isInTourViewport && !isScene0Ready;
+  }, [totalScenes, totalScenesPad, setActiveRoomIndex, setupRVFC, useCanvasScene0]);
 
   return (
     <>
       <div
         ref={containerRef}
         id="residence-tour"
-        className="relative w-full bg-cream touch-pan-y"
+        className="relative w-full bg-[#1A1816] touch-pan-y"
         style={{ height: `${totalScenes * 105}vh` }}
       >
         {/* Pinned Viewport with dynamic mobile height */}
-        <div ref={viewportRef} className="relative h-[100dvh] sm:h-screen w-full overflow-hidden select-none bg-cream touch-pan-y">
+        <div ref={viewportRef} className="relative h-[100dvh] sm:h-screen w-full overflow-hidden select-none bg-[#1A1816] touch-pan-y">
           {/* 1. LAYER: Video Scrubbing Stack */}
-          <div className="absolute inset-0 w-full h-full bg-cream">
+          <div className="absolute inset-0 w-full h-full bg-[#1A1816]">
             {CINEMATIC_TOUR_SCENES.map((scene, idx) => {
               const videoSrc = viewportMode === 'mobile' ? scene.videoSrcMobile : scene.videoSrcDesktop;
+              const isFirstScene = idx === 0;
 
               return (
                 <div
@@ -432,162 +525,125 @@ export const CinematicResidenceTour: React.FC = () => {
                   }}
                   className="absolute inset-0 w-full h-full will-change-[transform,opacity] transform-gpu"
                   style={{
-                    opacity: idx === 0 ? 1 : 0,
-                    zIndex: idx === 0 ? 8 : 2,
-                    visibility: idx === 0 ? 'visible' : 'hidden',
+                    opacity: isFirstScene ? 1 : 0,
+                    zIndex: isFirstScene ? 8 : 2,
+                    visibility: isFirstScene ? 'visible' : 'hidden',
                   }}
                 >
-                  {/* LIVE DECODED HTML5 VIDEO ELEMENT */}
-                  <video
-                    ref={(el) => {
-                      videoRefs.current[idx] = el;
-                    }}
-                    src={videoSrc}
-                    poster={scene.posterSrc}
-                    muted
-                    loop={false}
-                    playsInline
-                    preload={idx === 0 ? 'auto' : 'none'}
-                    disablePictureInPicture
-                    disableRemotePlayback
-                    onProgress={(e) => {
-                      if (idx === 0) {
-                        const v = e.currentTarget;
-                        if (v.buffered.length > 0 && v.duration) {
-                          const bufferedEnd = v.buffered.end(v.buffered.length - 1);
-                          const pct = Math.min(100, Math.round((bufferedEnd / v.duration) * 100));
-                          setScene0BufferedPct(pct);
-                          if (bufferedEnd >= 1.5 || v.readyState >= 3) {
-                            setIsScene0Ready(true);
+                  {/* OPTIONAL CANVAS FRAME PLAYBACK (Scene 01 Prototype - Page 7 of Guide) */}
+                  {isFirstScene && useCanvasScene0 ? (
+                    <CanvasFramePlayer
+                      framesCount={60}
+                      basePath="/videos/scenes/frames/scene-1/frame_"
+                      progress={canvasScene0Progress}
+                      isActive={isInTourViewport}
+                      onReady={() => {
+                        setReadyClips((prev) => {
+                          const next = [...prev];
+                          next[0] = true;
+                          return next;
+                        });
+                      }}
+                      className="z-10 pointer-events-none"
+                    />
+                  ) : (
+                    /* HARDWARE ACCELERATED HTML5 VIDEO ELEMENT (Page 12 of Guide: Poster-First) */
+                    <video
+                      ref={(el) => {
+                        videoRefs.current[idx] = el;
+                      }}
+                      src={videoSrc}
+                      poster={scene.posterSrc}
+                      muted
+                      loop={false}
+                      playsInline
+                      preload={isFirstScene ? 'auto' : 'none'}
+                      disablePictureInPicture
+                      disableRemotePlayback
+                      onError={() => {
+                        // Resilient Fallback: keep poster completely active
+                        setReadyClips((prev) => {
+                          const next = [...prev];
+                          next[idx] = false;
+                          return next;
+                        });
+                      }}
+                      onSeeking={() => {
+                        const tracker = seekTrackersRef.current[idx];
+                        tracker.isSeeking = true;
+                        if (!tracker.seekStartTime) {
+                          tracker.seekStartTime = performance.now();
+                        }
+                      }}
+                      onSeeked={() => {
+                        const tracker = seekTrackersRef.current[idx];
+                        tracker.isSeeking = false;
+                        tracker.seekStartTime = 0;
+                        if (tracker.pendingTime !== null) {
+                          const nextTime = tracker.pendingTime;
+                          tracker.pendingTime = null;
+                          const vid = videoRefs.current[idx];
+                          if (vid && vid.readyState >= 1 && Math.abs(vid.currentTime - nextTime) >= 0.038) {
+                            tracker.isSeeking = true;
+                            tracker.seekStartTime = performance.now();
+                            tracker.lastTargetTime = nextTime;
+                            try {
+                              vid.currentTime = nextTime;
+                            } catch {}
                           }
                         }
-                      }
-                    }}
-                    onError={() => {
-                      // Fallback: mark clip ready so poster seamlessly takes over
-                      if (idx === 0) setIsScene0Ready(true);
-                      setReadyClips((prev) => {
-                        const next = [...prev];
-                        next[idx] = false;
-                        return next;
-                      });
-                    }}
-                    onSeeking={() => {
-                      const tracker = seekTrackersRef.current[idx];
-                      tracker.isSeeking = true;
-                      if (!tracker.seekStartTime) {
-                        tracker.seekStartTime = performance.now();
-                      }
-                    }}
-                    onSeeked={() => {
-                      const tracker = seekTrackersRef.current[idx];
-                      tracker.isSeeking = false;
-                      tracker.seekStartTime = 0;
-                      if (tracker.pendingTime !== null) {
-                        const nextTime = tracker.pendingTime;
-                        tracker.pendingTime = null;
-                        const vid = videoRefs.current[idx];
-                        if (vid && vid.readyState >= 1 && Math.abs(vid.currentTime - nextTime) > 0.015) {
-                          tracker.isSeeking = true;
-                          tracker.seekStartTime = performance.now();
-                          tracker.lastTargetTime = nextTime;
-                          try {
-                            vid.currentTime = nextTime;
-                          } catch {}
-                        }
-                      }
-                    }}
-                    onLoadedData={() => {
-                      if (idx === 0) setIsScene0Ready(true);
-                      setReadyClips((prev) => {
-                        const next = [...prev];
-                        next[idx] = true;
-                        return next;
-                      });
-                    }}
-                    onCanPlay={() => {
-                      if (idx === 0) setIsScene0Ready(true);
-                      setReadyClips((prev) => {
-                        const next = [...prev];
-                        next[idx] = true;
-                        return next;
-                      });
-                    }}
-                    className="absolute inset-0 w-full h-full object-cover transform-gpu z-10 pointer-events-none"
-                  />
+                      }}
+                      onLoadedData={() => {
+                        setReadyClips((prev) => {
+                          const next = [...prev];
+                          next[idx] = true;
+                          return next;
+                        });
+                      }}
+                      onCanPlay={() => {
+                        setReadyClips((prev) => {
+                          const next = [...prev];
+                          next[idx] = true;
+                          return next;
+                        });
+                      }}
+                      className={`absolute inset-0 w-full h-full object-cover transform-gpu z-10 pointer-events-none transition-opacity duration-300 ${
+                        readyClips[idx] ? 'opacity-100' : 'opacity-0'
+                      }`}
+                    />
+                  )}
 
-                  {/* High-Resolution Poster Placeholder - Always active as a solid backdrop underneath at z-0 */}
+                  {/* POSTER-FIRST BASELINE: Always active underneath at z-0 with zero black frames */}
                   <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
                     <Image
                       src={scene.posterSrc}
                       alt={scene.roomTitle}
                       fill
-                      priority={idx === 0}
+                      priority={isFirstScene}
                       className="object-cover"
                       sizes="100vw"
                     />
                   </div>
 
                   {/* Subtle Warm Lighting Vignette */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-checkerboard/70 via-transparent to-checkerboard/30 pointer-events-none z-20" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/25 pointer-events-none z-20" />
                 </div>
               );
             })}
           </div>
 
-          {/* BRANDED PREPARATION TRANSITION OVERLAY */}
-          <div
-            id="residence-prep-overlay"
-            className={`absolute inset-0 z-40 bg-cream/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center transition-all duration-700 ease-out ${
-              showPreparationTransition ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-            }`}
-            aria-live="polite"
-          >
-            <div className="max-w-md w-full space-y-5 bg-white/80 p-8 sm:p-10 rounded-3xl border border-checkerboard/10 shadow-warm">
-              <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold flex items-center justify-center space-x-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-tangerine" />
-                <span>Furniture Village · Living Tour</span>
-              </span>
-
-              <div className="space-y-1.5">
-                <h3 className="font-serif text-2xl sm:text-3xl text-checkerboard font-semibold">
-                  Preparing your residence...
-                </h3>
-                <p className="font-sans text-xs sm:text-sm text-walnut">
-                  Scene 01 · The Living Room
-                </p>
-              </div>
-
-              {/* Honest Progress Indicator (only if measurable progress) */}
-              <div className="space-y-2 pt-2">
-                <div className="w-full h-1.5 bg-cream-dark rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-tangerine rounded-full transition-all duration-300 ease-out"
-                    style={{
-                      width: scene0BufferedPct > 0 ? `${scene0BufferedPct}%` : '20%',
-                    }}
-                  />
-                </div>
-                <div className="flex justify-between text-xs font-sans text-walnut/70">
-                  <span>Natural Timber & Joinery</span>
-                  <span>{scene0BufferedPct > 0 ? `${scene0BufferedPct}%` : 'Loading...'}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* Hairline Progress Indicator */}
-          <div className="absolute bottom-1.5 sm:bottom-4 left-0 right-0 z-30 px-3 sm:px-6 md:px-12 pointer-events-none">
+          <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 z-30 px-3 sm:px-6 md:px-12 pointer-events-none">
             <div className="max-w-7xl mx-auto flex items-center justify-between text-white/90 drop-shadow-sm font-medium">
               <span className="font-sans text-[10px] sm:text-[11px] tracking-wider uppercase">
-                <span className="hidden sm:inline">Scroll to explore the home</span>
+                <span className="hidden sm:inline">Scroll to explore the residence</span>
                 <span className="inline sm:hidden">Scroll to explore</span>
               </span>
 
               <div className="w-24 sm:w-56 h-[2px] sm:h-[3px] bg-white/30 rounded-full relative overflow-hidden backdrop-blur-xs">
                 <div
                   ref={progressBarRef}
-                  className="absolute left-0 top-0 bottom-0 bg-tangerine rounded-full transition-all duration-75 ease-out"
+                  className="absolute left-0 top-0 bottom-0 bg-[#C84D1B] rounded-full transition-all duration-75 ease-out"
                   style={{ width: '0%' }}
                 />
               </div>
