@@ -91,3 +91,4 @@ export function scrollToSection(rawTarget: string, offset: number = 76): boolean
 
   return false;
 }
+
