@@ -528,6 +528,8 @@ export const CinematicResidenceTour: React.FC = () => {
         className="relative w-full bg-[#1A1816] touch-pan-y"
         style={{ height: `${totalScenes * 105}vh` }}
       >
+        <span id="tour" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
+        <span id="explore" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
         {/* Pinned Viewport with dynamic mobile height */}
         <div ref={viewportRef} className="relative h-[100dvh] sm:h-screen w-full overflow-hidden select-none bg-[#1A1816] touch-pan-y">
           {/* 1. LAYER: Video Scrubbing Stack */}

@@ -1,19 +1,27 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import Link from '@/components/common/Link';
-import { ShoppingBag, Menu, X, ArrowUpRight, Search } from 'lucide-react';
+import { ShoppingBag, Menu, X, ArrowUpRight, Search, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
 import { SearchModal } from '@/components/discovery/SearchModal';
+import { scrollToSection } from '@/utils/navigation';
 
 export const Navbar: React.FC = () => {
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('home');
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
+
+  const navRef = useRef<HTMLElement>(null);
+  const moreDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setCartCount(getTotalCount());
@@ -31,20 +39,21 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Keyboard shortcut: Cmd+K / Ctrl+K opens search, Escape closes mobile menu
+  // Keyboard shortcut: Cmd+K / Ctrl+K opens search, Escape closes mobile menu / dropdown
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setSearchOpen((prev) => !prev);
       }
-      if (e.key === 'Escape' && mobileMenuOpen) {
-        setMobileMenuOpen(false);
+      if (e.key === 'Escape') {
+        if (moreDropdownOpen) setMoreDropdownOpen(false);
+        if (mobileMenuOpen) setMobileMenuOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mobileMenuOpen]);
+  }, [moreDropdownOpen, mobileMenuOpen]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -55,20 +64,112 @@ export const Navbar: React.FC = () => {
     }
   }, [mobileMenuOpen]);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-more-dropdown]')) {
+        setMoreDropdownOpen(false);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, []);
+
+  // Active section tracking across the 9 canonical homepage sections
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      setActiveSection('');
+      return;
+    }
+
+    const sectionIds = [
+      'home',
+      'residence-tour',
+      'collections',
+      'our-story',
+      'materials-craft',
+      'collectible-cars',
+      'room-finder',
+      'journal',
+      'visit-us',
+    ];
+
+    const updateActiveSection = () => {
+      // Check if scrolled near the bottom of page (Visit Us / Footer)
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 160) {
+        setActiveSection('visit-us');
+        return;
+      }
+
+      const scrollPos = window.scrollY + 130; // 130px offset below header
+
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const id = sectionIds[i];
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPos >= top) {
+            setActiveSection(id);
+            return;
+          }
+        }
+      }
+      setActiveSection('home');
+    };
+
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    updateActiveSection();
+    return () => window.removeEventListener('scroll', updateActiveSection);
+  }, [location.pathname]);
+
+  const handleMobileNavClick = (href: string) => {
+    setMobileMenuOpen(false);
+    setTimeout(() => {
+      scrollToSection(href, 76);
+    }, 60);
+  };
+
+  const handleDropdownEnter = () => {
+    if (moreDropdownTimeoutRef.current) {
+      clearTimeout(moreDropdownTimeoutRef.current);
+      moreDropdownTimeoutRef.current = null;
+    }
+    setMoreDropdownOpen(true);
+  };
+
+  const handleDropdownLeave = () => {
+    moreDropdownTimeoutRef.current = setTimeout(() => {
+      setMoreDropdownOpen(false);
+    }, 180);
+  };
+
+  // Split navigation items: 5 primary visible + 4 in More dropdown on desktop
+  const primaryNavItems = BRAND_CONFIG.navigation.slice(0, 5);
+  const secondaryNavItems = BRAND_CONFIG.navigation.slice(5);
+
+  const isSecondaryActive = secondaryNavItems.some(
+    (item) => item.href.replace(/^\/?#/, '') === activeSection
+  );
+
   return (
     <>
       <header
+        ref={navRef}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
           scrolled
-            ? 'bg-[#FBF9F5]/92 backdrop-blur-md border-b border-[#1A1816]/8 shadow-[0_4px_24px_rgba(26,24,22,0.03)] py-3 sm:py-3.5'
-            : 'bg-[#FBF9F5]/80 backdrop-blur-xs border-b border-transparent py-4 sm:py-5 lg:py-6'
+            ? 'bg-[#FBF9F5]/96 backdrop-blur-md border-b border-[#1A1816]/10 shadow-[0_4px_24px_rgba(26,24,22,0.04)] py-3 sm:py-3.5'
+            : 'bg-[#FBF9F5]/90 backdrop-blur-sm border-b border-[#1A1816]/6 py-4 sm:py-5 lg:py-5'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 flex items-center justify-between gap-4">
           {/* 1. Brand Wordmark */}
           <Link
             href="/"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={() => {
+              if (mobileMenuOpen) setMobileMenuOpen(false);
+              scrollToSection('home', 76);
+            }}
             className="group flex flex-col text-left focus:outline-hidden shrink-0"
             aria-label={`${BRAND_CONFIG.name} — Home`}
           >
@@ -80,24 +181,107 @@ export const Navbar: React.FC = () => {
             </span>
           </Link>
 
-          {/* 2. Room Navigation Links */}
+          {/* 2. Desktop Navigation with Considered 9-Section Layout */}
           <nav
-            aria-label="Room categories"
-            className="hidden md:flex items-center gap-5 lg:gap-8 text-xs font-sans tracking-[0.1em] uppercase text-[#1A1816]/75 font-medium shrink-0"
+            aria-label="Primary residence navigation"
+            className="hidden md:flex items-center gap-5 lg:gap-7 text-xs font-sans tracking-[0.1em] uppercase font-medium shrink-0"
           >
-            {BRAND_CONFIG.navigation.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="group relative py-1 hover:text-[#1A1816] transition-colors duration-200 focus:outline-hidden"
+            {/* Primary 5 Anchors */}
+            {primaryNavItems.map((item) => {
+              const targetKey = item.href.replace(/^\/?#/, '');
+              const isActive = location.pathname === '/' && activeSection === targetKey;
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`group relative py-1 transition-colors duration-200 focus:outline-hidden ${
+                    isActive ? 'text-[#C84D1B] font-semibold' : 'text-[#1A1816]/80 hover:text-[#1A1816]'
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  <span
+                    className={`absolute bottom-0 left-0 h-[1.5px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out ${
+                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
+                    }`}
+                    aria-hidden="true"
+                  />
+                </Link>
+              );
+            })}
+
+            {/* "More ▾" Dropdown for Remaining Sections (Clean, balanced layout) */}
+            <div
+              data-more-dropdown
+              className="relative"
+              onMouseEnter={handleDropdownEnter}
+              onMouseLeave={handleDropdownLeave}
+            >
+              <button
+                type="button"
+                onClick={() => setMoreDropdownOpen((prev) => !prev)}
+                aria-expanded={moreDropdownOpen}
+                aria-haspopup="true"
+                className={`group relative inline-flex items-center space-x-1 py-1 transition-colors duration-200 focus:outline-hidden cursor-pointer ${
+                  isSecondaryActive ? 'text-[#C84D1B] font-semibold' : 'text-[#1A1816]/80 hover:text-[#1A1816]'
+                }`}
               >
-                <span>{item.label}</span>
+                <span>More</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    moreDropdownOpen ? 'rotate-180 text-[#C84D1B]' : 'text-[#1A1816]/60 group-hover:text-[#1A1816]'
+                  }`}
+                />
                 <span
-                  className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out group-hover:w-full"
+                  className={`absolute bottom-0 left-0 h-[1.5px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out ${
+                    isSecondaryActive ? 'w-full' : 'w-0 group-hover:w-full'
+                  }`}
                   aria-hidden="true"
                 />
-              </Link>
-            ))}
+              </button>
+
+              <AnimatePresence>
+                {moreDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                    className="absolute top-full left-0 mt-2 w-56 bg-[#FBF9F5] border border-[#1A1816]/12 rounded-2xl shadow-[0_12px_36px_rgba(26,24,22,0.12)] p-2 z-50 backdrop-blur-md"
+                  >
+                    <div className="flex flex-col space-y-1">
+                      {secondaryNavItems.map((item, idx) => {
+                        const targetKey = item.href.replace(/^\/?#/, '');
+                        const isActive = location.pathname === '/' && activeSection === targetKey;
+
+                        return (
+                          <Link
+                            key={item.label}
+                            href={item.href}
+                            onClick={() => setMoreDropdownOpen(false)}
+                            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-sans tracking-wide transition-colors ${
+                              isActive
+                                ? 'bg-[#C84D1B]/10 text-[#C84D1B] font-semibold'
+                                : 'text-[#1A1816]/80 hover:text-[#1A1816] hover:bg-[#1A1816]/5'
+                            }`}
+                          >
+                            <span className="flex items-center space-x-2">
+                              <span
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  isActive ? 'bg-[#C84D1B]' : 'bg-[#1A1816]/20'
+                                }`}
+                              />
+                              <span>{item.label}</span>
+                            </span>
+                            <span className="text-[10px] text-[#666059] font-mono">0{6 + idx}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </nav>
 
           {/* 3. Right Action Area: Search, Bag, Direct Catalogue CTA */}
@@ -105,7 +289,7 @@ export const Navbar: React.FC = () => {
             {/* Search Button */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="inline-flex items-center space-x-1.5 p-2 rounded-full text-[#1A1816]/75 hover:text-[#1A1816] hover:bg-[#1A1816]/5 transition-colors"
+              className="inline-flex items-center space-x-1.5 p-2 rounded-full text-[#1A1816]/80 hover:text-[#1A1816] hover:bg-[#1A1816]/5 transition-colors cursor-pointer"
               aria-label="Search furniture collection"
               title="Search (Cmd+K)"
             >
@@ -118,7 +302,7 @@ export const Navbar: React.FC = () => {
             {/* Shopping Bag Button */}
             <button
               onClick={() => setIsOpen(true)}
-              className="relative p-2 rounded-full text-[#1A1816]/85 hover:text-[#C84D1B] hover:bg-[#1A1816]/5 transition-colors shrink-0"
+              className="relative p-2 rounded-full text-[#1A1816]/85 hover:text-[#C84D1B] hover:bg-[#1A1816]/5 transition-colors shrink-0 cursor-pointer"
               aria-label={`Shopping bag with ${cartCount} items`}
             >
               <ShoppingBag className="w-4 h-4 shrink-0" />
@@ -138,10 +322,10 @@ export const Navbar: React.FC = () => {
               <ArrowUpRight className="w-3.5 h-3.5 text-white/80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
 
-            {/* Mobile Hamburger Toggle */}
+            {/* Mobile Hamburger Toggle (>=44px touch target) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-[#1A1816] hover:text-[#C84D1B] transition-colors rounded-full hover:bg-[#1A1816]/5 focus:outline-hidden shrink-0"
+              className="md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1816] hover:text-[#C84D1B] transition-colors rounded-full hover:bg-[#1A1816]/5 focus:outline-hidden shrink-0 cursor-pointer"
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -149,50 +333,107 @@ export const Navbar: React.FC = () => {
             </button>
           </div>
         </div>
+      </header>
 
-        {/* Mobile Full-Overlay Navigation Drawer */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
+      {/* Mobile Full-Screen Navigation Drawer & Backdrop */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <div className="md:hidden fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true">
+            {/* Backdrop Dismiss Button */}
+            <motion.button
+              type="button"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="absolute inset-0 w-full h-full bg-black/45 backdrop-blur-xs border-none cursor-pointer p-0"
+              aria-label="Close navigation overlay"
+            />
+
+            {/* Drawer Body */}
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="md:hidden fixed inset-x-0 top-[60px] sm:top-[68px] bottom-0 bg-[#FBF9F5] border-t border-[#1A1816]/8 px-6 py-8 flex flex-col justify-between overflow-y-auto z-40"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-0 right-0 bottom-0 w-full max-w-sm sm:max-w-md bg-[#FBF9F5] shadow-2xl flex flex-col justify-between overflow-y-auto px-6 py-6 border-l border-[#1A1816]/10"
             >
-              <div className="space-y-6">
+              {/* Drawer Top Bar */}
+              <div className="flex items-center justify-between pb-5 border-b border-[#1A1816]/10">
+                <div className="flex flex-col text-left">
+                  <span className="font-serif text-lg tracking-[0.06em] text-[#1A1816] font-semibold leading-tight">
+                    {BRAND_CONFIG.name}
+                  </span>
+                  <span className="font-sans text-[9px] uppercase tracking-[0.24em] text-[#666059]">
+                    Atelier & Residence
+                  </span>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1816] hover:text-[#C84D1B] rounded-full hover:bg-[#1A1816]/5 transition-colors cursor-pointer"
+                  aria-label="Close navigation menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* All 9 Major Navigation Destinations */}
+              <div className="py-6 space-y-6">
                 <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-[#666059] block">
-                  Showroom Galleries
+                  Residence Navigation
                 </span>
 
-                <nav className="flex flex-col space-y-3" aria-label="Mobile room navigation">
-                  {BRAND_CONFIG.navigation.map((item, idx) => (
-                    <motion.div
-                      key={item.label}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.05 + idx * 0.03, duration: 0.2 }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="font-serif text-2xl text-[#1A1816] hover:text-[#C84D1B] transition-colors py-1 flex items-center justify-between group"
+                <nav className="flex flex-col space-y-1.5" aria-label="Mobile residence navigation">
+                  {BRAND_CONFIG.navigation.map((item, idx) => {
+                    const targetKey = item.href.replace(/^\/?#/, '');
+                    const isActive = location.pathname === '/' && activeSection === targetKey;
+
+                    return (
+                      <motion.div
+                        key={item.label}
+                        initial={{ opacity: 0, x: 12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.03 + idx * 0.025, duration: 0.2 }}
                       >
-                        <span>{item.label}</span>
-                        <ArrowUpRight className="w-4 h-4 text-[#666059] opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </Link>
-                    </motion.div>
-                  ))}
+                        <button
+                          type="button"
+                          onClick={() => handleMobileNavClick(item.href)}
+                          className={`w-full text-left font-serif text-xl sm:text-2xl py-2.5 px-3 rounded-xl flex items-center justify-between transition-colors min-h-[44px] group cursor-pointer ${
+                            isActive
+                              ? 'bg-[#C84D1B]/10 text-[#C84D1B] font-semibold'
+                              : 'text-[#1A1816] hover:bg-[#1A1816]/5'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <span className="font-mono text-xs text-[#666059] opacity-70">
+                              0{idx + 1}
+                            </span>
+                            <span>{item.label}</span>
+                          </div>
+                          <ArrowUpRight
+                            className={`w-4 h-4 transition-transform ${
+                              isActive
+                                ? 'text-[#C84D1B] translate-x-0.5 -translate-y-0.5'
+                                : 'text-[#666059] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5'
+                            }`}
+                          />
+                        </button>
+                      </motion.div>
+                    );
+                  })}
                 </nav>
               </div>
 
-              <div className="pt-8 border-t border-[#1A1816]/10 space-y-4">
+              {/* Drawer Footer Actions */}
+              <div className="pt-6 border-t border-[#1A1816]/10 space-y-3.5">
                 <button
+                  type="button"
                   onClick={() => {
                     setMobileMenuOpen(false);
                     setSearchOpen(true);
                   }}
-                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white border border-[#1A1816]/15 text-[#1A1816] font-semibold px-4 py-3 rounded-full shadow-2xs hover:bg-[#F2EFE9] transition-colors"
+                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white border border-[#1A1816]/15 text-[#1A1816] font-semibold px-4 py-3 rounded-full shadow-2xs hover:bg-[#F2EFE9] transition-colors cursor-pointer"
                 >
                   <Search className="w-3.5 h-3.5 text-[#C84D1B]" />
                   <span>Search Furniture Collection</span>
@@ -201,7 +442,7 @@ export const Navbar: React.FC = () => {
                 <Link
                   href="/collections"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#1A1816] hover:bg-[#C84D1B] text-white font-semibold px-4 py-3.5 rounded-full shadow-sm transition-colors"
+                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#1A1816] hover:bg-[#C84D1B] text-white font-semibold px-4 py-3 rounded-full shadow-sm transition-colors"
                 >
                   <span>Explore Complete Catalogue</span>
                   <ArrowUpRight className="w-3.5 h-3.5 text-white" />
@@ -213,9 +454,9 @@ export const Navbar: React.FC = () => {
                 </div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Global Search Modal */}
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />

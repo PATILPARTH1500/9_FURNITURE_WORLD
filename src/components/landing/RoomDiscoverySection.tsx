@@ -195,10 +195,12 @@ export const RoomDiscoverySection: React.FC = () => {
 
   return (
     <section
-      id="room-discovery"
+      id="room-finder"
       ref={sectionRef}
       className="relative z-20 bg-[#FBF9F5] py-24 sm:py-32 border-t border-stone-200/80 overflow-hidden"
     >
+      <span id="room-discovery" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
+      <span id="rooms" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Section Header */}
         <div className="room-header flex flex-col md:flex-row md:items-end justify-between mb-12 pb-8 border-b border-stone-200/80 gap-8">

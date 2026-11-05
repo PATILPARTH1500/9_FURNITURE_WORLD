@@ -5,7 +5,12 @@ import { ArrowUpRight, Phone, Mail } from 'lucide-react';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#161412] text-[#FBF9F5] border-t border-white/10 pt-20 pb-12 relative overflow-hidden">
+    <footer
+      id="visit-us"
+      className="bg-[#161412] text-[#FBF9F5] border-t border-white/10 pt-20 pb-12 relative overflow-hidden"
+    >
+      <span id="visit" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
+      <span id="atelier" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       {/* Background brand watermark */}
       <div
         className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.025] text-[12vw] font-serif leading-none tracking-tight font-light text-white uppercase whitespace-nowrap"

@@ -48,7 +48,11 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
   };
 
   return (
-    <section className="relative min-h-[95vh] sm:min-h-screen w-full bg-[#FBF9F5] text-[#1A1816] flex flex-col justify-between pt-28 sm:pt-36 pb-12 sm:pb-16 px-6 sm:px-8 md:px-12 lg:px-16 overflow-hidden">
+    <section
+      id="home"
+      className="relative min-h-[95vh] sm:min-h-screen w-full bg-[#FBF9F5] text-[#1A1816] flex flex-col justify-between pt-28 sm:pt-36 pb-12 sm:pb-16 px-6 sm:px-8 md:px-12 lg:px-16 overflow-hidden"
+    >
+      <span id="hero" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       {/* Main Architectural Hero Composition */}
       <motion.div
         variants={containerVariants}
