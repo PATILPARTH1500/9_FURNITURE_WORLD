@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CINEMATIC_TOUR_SCENES } from '@/config/cinematicTour';
 import { useSceneStore } from '@/store/useSceneStore';
 import { CanvasFramePlayer } from '@/components/cinema/CanvasFramePlayer';
+import { ResidenceTourIntroLoader } from '@/components/cinema/ResidenceTourIntroLoader';
 
 export const CinematicResidenceTour: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,11 +46,16 @@ export const CinematicResidenceTour: React.FC = () => {
 
   // Discrete state for narrative text & scene sync
   const [readyClips, setReadyClips] = useState<boolean[]>(new Array(totalScenes).fill(false));
-  const [_isMuted, setIsMuted] = useState(true);
+  const [activeSceneIdx, setActiveSceneIdx] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
   const [hasInteractedAudio, setHasInteractedAudio] = useState(false);
   const [viewportMode, setViewportMode] = useState<'desktop' | 'mobile'>(() =>
     typeof window !== 'undefined' && window.innerWidth <= 768 ? 'mobile' : 'desktop'
   );
+
+  // Loading Introduction State ("Preparing Your Residence")
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isIntroDismissed, setIsIntroDismissed] = useState(false);
 
   // Viewport visibility state (Page 12 of Guide: stop rendering when off-screen)
   const [isInTourViewport, setIsInTourViewport] = useState(false);
@@ -102,7 +108,7 @@ export const CinematicResidenceTour: React.FC = () => {
     }
   }, []);
 
-  const _toggleAudio = useCallback(() => {
+  const toggleAudio = useCallback(() => {
     if (!hasInteractedAudio) {
       initAmbientAudio();
       setHasInteractedAudio(true);
@@ -118,6 +124,57 @@ export const CinematicResidenceTour: React.FC = () => {
       return next;
     });
   }, [hasInteractedAudio, initAmbientAudio]);
+
+  // Jump smoothly to a specific room
+  const jumpToScene = useCallback(
+    (idx: number) => {
+      if (!containerRef.current) return;
+      const containerTop = containerRef.current.offsetTop;
+      const totalHeight = containerRef.current.offsetHeight - window.innerHeight;
+      const targetScroll = containerTop + ((idx + 0.02) / totalScenes) * totalHeight;
+      window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+      setIsIntroDismissed(true);
+    },
+    [totalScenes]
+  );
+
+  // Real buffer progress tracker for Scene 01
+  const updateLoadingProgress = useCallback(() => {
+    const vid = videoRefs.current[0];
+    if (!vid) return;
+
+    if (vid.readyState >= 4) {
+      setLoadingProgress(100);
+      return;
+    }
+
+    let progress = 0;
+    if (vid.readyState >= 1) progress = Math.max(progress, 30);
+    if (vid.readyState >= 2) progress = Math.max(progress, 65);
+    if (vid.readyState >= 3) progress = Math.max(progress, 88);
+
+    if (vid.buffered && vid.buffered.length > 0) {
+      try {
+        const bufferedEnd = vid.buffered.end(0);
+        const sceneDuration = CINEMATIC_TOUR_SCENES[0]?.duration || 10;
+        const targetDuration = Math.min(sceneDuration, 3.5);
+        const ratio = Math.min(1, bufferedEnd / targetDuration);
+        progress = Math.max(progress, Math.round(ratio * 100));
+      } catch {}
+    }
+
+    setLoadingProgress(progress);
+  }, []);
+
+  // Auto-dismiss loading intro once Scene 01 buffer is sufficiently primed
+  useEffect(() => {
+    if (loadingProgress >= 100 && !isIntroDismissed) {
+      const timer = setTimeout(() => {
+        setIsIntroDismissed(true);
+      }, 1800);
+      return () => clearTimeout(timer);
+    }
+  }, [loadingProgress, isIntroDismissed]);
 
   // Non-blocking seek tracker per scene with frame quantization & seek pipeline serialization
   const seekTrackersRef = useRef<{
@@ -238,9 +295,11 @@ export const CinematicResidenceTour: React.FC = () => {
       },
       onUpdate: (self) => {
         targetProgressRef.current = Math.max(0, Math.min(0.9999, self.progress));
-        if (self.progress > 0.001) {
+        if (self.progress > 0.04) {
           setIsInTourViewport(true);
           isInTourViewportRef.current = true;
+          // Auto-dismiss loading intro as soon as user begins scrolling through tour
+          setIsIntroDismissed(true);
         }
       },
     });
@@ -253,6 +312,7 @@ export const CinematicResidenceTour: React.FC = () => {
       } catch {}
       if (videoRefs.current[0].readyState >= 1) {
         setupRVFC(videoRefs.current[0], 0);
+        updateLoadingProgress();
       }
     }
     seekTrackersRef.current[0] = {
@@ -273,6 +333,7 @@ export const CinematicResidenceTour: React.FC = () => {
         videoRefs,
         ScrollTrigger,
         setUseCanvasScene0,
+        setIsIntroDismissed,
       };
     }
 
@@ -318,6 +379,7 @@ export const CinematicResidenceTour: React.FC = () => {
       const discreteIdx = Math.max(0, Math.min(numScenes - 1, Math.floor(s)));
       if (discreteIdx !== lastSceneIdx) {
         lastSceneIdx = discreteIdx;
+        setActiveSceneIdx(discreteIdx);
         if (progressTextRef.current) {
           progressTextRef.current.textContent = `${CINEMATIC_TOUR_SCENES[discreteIdx]?.roomNumber || '01'} / ${totalScenesPad}`;
         }
@@ -496,6 +558,7 @@ export const CinematicResidenceTour: React.FC = () => {
         const totalHeight = containerRef.current.offsetHeight - window.innerHeight;
         const targetScroll = containerTop + (roomIdx / (totalScenes - 1)) * totalHeight;
         window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        setIsIntroDismissed(true);
       }
     };
     window.addEventListener('hashchange', handleRoomHash);
@@ -518,7 +581,9 @@ export const CinematicResidenceTour: React.FC = () => {
         audioCtxRef.current.close().catch(() => {});
       }
     };
-  }, [totalScenes, totalScenesPad, setupRVFC, useCanvasScene0]);
+  }, [totalScenes, totalScenesPad, setupRVFC, useCanvasScene0, updateLoadingProgress]);
+
+  const currentScene = CINEMATIC_TOUR_SCENES[activeSceneIdx] || CINEMATIC_TOUR_SCENES[0];
 
   return (
     <>
@@ -530,8 +595,12 @@ export const CinematicResidenceTour: React.FC = () => {
       >
         <span id="tour" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
         <span id="explore" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
+
         {/* Pinned Viewport with dynamic mobile height */}
-        <div ref={viewportRef} className="relative h-[100dvh] sm:h-screen w-full overflow-hidden select-none bg-[#1A1816] touch-pan-y">
+        <div
+          ref={viewportRef}
+          className="relative h-[100dvh] sm:h-screen w-full overflow-hidden select-none bg-[#1A1816] touch-pan-y"
+        >
           {/* 1. LAYER: Video Scrubbing Stack */}
           <div className="absolute inset-0 w-full h-full bg-[#1A1816]">
             {CINEMATIC_TOUR_SCENES.map((scene, idx) => {
@@ -564,6 +633,7 @@ export const CinematicResidenceTour: React.FC = () => {
                           next[0] = true;
                           return next;
                         });
+                        setLoadingProgress(100);
                       }}
                       className="z-10 pointer-events-none"
                     />
@@ -588,6 +658,10 @@ export const CinematicResidenceTour: React.FC = () => {
                           next[idx] = false;
                           return next;
                         });
+                        if (isFirstScene) {
+                          setLoadingProgress(100);
+                          setIsIntroDismissed(true);
+                        }
                       }}
                       onSeeking={() => {
                         const tracker = seekTrackersRef.current[idx];
@@ -597,6 +671,9 @@ export const CinematicResidenceTour: React.FC = () => {
                         const tracker = seekTrackersRef.current[idx];
                         tracker.isSeeking = false;
                       }}
+                      onLoadedMetadata={() => {
+                        if (isFirstScene) updateLoadingProgress();
+                      }}
                       onLoadedData={() => {
                         const vid = videoRefs.current[idx];
                         if (vid) setupRVFC(vid, idx);
@@ -605,6 +682,7 @@ export const CinematicResidenceTour: React.FC = () => {
                           next[idx] = true;
                           return next;
                         });
+                        if (isFirstScene) updateLoadingProgress();
                       }}
                       onCanPlay={() => {
                         setReadyClips((prev) => {
@@ -612,6 +690,10 @@ export const CinematicResidenceTour: React.FC = () => {
                           next[idx] = true;
                           return next;
                         });
+                        if (isFirstScene) updateLoadingProgress();
+                      }}
+                      onProgress={() => {
+                        if (isFirstScene) updateLoadingProgress();
                       }}
                       className={`absolute inset-0 w-full h-full object-cover transform-gpu z-10 pointer-events-none transition-opacity duration-300 ${
                         readyClips[idx] ? 'opacity-100' : 'opacity-0'
@@ -631,32 +713,139 @@ export const CinematicResidenceTour: React.FC = () => {
                     />
                   </div>
 
-                  {/* Subtle Warm Lighting Vignette */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/25 pointer-events-none z-20" />
+                  {/* Subtle Warm Lighting Vignette (Unobstructed Room Interior) */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none z-20" />
                 </div>
               );
             })}
           </div>
 
-          {/* Hairline Progress Indicator */}
-          <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 z-30 px-3 sm:px-6 md:px-12 pointer-events-none">
-            <div className="max-w-7xl mx-auto flex items-center justify-between text-white/90 drop-shadow-sm font-medium">
-              <span className="font-sans text-[10px] sm:text-[11px] tracking-wider uppercase">
-                <span className="hidden sm:inline">Scroll to explore the residence</span>
-                <span className="inline sm:hidden">Scroll to explore</span>
-              </span>
+          {/* 2. LAYER: "Preparing Your Residence" Sophisticated Loading Introduction */}
+          <ResidenceTourIntroLoader
+            progress={loadingProgress}
+            isDismissed={isIntroDismissed}
+            onSkip={() => setIsIntroDismissed(true)}
+            sceneTitle={CINEMATIC_TOUR_SCENES[0]?.roomTitle}
+            sceneNumber={CINEMATIC_TOUR_SCENES[0]?.roomNumber}
+          />
 
-              <div className="w-24 sm:w-56 h-[2px] sm:h-[3px] bg-white/30 rounded-full relative overflow-hidden backdrop-blur-xs">
-                <div
-                  ref={progressBarRef}
-                  className="absolute inset-0 bg-[#C84D1B] rounded-full origin-left will-change-transform"
-                  style={{ transform: 'scaleX(0)' }}
-                />
+          {/* 3. LAYER: Top-Left Minimal Architectural Room Indicator */}
+          <div className="absolute top-24 left-4 sm:top-24 sm:left-10 md:top-28 md:left-12 z-30 pointer-events-none transition-opacity duration-500 max-w-[210px] sm:max-w-md">
+            <div className="inline-flex flex-col px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-2xl bg-black/45 backdrop-blur-md border border-white/15 shadow-xl w-full">
+              <div className="flex items-center gap-2 mb-0.5 sm:mb-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B] animate-pulse shrink-0" />
+                <span className="font-mono text-[9px] sm:text-xs tracking-[0.2em] uppercase text-white/80 drop-shadow-sm truncate">
+                  Room {currentScene?.roomNumber || '01'} · 05
+                </span>
+              </div>
+              <h2 data-testid="room-title" className="font-serif italic text-base sm:text-2xl md:text-3xl text-white tracking-tight drop-shadow-md truncate sm:whitespace-normal">
+                {currentScene?.roomTitle}
+              </h2>
+              <p data-testid="room-subtitle" className="font-sans text-xs sm:text-sm text-white/75 mt-0.5 drop-shadow-sm hidden sm:block font-light">
+                {currentScene?.roomSubtitle}
+              </p>
+            </div>
+          </div>
+
+          {/* 4. LAYER: Top-Right Ambient Room Tone Audio Controller */}
+          <div className="absolute top-24 right-4 sm:top-24 sm:right-10 md:top-28 md:right-12 z-30 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={toggleAudio}
+              className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full bg-black/45 hover:bg-black/70 border border-white/20 hover:border-[#C84D1B]/70 text-white/90 hover:text-white backdrop-blur-md shadow-xl transition-all duration-200 cursor-pointer min-h-[44px] min-w-[44px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C84D1B]"
+              aria-label={isMuted ? 'Unmute ambient residence sound' : 'Mute ambient residence sound'}
+            >
+              {isMuted ? (
+                <svg
+                  className="w-4 h-4 text-white/60 group-hover:text-white transition-colors"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.75}
+                    d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.75}
+                    d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
+                  />
+                </svg>
+              ) : (
+                <div className="flex items-center gap-0.5 h-3.5" aria-hidden="true">
+                  <span className="w-0.5 h-2 bg-[#C84D1B] animate-[pulse_1s_ease-in-out_infinite]" />
+                  <span className="w-0.5 h-3.5 bg-[#C84D1B] animate-[pulse_1s_ease-in-out_0.2s_infinite]" />
+                  <span className="w-0.5 h-2.5 bg-[#C84D1B] animate-[pulse_1s_ease-in-out_0.4s_infinite]" />
+                </div>
+              )}
+              <span className="font-mono text-[11px] sm:text-xs tracking-wider uppercase hidden sm:inline">
+                {isMuted ? 'Sound Off' : 'Ambient Tone'}
+              </span>
+            </button>
+          </div>
+
+          {/* 5. LAYER: Bottom Scrubber with 5 Interactive Chapter Navigation Marks */}
+          <div className="absolute bottom-3 sm:bottom-6 left-0 right-0 z-30 px-4 sm:px-8 md:px-12 pointer-events-none">
+            <div className="max-w-6xl mx-auto flex flex-col gap-2">
+              {/* 5 Chapter Navigation Segments */}
+              <div className="grid grid-cols-5 gap-1.5 sm:gap-3 pointer-events-auto">
+                {CINEMATIC_TOUR_SCENES.map((scene, idx) => {
+                  const isActive = activeSceneIdx === idx;
+                  return (
+                    <button
+                      key={scene.id}
+                      type="button"
+                      onClick={() => jumpToScene(idx)}
+                      className={`group flex flex-col py-1 text-left transition-all cursor-pointer min-h-[44px] justify-center focus:outline-none focus-visible:ring-1 focus-visible:ring-[#C84D1B] rounded ${
+                        isActive ? 'text-white' : 'text-white/45 hover:text-white/80'
+                      }`}
+                      aria-label={`Jump to room ${scene.roomNumber}: ${scene.roomTitle}`}
+                    >
+                      <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-mono mb-1.5">
+                        <span className={`font-semibold ${isActive ? 'text-[#C84D1B]' : ''}`}>
+                          {scene.roomNumber}
+                        </span>
+                        <span className="hidden sm:inline truncate text-[10px] font-sans ml-1">
+                          {scene.roomTitle.replace('The ', '')}
+                        </span>
+                      </div>
+                      {/* Chapter Segment Track */}
+                      <div className="w-full h-[2px] bg-white/20 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-300 ${
+                            isActive ? 'bg-[#C84D1B] w-full' : idx < activeSceneIdx ? 'bg-white/60 w-full' : 'w-0'
+                          }`}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
 
-              <span ref={progressTextRef} className="font-sans text-[10px] sm:text-[11px] tracking-wider uppercase">
-                01 / {totalScenesPad}
-              </span>
+              {/* Hairline Continuous Scrubber & Coordinates */}
+              <div className="flex items-center justify-between text-white/70 text-[10px] sm:text-[11px] font-mono tracking-wider pt-0.5">
+                <span className="flex items-center gap-1.5">
+                  <span className="hidden sm:inline">SCROLL TO EXPLORE ARCHITECTURE</span>
+                  <span className="inline sm:hidden">SCROLL TO EXPLORE</span>
+                </span>
+
+                <div className="w-28 sm:w-64 h-[2px] bg-white/25 rounded-full relative overflow-hidden backdrop-blur-xs">
+                  <div
+                    ref={progressBarRef}
+                    className="absolute inset-0 bg-[#C84D1B] rounded-full origin-left will-change-transform"
+                    style={{ transform: 'scaleX(0)' }}
+                  />
+                </div>
+
+                <span ref={progressTextRef} className="font-mono">
+                  01 / {totalScenesPad}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -664,3 +853,4 @@ export const CinematicResidenceTour: React.FC = () => {
     </>
   );
 };
+
