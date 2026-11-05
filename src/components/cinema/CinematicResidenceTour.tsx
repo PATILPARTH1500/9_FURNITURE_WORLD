@@ -9,6 +9,8 @@ import { useSceneStore } from '@/store/useSceneStore';
 import { CanvasFramePlayer } from '@/components/cinema/CanvasFramePlayer';
 import { ResidenceTourIntroLoader } from '@/components/cinema/ResidenceTourIntroLoader';
 
+import { SceneLoadItem } from '@/components/cinema/ResidenceTourIntroLoader';
+
 export const CinematicResidenceTour: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -53,9 +55,26 @@ export const CinematicResidenceTour: React.FC = () => {
     typeof window !== 'undefined' && window.innerWidth <= 768 ? 'mobile' : 'desktop'
   );
 
-  // Loading Introduction State ("Preparing Your Residence")
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  // 5-Video Controlled Preload Queue State
+  const [sceneStates, setSceneStates] = useState<SceneLoadItem[]>(() =>
+    CINEMATIC_TOUR_SCENES.map((scene, idx) => ({
+      id: scene.id,
+      title: scene.roomTitle,
+      roomNumber: scene.roomNumber,
+      status: idx === 0 ? 'loading' : 'idle',
+      progress: 0,
+    }))
+  );
+  const sceneStatesRef = useRef(sceneStates);
+  sceneStatesRef.current = sceneStates;
+  const [activeLoadingIdx, setActiveLoadingIdx] = useState(0);
+  const [hasSkippedAnimation, setHasSkippedAnimation] = useState(false);
   const [isIntroDismissed, setIsIntroDismissed] = useState(false);
+
+  // Scene readiness & queue advancement guards
+  const sceneReadyRef = useRef<boolean[]>(new Array(totalScenes).fill(false));
+  const currentQueueIdxRef = useRef<number>(0);
+  const allScenesReadyRef = useRef<boolean>(false);
 
   // Viewport visibility state (Page 12 of Guide: stop rendering when off-screen)
   const [isInTourViewport, setIsInTourViewport] = useState(false);
@@ -125,56 +144,18 @@ export const CinematicResidenceTour: React.FC = () => {
     });
   }, [hasInteractedAudio, initAmbientAudio]);
 
-  // Jump smoothly to a specific room
+  // Jump smoothly to a specific room (Strictly enabled after all 5 scenes are ready)
   const jumpToScene = useCallback(
     (idx: number) => {
+      if (!allScenesReadyRef.current) return;
       if (!containerRef.current) return;
       const containerTop = containerRef.current.offsetTop;
       const totalHeight = containerRef.current.offsetHeight - window.innerHeight;
       const targetScroll = containerTop + ((idx + 0.02) / totalScenes) * totalHeight;
       window.scrollTo({ top: targetScroll, behavior: 'smooth' });
-      setIsIntroDismissed(true);
     },
     [totalScenes]
   );
-
-  // Real buffer progress tracker for Scene 01
-  const updateLoadingProgress = useCallback(() => {
-    const vid = videoRefs.current[0];
-    if (!vid) return;
-
-    if (vid.readyState >= 4) {
-      setLoadingProgress(100);
-      return;
-    }
-
-    let progress = 0;
-    if (vid.readyState >= 1) progress = Math.max(progress, 30);
-    if (vid.readyState >= 2) progress = Math.max(progress, 65);
-    if (vid.readyState >= 3) progress = Math.max(progress, 88);
-
-    if (vid.buffered && vid.buffered.length > 0) {
-      try {
-        const bufferedEnd = vid.buffered.end(0);
-        const sceneDuration = CINEMATIC_TOUR_SCENES[0]?.duration || 10;
-        const targetDuration = Math.min(sceneDuration, 3.5);
-        const ratio = Math.min(1, bufferedEnd / targetDuration);
-        progress = Math.max(progress, Math.round(ratio * 100));
-      } catch {}
-    }
-
-    setLoadingProgress(progress);
-  }, []);
-
-  // Auto-dismiss loading intro once Scene 01 buffer is sufficiently primed
-  useEffect(() => {
-    if (loadingProgress >= 100 && !isIntroDismissed) {
-      const timer = setTimeout(() => {
-        setIsIntroDismissed(true);
-      }, 1800);
-      return () => clearTimeout(timer);
-    }
-  }, [loadingProgress, isIntroDismissed]);
 
   // Non-blocking seek tracker per scene with frame quantization & seek pipeline serialization
   const seekTrackersRef = useRef<{
@@ -233,6 +214,222 @@ export const CinematicResidenceTour: React.FC = () => {
       rvfcVid.requestVideoFrameCallback(onFrame);
     }
   }, []);
+
+  // -------------------------------------------------------------
+  // 5-VIDEO CONTROLLED PRELOAD QUEUE PIPELINE
+  // -------------------------------------------------------------
+  const handleSceneError = useCallback(
+    (idx: number, message?: string) => {
+      if (idx < 0 || idx >= totalScenes) return;
+      const scene = CINEMATIC_TOUR_SCENES[idx];
+      setSceneStates((prev) => {
+        const next = [...prev];
+        if (next[idx]) {
+          next[idx] = {
+            ...next[idx],
+            status: 'error',
+            error: message || `Failed to load ${scene.roomTitle}`,
+          };
+        }
+        return next;
+      });
+    },
+    [totalScenes]
+  );
+
+  const loadScene = useCallback(
+    (idx: number) => {
+      if (idx < 0 || idx >= totalScenes) return;
+      const vid = videoRefs.current[idx];
+      if (!vid) return;
+
+      primedScenesRef.current[idx] = true;
+      vid.preload = 'auto';
+
+      if (vid.readyState >= 2) {
+        handleSceneReady(idx);
+      } else {
+        try {
+          vid.load();
+        } catch (e) {
+          handleSceneError(idx, e instanceof Error ? e.message : 'Load failed');
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [totalScenes, handleSceneError]
+  );
+
+  const handleSceneReady = useCallback(
+    (idx: number) => {
+      if (idx < 0 || idx >= totalScenes) return;
+      if (sceneReadyRef.current[idx]) return;
+
+      const vid = videoRefs.current[idx];
+      if (vid) {
+        setupRVFC(vid, idx);
+        try {
+          vid.pause();
+          vid.currentTime = 0;
+        } catch {}
+      }
+
+      sceneReadyRef.current[idx] = true;
+
+      setReadyClips((prev) => {
+        const next = [...prev];
+        next[idx] = true;
+        return next;
+      });
+
+      setSceneStates((prev) => {
+        const next = [...prev];
+        if (next[idx]) {
+          next[idx] = {
+            ...next[idx],
+            status: 'ready',
+            progress: 100,
+            error: undefined,
+          };
+        }
+        return next;
+      });
+
+      // Advance preload queue to next scene
+      const nextIdx = idx + 1;
+      if (nextIdx < totalScenes) {
+        currentQueueIdxRef.current = nextIdx;
+        setActiveLoadingIdx(nextIdx);
+        setSceneStates((prev) => {
+          const next = [...prev];
+          if (next[nextIdx] && next[nextIdx].status !== 'ready') {
+            next[nextIdx] = { ...next[nextIdx], status: 'loading', progress: 10 };
+          }
+          return next;
+        });
+
+        const nextVid = videoRefs.current[nextIdx];
+        if (nextVid) {
+          primedScenesRef.current[nextIdx] = true;
+          nextVid.preload = 'auto';
+          if (nextVid.readyState >= 2) {
+            setTimeout(() => handleSceneReady(nextIdx), 15);
+          } else {
+            try {
+              nextVid.load();
+            } catch (err) {
+              handleSceneError(nextIdx, err instanceof Error ? err.message : 'Next load failed');
+            }
+          }
+        }
+      }
+    },
+    [totalScenes, setupRVFC, handleSceneError]
+  );
+
+  const handleSceneProgress = useCallback(
+    (idx: number) => {
+      if (idx < 0 || idx >= totalScenes) return;
+      if (sceneReadyRef.current[idx]) return;
+
+      const vid = videoRefs.current[idx];
+      if (!vid) return;
+
+      if (vid.readyState >= 2) {
+        handleSceneReady(idx);
+        return;
+      }
+
+      let p = 15;
+      if (vid.readyState >= 1) p = Math.max(p, 40);
+
+      if (vid.buffered && vid.buffered.length > 0) {
+        try {
+          const end = vid.buffered.end(0);
+          const duration = vid.duration || CINEMATIC_TOUR_SCENES[idx]?.duration || 10;
+          const targetDur = Math.min(duration, 3.5);
+          p = Math.max(p, Math.round(Math.min(1, end / targetDur) * 100));
+        } catch {}
+      }
+
+      setSceneStates((prev) => {
+        const next = [...prev];
+        if (next[idx] && next[idx].status !== 'ready') {
+          next[idx] = { ...next[idx], progress: Math.min(99, p) };
+        }
+        return next;
+      });
+    },
+    [totalScenes, handleSceneReady]
+  );
+
+  const retryScene = useCallback(
+    (idx: number) => {
+      if (idx < 0 || idx >= totalScenes) return;
+      sceneReadyRef.current[idx] = false;
+
+      setSceneStates((prev) => {
+        const next = [...prev];
+        if (next[idx]) {
+          next[idx] = { ...next[idx], status: 'loading', progress: 10, error: undefined };
+        }
+        return next;
+      });
+
+      currentQueueIdxRef.current = idx;
+      setActiveLoadingIdx(idx);
+
+      const vid = videoRefs.current[idx];
+      if (vid) {
+        primedScenesRef.current[idx] = true;
+        vid.preload = 'auto';
+        try {
+          vid.load();
+        } catch (err) {
+          handleSceneError(idx, err instanceof Error ? err.message : 'Retry failed');
+        }
+      }
+    },
+    [totalScenes, handleSceneError]
+  );
+
+  // Skip Intro Action: Bypasses decorative intro animation, strictly retains 5-video readiness requirement
+  const handleSkipAnimation = useCallback(() => {
+    setHasSkippedAnimation(true);
+    if (allScenesReadyRef.current) {
+      setIsIntroDismissed(true);
+    }
+  }, []);
+
+  // Compute 5-Scene Combined Readiness & Progress
+  const allScenesReady = sceneStates.every((s) => s.status === 'ready');
+  allScenesReadyRef.current = allScenesReady;
+
+  const combinedProgress = allScenesReady
+    ? 100
+    : Math.min(
+        99,
+        Math.max(0, Math.round(sceneStates.reduce((acc, s) => acc + s.progress, 0) / totalScenes))
+      );
+
+  // Prime controlled preload queue on initial mount
+  useEffect(() => {
+    loadScene(0);
+  }, [loadScene]);
+
+  // Dismiss loader ONLY AFTER all five scene videos are verified ready
+  useEffect(() => {
+    if (allScenesReady && !isIntroDismissed) {
+      if (hasSkippedAnimation) {
+        setIsIntroDismissed(true);
+      } else {
+        const timer = setTimeout(() => {
+          setIsIntroDismissed(true);
+        }, 600);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [allScenesReady, isIntroDismissed, hasSkippedAnimation]);
 
   // Main GSAP ScrollTrigger & Continuous Frame Synchronization Engine
   useEffect(() => {
@@ -295,7 +492,7 @@ export const CinematicResidenceTour: React.FC = () => {
       },
       onUpdate: (self) => {
         targetProgressRef.current = Math.max(0, Math.min(0.9999, self.progress));
-        if (self.progress > 0.04) {
+        if (allScenesReadyRef.current && self.progress > 0.04) {
           setIsInTourViewport(true);
           isInTourViewportRef.current = true;
           // Auto-dismiss loading intro as soon as user begins scrolling through tour
@@ -312,7 +509,6 @@ export const CinematicResidenceTour: React.FC = () => {
       } catch {}
       if (videoRefs.current[0].readyState >= 1) {
         setupRVFC(videoRefs.current[0], 0);
-        updateLoadingProgress();
       }
     }
     seekTrackersRef.current[0] = {
@@ -334,6 +530,23 @@ export const CinematicResidenceTour: React.FC = () => {
         ScrollTrigger,
         setUseCanvasScene0,
         setIsIntroDismissed,
+        getSceneStates: () => sceneStatesRef.current,
+        allScenesReady: () => allScenesReadyRef.current,
+        combinedProgress: () =>
+          allScenesReadyRef.current
+            ? 100
+            : Math.min(
+                99,
+                Math.max(
+                  0,
+                  Math.round(
+                    sceneStatesRef.current.reduce((acc, s) => acc + s.progress, 0) / totalScenes
+                  )
+                )
+              ),
+        retryScene,
+        handleSceneError,
+        handleSceneReady,
       };
     }
 
@@ -581,7 +794,8 @@ export const CinematicResidenceTour: React.FC = () => {
         audioCtxRef.current.close().catch(() => {});
       }
     };
-  }, [totalScenes, totalScenesPad, setupRVFC, useCanvasScene0, updateLoadingProgress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [totalScenes, totalScenesPad, setupRVFC, useCanvasScene0]);
 
   const currentScene = CINEMATIC_TOUR_SCENES[activeSceneIdx] || CINEMATIC_TOUR_SCENES[0];
 
@@ -633,7 +847,7 @@ export const CinematicResidenceTour: React.FC = () => {
                           next[0] = true;
                           return next;
                         });
-                        setLoadingProgress(100);
+                        handleSceneReady(0);
                       }}
                       className="z-10 pointer-events-none"
                     />
@@ -648,7 +862,7 @@ export const CinematicResidenceTour: React.FC = () => {
                       muted
                       loop={false}
                       playsInline
-                      preload={isFirstScene ? 'auto' : 'none'}
+                      preload={idx === 0 ? 'auto' : 'none'}
                       disablePictureInPicture
                       disableRemotePlayback
                       onError={() => {
@@ -658,10 +872,7 @@ export const CinematicResidenceTour: React.FC = () => {
                           next[idx] = false;
                           return next;
                         });
-                        if (isFirstScene) {
-                          setLoadingProgress(100);
-                          setIsIntroDismissed(true);
-                        }
+                        handleSceneError(idx);
                       }}
                       onSeeking={() => {
                         const tracker = seekTrackersRef.current[idx];
@@ -671,30 +882,10 @@ export const CinematicResidenceTour: React.FC = () => {
                         const tracker = seekTrackersRef.current[idx];
                         tracker.isSeeking = false;
                       }}
-                      onLoadedMetadata={() => {
-                        if (isFirstScene) updateLoadingProgress();
-                      }}
-                      onLoadedData={() => {
-                        const vid = videoRefs.current[idx];
-                        if (vid) setupRVFC(vid, idx);
-                        setReadyClips((prev) => {
-                          const next = [...prev];
-                          next[idx] = true;
-                          return next;
-                        });
-                        if (isFirstScene) updateLoadingProgress();
-                      }}
-                      onCanPlay={() => {
-                        setReadyClips((prev) => {
-                          const next = [...prev];
-                          next[idx] = true;
-                          return next;
-                        });
-                        if (isFirstScene) updateLoadingProgress();
-                      }}
-                      onProgress={() => {
-                        if (isFirstScene) updateLoadingProgress();
-                      }}
+                      onLoadedMetadata={() => handleSceneProgress(idx)}
+                      onLoadedData={() => handleSceneReady(idx)}
+                      onCanPlay={() => handleSceneReady(idx)}
+                      onProgress={() => handleSceneProgress(idx)}
                       className={`absolute inset-0 w-full h-full object-cover transform-gpu z-10 pointer-events-none transition-opacity duration-300 ${
                         readyClips[idx] ? 'opacity-100' : 'opacity-0'
                       }`}
@@ -720,13 +911,16 @@ export const CinematicResidenceTour: React.FC = () => {
             })}
           </div>
 
-          {/* 2. LAYER: "Preparing Your Residence" Sophisticated Loading Introduction */}
+          {/* 2. LAYER: "Preparing Your Residence" Sophisticated Loading Introduction (Waits for all 5 scenes) */}
           <ResidenceTourIntroLoader
-            progress={loadingProgress}
+            combinedProgress={combinedProgress}
+            activeSceneIndex={activeLoadingIdx}
+            sceneStates={sceneStates}
+            allScenesReady={allScenesReady}
+            hasSkippedAnimation={hasSkippedAnimation}
             isDismissed={isIntroDismissed}
-            onSkip={() => setIsIntroDismissed(true)}
-            sceneTitle={CINEMATIC_TOUR_SCENES[0]?.roomTitle}
-            sceneNumber={CINEMATIC_TOUR_SCENES[0]?.roomNumber}
+            onSkipAnimation={handleSkipAnimation}
+            onRetryScene={retryScene}
           />
 
           {/* 3. LAYER: Top-Left Minimal Architectural Room Indicator */}
