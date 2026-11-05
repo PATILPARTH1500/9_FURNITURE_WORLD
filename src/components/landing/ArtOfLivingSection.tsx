@@ -72,11 +72,10 @@ export const ArtOfLivingSection: React.FC = () => {
 
   return (
     <section
-      id="our-story"
+      id="art-of-living"
       ref={sectionRef}
       className="relative z-20 bg-[#161412] text-[#FBF9F5] py-28 sm:py-36 border-t border-white/10 overflow-hidden"
     >
-      <span id="art-of-living" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Layered Architectural Photography */}

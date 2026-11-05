@@ -1,24 +1,19 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import Link from '@/components/common/Link';
 import { ShoppingBag, Menu, X, ArrowUpRight, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
 import { SearchModal } from '@/components/discovery/SearchModal';
-import { scrollToSection } from '@/utils/navigation';
 
 export const Navbar: React.FC = () => {
-  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>('home');
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
-  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setCartCount(getTotalCount());
@@ -43,107 +38,37 @@ export const Navbar: React.FC = () => {
         e.preventDefault();
         setSearchOpen((prev) => !prev);
       }
-      if (e.key === 'Escape') {
-        if (mobileMenuOpen) setMobileMenuOpen(false);
-        if (searchOpen) setSearchOpen(false);
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mobileMenuOpen, searchOpen]);
-
-  // Lock body scroll strictly when mobile menu is open, ensuring clean unlock on close
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-    } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
-    }
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-    };
   }, [mobileMenuOpen]);
 
-  // Active section tracking via IntersectionObserver on homepage
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
-    if (location.pathname !== '/') {
-      setActiveSection('');
-      return;
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
-
-    const sections = [
-      { id: 'home', hash: 'home' },
-      { id: 'residence-tour', hash: 'explore' },
-      { id: 'collections', hash: 'collections' },
-      { id: 'our-story', hash: 'our-story' },
-      { id: 'materials', hash: 'materials' },
-      { id: 'journal', hash: 'journal' },
-    ];
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-            const found = sections.find((s) => s.id === entry.target.id);
-            if (found) {
-              setActiveSection(found.hash);
-            }
-          }
-        });
-      },
-      {
-        rootMargin: '-80px 0px -50% 0px',
-        threshold: [0.1, 0.25, 0.5],
-      }
-    );
-
-    sections.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, [location.pathname]);
-
-  const handleMobileNavClick = (href: string) => {
-    setMobileMenuOpen(false);
-    // Allow state to update and body lock to release before scrolling
-    setTimeout(() => {
-      if (href.startsWith('/#') || href.startsWith('#')) {
-        scrollToSection(href, 76);
-      }
-    }, 60);
-  };
+  }, [mobileMenuOpen]);
 
   return (
     <>
       <header
-        ref={navRef}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
           scrolled
-            ? 'bg-[#FBF9F5]/94 backdrop-blur-md border-b border-[#1A1816]/8 shadow-[0_4px_24px_rgba(26,24,22,0.03)] py-3 sm:py-3.5'
-            : 'bg-[#FBF9F5]/85 backdrop-blur-xs border-b border-transparent py-4 sm:py-5 lg:py-6'
+            ? 'bg-[#FBF9F5]/92 backdrop-blur-md border-b border-[#1A1816]/8 shadow-[0_4px_24px_rgba(26,24,22,0.03)] py-3 sm:py-3.5'
+            : 'bg-[#FBF9F5]/80 backdrop-blur-xs border-b border-transparent py-4 sm:py-5 lg:py-6'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 flex items-center justify-between gap-4">
           {/* 1. Brand Wordmark */}
           <Link
             href="/"
-            onClick={() => {
-              if (mobileMenuOpen) setMobileMenuOpen(false);
-              scrollToSection('home');
-            }}
+            onClick={() => setMobileMenuOpen(false)}
             className="group flex flex-col text-left focus:outline-hidden shrink-0"
             aria-label={`${BRAND_CONFIG.name} — Home`}
           >
@@ -155,33 +80,24 @@ export const Navbar: React.FC = () => {
             </span>
           </Link>
 
-          {/* 2. Desktop Navigation Links with Active State */}
+          {/* 2. Room Navigation Links */}
           <nav
-            aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-5 lg:gap-8 text-xs font-sans tracking-[0.1em] uppercase shrink-0 font-medium"
+            aria-label="Room categories"
+            className="hidden md:flex items-center gap-5 lg:gap-8 text-xs font-sans tracking-[0.1em] uppercase text-[#1A1816]/75 font-medium shrink-0"
           >
-            {BRAND_CONFIG.navigation.map((item) => {
-              const targetKey = item.href.replace(/^\/?#/, '');
-              const isActive = location.pathname === '/' && (activeSection === targetKey || (targetKey === 'explore' && activeSection === 'residence-tour'));
-
-              return (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={`group relative py-1 transition-colors duration-200 focus:outline-hidden ${
-                    isActive ? 'text-[#C84D1B] font-semibold' : 'text-[#1A1816]/75 hover:text-[#1A1816]'
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  <span
-                    className={`absolute bottom-0 left-0 h-[1.5px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out ${
-                      isActive ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`}
-                    aria-hidden="true"
-                  />
-                </Link>
-              );
-            })}
+            {BRAND_CONFIG.navigation.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="group relative py-1 hover:text-[#1A1816] transition-colors duration-200 focus:outline-hidden"
+              >
+                <span>{item.label}</span>
+                <span
+                  className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out group-hover:w-full"
+                  aria-hidden="true"
+                />
+              </Link>
+            ))}
           </nav>
 
           {/* 3. Right Action Area: Search, Bag, Direct Catalogue CTA */}
@@ -189,7 +105,7 @@ export const Navbar: React.FC = () => {
             {/* Search Button */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="inline-flex items-center space-x-1.5 p-2 rounded-full text-[#1A1816]/75 hover:text-[#1A1816] hover:bg-[#1A1816]/5 transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-1.5 p-2 rounded-full text-[#1A1816]/75 hover:text-[#1A1816] hover:bg-[#1A1816]/5 transition-colors"
               aria-label="Search furniture collection"
               title="Search (Cmd+K)"
             >
@@ -202,7 +118,7 @@ export const Navbar: React.FC = () => {
             {/* Shopping Bag Button */}
             <button
               onClick={() => setIsOpen(true)}
-              className="relative p-2 rounded-full text-[#1A1816]/85 hover:text-[#C84D1B] hover:bg-[#1A1816]/5 transition-colors shrink-0 cursor-pointer"
+              className="relative p-2 rounded-full text-[#1A1816]/85 hover:text-[#C84D1B] hover:bg-[#1A1816]/5 transition-colors shrink-0"
               aria-label={`Shopping bag with ${cartCount} items`}
             >
               <ShoppingBag className="w-4 h-4 shrink-0" />
@@ -222,10 +138,10 @@ export const Navbar: React.FC = () => {
               <ArrowUpRight className="w-3.5 h-3.5 text-white/80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
 
-            {/* Mobile Hamburger Toggle with 48px touch target */}
+            {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1816] hover:text-[#C84D1B] transition-colors rounded-full hover:bg-[#1A1816]/5 focus:outline-hidden shrink-0 cursor-pointer"
+              className="md:hidden p-2 text-[#1A1816] hover:text-[#C84D1B] transition-colors rounded-full hover:bg-[#1A1816]/5 focus:outline-hidden shrink-0"
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -233,136 +149,73 @@ export const Navbar: React.FC = () => {
             </button>
           </div>
         </div>
-      </header>
 
-      {/* Mobile Full-Screen Navigation Drawer & Backdrop */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true">
-            {/* Backdrop Dismiss Layer */}
+        {/* Mobile Full-Overlay Navigation Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-xs"
-              aria-hidden="true"
-            />
-
-            {/* Drawer Body */}
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-0 right-0 bottom-0 w-full max-w-sm sm:max-w-md bg-[#FBF9F5] shadow-2xl flex flex-col justify-between overflow-y-auto px-6 py-6 border-l border-[#1A1816]/10"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden fixed inset-x-0 top-[60px] sm:top-[68px] bottom-0 bg-[#FBF9F5] border-t border-[#1A1816]/8 px-6 py-8 flex flex-col justify-between overflow-y-auto z-40"
             >
-              {/* Drawer Top Row: Wordmark & Close Button */}
-              <div className="flex items-center justify-between pb-5 border-b border-[#1A1816]/10">
-                <div className="flex flex-col text-left">
-                  <span className="font-serif text-lg tracking-[0.06em] text-[#1A1816] font-semibold leading-tight">
-                    {BRAND_CONFIG.name}
-                  </span>
-                  <span className="font-sans text-[9px] uppercase tracking-[0.24em] text-[#666059]">
-                    Atelier & Residence
-                  </span>
-                </div>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1816] hover:text-[#C84D1B] rounded-full hover:bg-[#1A1816]/5 transition-colors cursor-pointer"
-                  aria-label="Close navigation menu"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Navigation Items */}
-              <div className="py-6 space-y-6">
+              <div className="space-y-6">
                 <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-[#666059] block">
-                  Residence Navigation
+                  Showroom Galleries
                 </span>
 
-                <nav className="flex flex-col space-y-2" aria-label="Mobile residence navigation">
-                  {BRAND_CONFIG.navigation.map((item, idx) => {
-                    const targetKey = item.href.replace(/^\/?#/, '');
-                    const isActive = location.pathname === '/' && (activeSection === targetKey || (targetKey === 'explore' && activeSection === 'residence-tour'));
-
-                    return (
-                      <motion.div
-                        key={item.label}
-                        initial={{ opacity: 0, x: 12 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.04 + idx * 0.03, duration: 0.2 }}
+                <nav className="flex flex-col space-y-3" aria-label="Mobile room navigation">
+                  {BRAND_CONFIG.navigation.map((item, idx) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 + idx * 0.03, duration: 0.2 }}
+                    >
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="font-serif text-2xl text-[#1A1816] hover:text-[#C84D1B] transition-colors py-1 flex items-center justify-between group"
                       >
-                        <button
-                          onClick={() => handleMobileNavClick(item.href)}
-                          className={`w-full text-left font-serif text-2xl py-3 px-3 rounded-xl flex items-center justify-between transition-colors min-h-[48px] group cursor-pointer ${
-                            isActive
-                              ? 'text-[#C84D1B] bg-[#C84D1B]/8 font-medium'
-                              : 'text-[#1A1816] hover:text-[#C84D1B] hover:bg-[#1A1816]/4'
-                          }`}
-                        >
-                          <span className="flex items-center space-x-3">
-                            {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />}
-                            <span>{item.label}</span>
-                          </span>
-                          <ArrowUpRight
-                            className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 ${
-                              isActive ? 'text-[#C84D1B] opacity-100' : 'text-[#666059] opacity-40 group-hover:opacity-100'
-                            }`}
-                          />
-                        </button>
-                      </motion.div>
-                    );
-                  })}
+                        <span>{item.label}</span>
+                        <ArrowUpRight className="w-4 h-4 text-[#666059] opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </Link>
+                    </motion.div>
+                  ))}
                 </nav>
               </div>
 
-              {/* Drawer Bottom Actions: Search, Complete Catalogue & Bag */}
-              <div className="pt-6 border-t border-[#1A1816]/10 space-y-3.5">
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      setSearchOpen(true);
-                    }}
-                    className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white border border-[#1A1816]/15 text-[#1A1816] font-semibold px-4 py-3 rounded-full shadow-2xs hover:bg-[#F2EFE9] transition-colors min-h-[44px] cursor-pointer"
-                  >
-                    <Search className="w-3.5 h-3.5 text-[#C84D1B]" />
-                    <span>Search</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      setIsOpen(true);
-                    }}
-                    className="inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white border border-[#1A1816]/15 text-[#1A1816] font-semibold px-4 py-3 rounded-full shadow-2xs hover:bg-[#F2EFE9] transition-colors min-h-[44px] cursor-pointer"
-                  >
-                    <ShoppingBag className="w-3.5 h-3.5 text-[#C84D1B]" />
-                    <span>Bag ({cartCount})</span>
-                  </button>
-                </div>
+              <div className="pt-8 border-t border-[#1A1816]/10 space-y-4">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white border border-[#1A1816]/15 text-[#1A1816] font-semibold px-4 py-3 rounded-full shadow-2xs hover:bg-[#F2EFE9] transition-colors"
+                >
+                  <Search className="w-3.5 h-3.5 text-[#C84D1B]" />
+                  <span>Search Furniture Collection</span>
+                </button>
 
                 <Link
                   href="/collections"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#1A1816] hover:bg-[#C84D1B] text-white font-semibold px-4 py-3.5 rounded-full shadow-sm transition-colors min-h-[48px]"
+                  className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#1A1816] hover:bg-[#C84D1B] text-white font-semibold px-4 py-3.5 rounded-full shadow-sm transition-colors"
                 >
                   <span>Explore Complete Catalogue</span>
                   <ArrowUpRight className="w-3.5 h-3.5 text-white" />
                 </Link>
 
-                <div className="text-center pt-2 text-[#666059]">
-                  <p className="font-serif text-xs text-[#1A1816] font-medium">Flagship Experience Store</p>
-                  <p className="text-[11px] mt-0.5">100 Feet Road, Indiranagar, Bengaluru</p>
+                <div className="text-center pt-2">
+                  <p className="font-serif text-sm text-[#1A1816] font-medium">Flagship Showroom</p>
+                  <p className="text-xs text-[#666059] mt-0.5">100 Feet Road, Indiranagar, Bengaluru</p>
                 </div>
               </div>
             </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </header>
 
       {/* Global Search Modal */}
       <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />

@@ -478,10 +478,9 @@ export const CinematicResidenceTour: React.FC = () => {
     };
     window.addEventListener('resize', handleResize, { passive: true });
 
-    // Direct anchor navigation for room links (#living, #dining, #kitchen, #lounge, #bedroom, #residence-tour, #explore)
+    // Direct anchor navigation for room links (#living, #dining, #kitchen, #lounge, #bedroom, #residence-tour)
     const roomHashMap: Record<string, number> = {
       '#residence-tour': 0,
-      '#explore': 0,
       '#tour': 0,
       '#living': 0,
       '#dining': 1,
@@ -529,7 +528,6 @@ export const CinematicResidenceTour: React.FC = () => {
         className="relative w-full bg-[#1A1816] touch-pan-y"
         style={{ height: `${totalScenes * 105}vh` }}
       >
-        <span id="explore" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
         {/* Pinned Viewport with dynamic mobile height */}
         <div ref={viewportRef} className="relative h-[100dvh] sm:h-screen w-full overflow-hidden select-none bg-[#1A1816] touch-pan-y">
           {/* 1. LAYER: Video Scrubbing Stack */}

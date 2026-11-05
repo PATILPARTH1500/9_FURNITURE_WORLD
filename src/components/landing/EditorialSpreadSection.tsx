@@ -60,11 +60,10 @@ export const EditorialSpreadSection: React.FC = () => {
 
   return (
     <section
-      id="journal"
+      id="editorial-spread"
       ref={sectionRef}
       className="relative z-20 bg-[#161412] text-[#FBF9F5] py-28 sm:py-36 border-t border-white/10 overflow-hidden"
     >
-      <span id="editorial-spread" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       {/* Background Architectural Villa Photography with Warm Dark Grading */}
       <div className="absolute inset-0 z-0">
         <Image

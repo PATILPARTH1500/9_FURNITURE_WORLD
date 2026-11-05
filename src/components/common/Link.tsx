@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
-import { scrollToSection } from '@/utils/navigation';
 
 export interface LinkProps extends Omit<RouterLinkProps, 'to'> {
   href: string;
@@ -35,12 +34,17 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       );
     }
 
-    // Hash anchor navigation with sticky-header offset
+    // Hash anchor navigation or smooth scrolling
     if (href.startsWith('#')) {
       const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         if (onClick) onClick(e);
-        e.preventDefault();
-        scrollToSection(href);
+        const targetId = href.substring(1);
+        const element = document.getElementById(targetId);
+        if (element) {
+          e.preventDefault();
+          element.scrollIntoView({ behavior: 'smooth' });
+          window.history.pushState(null, '', href);
+        }
       };
 
       return (
@@ -56,13 +60,18 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
       );
     }
 
-    // In-page navigation that starts with /# (e.g. /#collections)
+    // In page navigation that starts with /# (e.g. /#living)
     if (href.startsWith('/#')) {
       const handleSlashAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         if (onClick) onClick(e);
         if (window.location.pathname === '/') {
-          e.preventDefault();
-          scrollToSection(href);
+          const targetId = href.substring(2);
+          const element = document.getElementById(targetId);
+          if (element) {
+            e.preventDefault();
+            element.scrollIntoView({ behavior: 'smooth' });
+            window.history.pushState(null, '', href.substring(1));
+          }
         }
       };
 

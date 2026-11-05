@@ -55,12 +55,11 @@ export const GazetteNewsletterSection: React.FC = () => {
       ref={sectionRef}
       className="relative z-20 bg-[#FAF8F5] text-checkerboard py-24 sm:py-32 border-t border-checkerboard/10 overflow-hidden"
     >
-      <span id="newsletter" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       <div className="max-w-4xl mx-auto px-6 md:px-12 relative z-10">
         <div className="gazette-card rounded-3xl bg-white border border-checkerboard/12 p-8 sm:p-14 shadow-retro relative overflow-hidden text-center space-y-7">
           <div className="flex items-center justify-center space-x-2">
             <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
-            <span className="font-sans text-xs uppercase tracking-widest text-tangerine font-semibold">
+            <span className="font-mono text-xs uppercase tracking-widest text-tangerine font-semibold">
               The Gazette
             </span>
           </div>

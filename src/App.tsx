@@ -3,7 +3,6 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
-import { scrollToSection } from '@/utils/navigation';
 
 // Eagerly loaded for instant first paint on homepage
 import HomePage from '@/app/page';
@@ -29,9 +28,13 @@ export function App() {
   // Scroll to top or handle hash scroll on location change
   useEffect(() => {
     if (location.hash) {
-      setTimeout(() => {
-        scrollToSection(location.hash, 76);
-      }, 120);
+      const elementId = location.hash.replace('#', '');
+      const el = document.getElementById(elementId);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
     } else {
       window.scrollTo(0, 0);
     }
