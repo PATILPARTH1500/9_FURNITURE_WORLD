@@ -6,11 +6,10 @@ import { ArrowUpRight, Phone, Mail } from 'lucide-react';
 export const Footer: React.FC = () => {
   return (
     <footer
-      id="visit-us"
+      id="site-footer"
       className="bg-[#161412] text-[#FBF9F5] border-t border-white/10 pt-20 pb-12 relative overflow-hidden"
     >
-      <span id="visit" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
-      <span id="atelier" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
+      <span id="footer" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       {/* Background brand watermark */}
       <div
         className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.025] text-[12vw] font-serif leading-none tracking-tight font-light text-white uppercase whitespace-nowrap"
@@ -39,16 +38,19 @@ export const Footer: React.FC = () => {
           {/* Showrooms Column */}
           <div className="md:col-span-3 space-y-4 text-xs">
             <h4 className="text-xs uppercase tracking-widest text-[#FBF9F5] font-medium">
-              Experience Stores
+              Flagship Atelier
             </h4>
             <div className="space-y-4 text-[#A8A29E]">
               <div>
-                <p className="text-[#FBF9F5] font-medium">Bengaluru Flagship</p>
-                <p className="font-normal mt-0.5">{BRAND_CONFIG.contact.address}</p>
-              </div>
-              <div>
-                <p className="text-[#FBF9F5] font-medium">Customer Experience</p>
-                <p className="font-normal mt-0.5">Private walkthroughs, solid timber samples, and tactile fabric swatches available.</p>
+                <p className="text-[#FBF9F5] font-medium">Indiranagar, Bengaluru</p>
+                <p className="font-normal mt-0.5">100 Feet Road</p>
+                <Link
+                  href="#visit-us"
+                  className="inline-flex items-center text-[#C84D1B] hover:text-[#C84D1B]/80 font-medium text-[11px] uppercase tracking-wider mt-2 group"
+                >
+                  <span>View Showroom Details</span>
+                  <ArrowUpRight className="w-3 h-3 ml-1 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
               </div>
             </div>
           </div>
@@ -112,7 +114,7 @@ export const Footer: React.FC = () => {
                 <span>{BRAND_CONFIG.contact.phone}</span>
               </p>
               <p className="text-[11px] text-[#78716C] pt-1">
-                Mon — Sat: 9:30 AM – 6:30 PM IST
+                {BRAND_CONFIG.contact.hours}
               </p>
             </div>
           </div>

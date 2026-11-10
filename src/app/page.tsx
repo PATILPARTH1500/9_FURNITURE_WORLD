@@ -35,6 +35,10 @@ const EditorialSpreadSection = dynamic(
   () => import('@/components/landing/EditorialSpreadSection').then((mod) => mod.EditorialSpreadSection),
   { ssr: true }
 );
+const VisitUsShowroomSection = dynamic(
+  () => import('@/components/landing/VisitUsShowroomSection').then((mod) => mod.VisitUsShowroomSection),
+  { ssr: true }
+);
 const GazetteNewsletterSection = dynamic(
   () => import('@/components/landing/GazetteNewsletterSection').then((mod) => mod.GazetteNewsletterSection),
   { ssr: true }
@@ -85,7 +89,10 @@ export default function HomePage() {
       {/* SECTION 08: Editorial Feature & Flagship Atelier (Consultation & Service Hallmarks) */}
       <EditorialSpreadSection />
 
-      {/* SECTION 09: The Gazette (Seasonal Newsletter & Private Dispatch) */}
+      {/* SECTION 09: Visit Us / Flagship Showroom Experience */}
+      <VisitUsShowroomSection />
+
+      {/* Seasonal Dispatch / Newsletter */}
       <GazetteNewsletterSection />
     </main>
   );
