@@ -2,8 +2,12 @@ import React, { useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { CartDrawer } from '@/components/cart/CartDrawer';
 import { scrollToSection } from '@/utils/navigation';
+
+// Lazy load cart drawer so catalog dependencies are deferred
+const CartDrawer = lazy(() =>
+  import('@/components/cart/CartDrawer').then((m) => ({ default: m.CartDrawer }))
+);
 
 // Eagerly loaded for instant first paint on homepage
 import HomePage from '@/app/page';
@@ -43,7 +47,9 @@ export function App() {
       <Navbar />
 
       {/* 2. Global Sliding Cart Drawer */}
-      <CartDrawer />
+      <Suspense fallback={null}>
+        <CartDrawer />
+      </Suspense>
 
       {/* 3. Main Content Router */}
       <div className="grow">

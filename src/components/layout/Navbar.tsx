@@ -7,8 +7,11 @@ import { ShoppingBag, Menu, X, ArrowUpRight, Search, ChevronDown } from 'lucide-
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
-import { SearchModal } from '@/components/discovery/SearchModal';
 import { scrollToSection } from '@/utils/navigation';
+
+const SearchModal = React.lazy(() =>
+  import('@/components/discovery/SearchModal').then((m) => ({ default: m.SearchModal }))
+);
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
@@ -559,8 +562,12 @@ export const Navbar: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Global Search Modal */}
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      {/* Global Search Modal (Code-split on demand) */}
+      {searchOpen && (
+        <React.Suspense fallback={null}>
+          <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+        </React.Suspense>
+      )}
     </>
   );
 };

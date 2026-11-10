@@ -158,8 +158,8 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
           </motion.div>
         </div>
 
-        {/* Right Column: Architectural Hero Image with Responsive Aspect Ratios */}
-        <motion.div variants={itemVariants} className="lg:col-span-5 relative">
+        {/* Right Column: Architectural Hero Image (Immediate first paint for instant LCP) */}
+        <div className="lg:col-span-5 relative">
           <div className="relative aspect-[16/11] sm:aspect-[16/10] lg:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#1A1816]/10 shadow-[0_16px_48px_rgba(26,24,22,0.06)] bg-[#F2EFE9] group">
             <Image
               src="/images/collections/collection-sanctuary-seating.webp"
@@ -170,7 +170,7 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 42vw"
             />
           </div>
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Bottom Scroll Wayfinding Cue & Certification Strip */}

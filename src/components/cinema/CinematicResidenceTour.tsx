@@ -70,6 +70,7 @@ export const CinematicResidenceTour: React.FC = () => {
   const [activeLoadingIdx, setActiveLoadingIdx] = useState(0);
   const [hasSkippedAnimation, setHasSkippedAnimation] = useState(false);
   const [isIntroDismissed, setIsIntroDismissed] = useState(false);
+  const [hasStartedPreload, setHasStartedPreload] = useState(false);
 
   // Scene readiness & queue advancement guards
   const sceneReadyRef = useRef<boolean[]>(new Array(totalScenes).fill(false));
@@ -412,10 +413,48 @@ export const CinematicResidenceTour: React.FC = () => {
         Math.max(0, Math.round(sceneStates.reduce((acc, s) => acc + s.progress, 0) / totalScenes))
       );
 
-  // Prime controlled preload queue on initial mount
+  // Start loading tour assets when user approaches the tour (via scroll, hash, or direct call)
   useEffect(() => {
-    loadScene(0);
-  }, [loadScene]);
+    if (typeof window === 'undefined') return;
+
+    const checkHash = () => {
+      const h = window.location.hash.toLowerCase();
+      if (h.includes('tour') || h.includes('residence') || h.includes('explore')) {
+        setHasStartedPreload(true);
+      }
+    };
+    checkHash();
+    window.addEventListener('hashchange', checkHash);
+
+    const container = containerRef.current;
+    if (!container || hasStartedPreload) {
+      return () => window.removeEventListener('hashchange', checkHash);
+    }
+
+    // Approaching within 800px activates the controlled preload queue
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setHasStartedPreload(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '800px 0px 800px 0px' }
+    );
+    observer.observe(container);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('hashchange', checkHash);
+    };
+  }, [hasStartedPreload]);
+
+  // Prime controlled preload queue once approaching tour
+  useEffect(() => {
+    if (hasStartedPreload) {
+      loadScene(0);
+    }
+  }, [hasStartedPreload, loadScene]);
 
   // Dismiss loader ONLY AFTER all five scene videos are verified ready
   useEffect(() => {
@@ -530,6 +569,7 @@ export const CinematicResidenceTour: React.FC = () => {
         ScrollTrigger,
         setUseCanvasScene0,
         setIsIntroDismissed,
+        startPreload: () => setHasStartedPreload(true),
         getSceneStates: () => sceneStatesRef.current,
         allScenesReady: () => allScenesReadyRef.current,
         combinedProgress: () =>
@@ -862,7 +902,7 @@ export const CinematicResidenceTour: React.FC = () => {
                       muted
                       loop={false}
                       playsInline
-                      preload={idx === 0 ? 'auto' : 'none'}
+                      preload={hasStartedPreload && idx === 0 ? 'auto' : 'none'}
                       disablePictureInPicture
                       disableRemotePlayback
                       onError={() => {

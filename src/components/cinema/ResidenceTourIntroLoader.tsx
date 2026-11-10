@@ -52,7 +52,7 @@ export const ResidenceTourIntroLoader: React.FC<ResidenceTourIntroLoaderProps> =
       role="region"
       aria-label="Residence Tour Preparation"
       aria-live="polite"
-      className={`absolute inset-0 z-40 flex flex-col justify-between pt-24 sm:pt-28 md:pt-32 pb-6 px-6 sm:px-10 md:px-14 bg-[#141210]/95 backdrop-blur-xl transition-all duration-700 ease-out select-none ${
+      className={`absolute inset-0 z-40 flex flex-col justify-between pt-24 sm:pt-28 md:pt-32 pb-6 px-6 sm:px-10 md:px-14 bg-[#141210]/95 backdrop-blur-xl transition-[opacity,transform] duration-700 ease-out select-none ${
         isDismissed
           ? 'opacity-0 pointer-events-none scale-[1.02] invisible'
           : 'opacity-100 pointer-events-auto scale-100 visible'
@@ -72,7 +72,7 @@ export const ResidenceTourIntroLoader: React.FC<ResidenceTourIntroLoaderProps> =
           <button
             type="button"
             onClick={onSkipAnimation}
-            className="group inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full border border-white/20 hover:border-[#C84D1B] bg-white/[0.04] hover:bg-[#C84D1B]/10 text-white/85 hover:text-[#FAF8F5] transition-all duration-200 cursor-pointer min-h-[44px] min-w-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C84D1B]"
+            className="group inline-flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full border border-white/20 hover:border-[#C84D1B] bg-white/[0.04] hover:bg-[#C84D1B]/10 text-white/85 hover:text-[#FAF8F5] transition-colors duration-200 cursor-pointer min-h-[44px] min-w-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C84D1B]"
             aria-label="Skip introduction animation and wait for all five videos to prepare"
           >
             <span className="font-mono text-xs sm:text-sm tracking-wider uppercase">
@@ -429,7 +429,7 @@ export const ResidenceTourIntroLoader: React.FC<ResidenceTourIntroLoaderProps> =
         {/* Combined Progress Track */}
         <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-[#C84D1B] to-[#E86D3B] transition-all duration-300 ease-out rounded-full"
+            className="h-full bg-gradient-to-r from-[#C84D1B] to-[#E86D3B] transition-[width] duration-300 ease-out rounded-full"
             style={{ width: `${displayProgress}%` }}
           />
         </div>
