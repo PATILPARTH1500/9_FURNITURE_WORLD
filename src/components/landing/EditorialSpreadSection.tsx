@@ -2,11 +2,68 @@
 
 import React, { useEffect, useRef } from 'react';
 import Image from '@/components/common/Image';
+import Link from '@/components/common/Link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { MapPin, Phone, ArrowUpRight, ShieldCheck, Truck, Wrench } from 'lucide-react';
-import { BRAND_CONFIG } from '@/config/brand';
-import { MagneticButton, TextRoll } from '@/components/ui/motion';
+import { ArrowUpRight, BookOpen, Compass } from 'lucide-react';
+
+interface EditorialStory {
+  id: string;
+  theme: string;
+  title: string;
+  subtitle?: string;
+  excerpt: string;
+  image: string;
+  linkHref: string;
+  linkText: string;
+  featured?: boolean;
+}
+
+const FEATURED_STORY: EditorialStory = {
+  id: 'architecture-of-comfort',
+  theme: 'Contemporary Living & Architecture · Essay 01',
+  title: 'The Architecture of Comfort: Designing Spaces for Everyday Calm',
+  subtitle: 'On open spatial rhythm, raking natural light, and why modern homes require softer geometry.',
+  excerpt:
+    'True comfort is architectural before it is decorative. In an era of rigid angles and sterile showroom minimalism, we explore how generous natural daylight, low-slung seating heights, and tactile organic textures transform domestic residences into sanctuaries of quiet composure and generational ease.',
+  image: '/images/collections/collection-sanctuary-seating.webp',
+  linkHref: '/#our-story',
+  linkText: 'Read Architectural Essay',
+  featured: true,
+};
+
+const SUPPORTING_STORIES: EditorialStory[] = [
+  {
+    id: '112-degree-angle',
+    theme: 'Furniture Design & Craftsmanship · Story 02',
+    title: 'The 112° Angle: Ergonomics, Form, and Living Character',
+    excerpt:
+      'Why our seating rejects rigid right angles in favor of a relaxed 112° recline that supports natural human posture without the stiff formality of conventional showroom furniture.',
+    image: '/images/products/kronos-lounge-chair.webp',
+    linkHref: '/collections',
+    linkText: 'Explore Seating Craft',
+  },
+  {
+    id: 'living-timber-patina',
+    theme: 'Materiality & Finishes · Story 03',
+    title: 'Living Timber & Organic Wax: Kiln-Dried Oak to Aniline Patina',
+    excerpt:
+      'An intimate look at why natural medullary rays, zero-VOC carnauba hardwaxes, and vegetable-dyed full-grain leathers develop deeper character over decades rather than wearing out.',
+    image: '/images/materials/hardwood-detail.webp',
+    linkHref: '/#materials-craft',
+    linkText: 'Inspect Material Standards',
+  },
+  {
+    id: 'checkerboard-rhythm',
+    theme: 'Interior Inspiration & Room Styling · Story 04',
+    title: 'The Checkerboard Floor: Pairing Graphic Rhythm with Warm Earth Tones',
+    excerpt:
+      'How bold architectural black-and-cream checkered tiling creates a confident graphic stage for warm walnut dining tables, deep olive velvets, and playful family living.',
+    image: '/images/collections/collection-monolith-dining.webp',
+    linkHref: '/#room-finder',
+    linkText: 'View Room Inspiration',
+  },
+];
 
 export const EditorialSpreadSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -20,15 +77,32 @@ export const EditorialSpreadSection: React.FC = () => {
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        '.editorial-quote-container',
-        { opacity: 0, y: 30 },
+        '.journal-header',
+        { opacity: 0, y: 24 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: 0.55,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
+            start: 'top 88%',
+            once: true,
+            fastScrollEnd: true,
+          },
+        }
+      );
+
+      gsap.fromTo(
+        '.journal-featured-card',
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.journal-featured-card',
             start: 'top 85%',
             once: true,
             fastScrollEnd: true,
@@ -37,17 +111,17 @@ export const EditorialSpreadSection: React.FC = () => {
       );
 
       gsap.fromTo(
-        '.editorial-service-pill',
-        { opacity: 0, y: 20 },
+        '.journal-story-card',
+        { opacity: 0, y: 24 },
         {
           opacity: 1,
           y: 0,
           duration: 0.45,
-          stagger: 0.08,
+          stagger: 0.1,
           ease: 'power2.out',
           scrollTrigger: {
-            trigger: '.editorial-services-grid',
-            start: 'top 90%',
+            trigger: '.journal-stories-grid',
+            start: 'top 88%',
             once: true,
             fastScrollEnd: true,
           },
@@ -62,98 +136,141 @@ export const EditorialSpreadSection: React.FC = () => {
     <section
       id="journal"
       ref={sectionRef}
-      className="relative z-20 bg-[#161412] text-[#FBF9F5] py-28 sm:py-36 border-t border-white/10 overflow-hidden"
+      data-theme="dark"
+      className="relative z-20 bg-[#161412] text-[#FBF9F5] py-20 sm:py-28 lg:py-36 border-t border-white/10 overflow-hidden"
     >
       <span id="editorial-spread" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       <span id="editorial" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
-      {/* Background Architectural Villa Photography with Warm Dark Grading */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/images/film/interior-villa.webp"
-          alt="Furniture World Atelier Villa Interior"
-          fill
-          className="object-cover opacity-20 filter brightness-75 contrast-125 scale-105"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#161412] via-[#161412]/90 to-[#161412]" />
-      </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
-        {/* Editorial Feature Quote Banner */}
-        <div className="editorial-quote-container max-w-4xl mx-auto text-center space-y-8 mb-20">
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-[11px] font-sans uppercase tracking-widest text-[#FBF9F5] shadow-xs backdrop-blur-md">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
-            <span>Furniture World Atelier · Indiranagar Flagship</span>
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12 relative z-10">
+        {/* Section Header */}
+        <div className="journal-header flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 pb-8 border-b border-white/10 gap-6 sm:gap-8">
+          <div className="space-y-4 max-w-xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-sans text-[11px] tracking-widest uppercase text-[#E07A5F] font-semibold bg-[#E07A5F]/15 px-3.5 py-1.5 rounded-full border border-[#E07A5F]/30 inline-flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E07A5F]" />
+                <span>Section 08 · The Journal · Editorial Stories</span>
+              </span>
+              <span className="font-sans text-[11px] uppercase tracking-widest text-[#A8A29E] bg-white/5 px-3 py-1 rounded-full border border-white/10 font-medium inline-flex items-center space-x-1">
+                <BookOpen className="w-3 h-3 text-[#E07A5F]" />
+                <span>Architecture &amp; Living Perspectives</span>
+              </span>
+            </div>
+
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#FBF9F5] font-normal tracking-tight leading-[1.08]">
+              Notes on Living, <br />
+              <span className="italic font-light text-[#A8A29E]">Architecture &amp; Craft.</span>
+            </h2>
           </div>
 
-          <blockquote className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#FBF9F5] font-light leading-[1.18] tracking-tight">
-            &ldquo;A home should be a collection of things you love, crafted to outlast the trends of the moment.&rdquo;
-          </blockquote>
-
-          <p className="font-sans text-sm sm:text-base text-[#A8A29E] max-w-2xl mx-auto leading-relaxed">
-            Experience our timber finishes, tailored upholstery, and ergonomic contours in person at our Bangalore architectural showroom.
+          <p className="font-sans text-sm sm:text-base text-[#A8A29E] leading-relaxed max-w-md font-normal">
+            Essays, material studies, and design perspectives from the Furniture World atelier exploring how thoughtful proportions, honest materials, and natural light shape contemporary homes.
           </p>
+        </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-            <MagneticButton
-              onClick={() => { window.location.href = `tel:${BRAND_CONFIG.contact.phone}`; }}
-              className="space-x-2 text-xs font-sans uppercase tracking-wider bg-[#C84D1B] hover:bg-[#D9531E] text-white font-medium px-8 py-4 rounded-full shadow-sm hover:shadow-md transition-all duration-300 w-full sm:w-auto justify-center"
-            >
-              <Phone className="w-4 h-4" />
-              <TextRoll>Book Design Consultation</TextRoll>
-            </MagneticButton>
+        {/* Lead Featured Cover Story */}
+        <div className="journal-featured-card mb-12 sm:mb-16">
+          <div className="group bg-white/[0.03] hover:bg-white/[0.05] rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden shadow-[0_16px_48px_rgba(0,0,0,0.4)] transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-center">
+            {/* Lead Image */}
+            <div className="lg:col-span-7 relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden bg-black/40">
+              <Image
+                src={FEATURED_STORY.image}
+                alt={FEATURED_STORY.title}
+                fill
+                className="object-cover group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-[0.92]"
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                priority
+              />
+              <div className="absolute top-4 left-4 bg-[#161412]/85 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-white/15 text-[11px] font-sans font-medium text-[#FBF9F5] uppercase tracking-wider">
+                Featured Cover Story
+              </div>
+            </div>
 
-            <MagneticButton
-              href="/collections"
-              className="space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/15 border border-white/20 text-[#FBF9F5] font-medium px-7 py-4 rounded-full transition-all duration-300 justify-center"
-            >
-              <TextRoll>Visit Showroom Floor</TextRoll>
-              <ArrowUpRight className="w-4 h-4" />
-            </MagneticButton>
+            {/* Lead Editorial Copy */}
+            <div className="lg:col-span-5 p-6 sm:p-8 lg:p-10 space-y-4 sm:space-y-6">
+              <span className="text-[11px] font-sans uppercase tracking-widest text-[#E07A5F] font-semibold block">
+                {FEATURED_STORY.theme}
+              </span>
+
+              <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#FBF9F5] font-normal leading-tight group-hover:text-[#E07A5F] transition-colors">
+                {FEATURED_STORY.title}
+              </h3>
+
+              <p className="font-sans text-xs sm:text-sm text-[#A8A29E] leading-relaxed">
+                {FEATURED_STORY.excerpt}
+              </p>
+
+              <div className="pt-2">
+                <Link
+                  href={FEATURED_STORY.linkHref}
+                  className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-[#C84D1B] border border-white/20 hover:border-transparent text-white font-semibold px-6 py-3.5 rounded-full shadow-2xs transition-all duration-300"
+                >
+                  <span>{FEATURED_STORY.linkText}</span>
+                  <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* 4 Architectural Hallmarks & Service Commitments */}
-        <div className="editorial-services-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-12 border-t border-white/10">
-          <div className="editorial-service-pill p-6 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xs space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-[#C84D1B]/15 text-[#C84D1B] flex items-center justify-center">
-              <Truck className="w-5 h-5" />
-            </div>
-            <h4 className="font-serif text-lg text-white font-normal">White-Glove Delivery</h4>
-            <p className="text-xs font-sans text-[#A8A29E] leading-relaxed">
-              Two-person team handles carry-in, floor placement, and unboxing in your room of choice.
-            </p>
+        {/* 3 Supporting Editorial Stories (Triptych) */}
+        <div className="journal-stories-grid grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          {SUPPORTING_STORIES.map((story) => (
+            <article
+              key={story.id}
+              className="journal-story-card group bg-white/[0.03] hover:bg-white/[0.05] rounded-2xl sm:rounded-3xl border border-white/10 overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 flex flex-col justify-between"
+            >
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/40">
+                <Image
+                  src={story.image}
+                  alt={story.title}
+                  fill
+                  className="object-cover group-hover:scale-104 transition-transform duration-700 ease-out filter brightness-[0.92]"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+
+              <div className="p-6 sm:p-7 space-y-3 flex-1 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <span className="text-[10px] font-sans uppercase tracking-widest text-[#E07A5F] font-semibold block">
+                    {story.theme}
+                  </span>
+                  <h4 className="font-serif text-xl sm:text-2xl text-[#FBF9F5] font-normal leading-snug group-hover:text-[#E07A5F] transition-colors">
+                    {story.title}
+                  </h4>
+                  <p className="font-sans text-xs text-[#A8A29E] leading-relaxed pt-1">
+                    {story.excerpt}
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-white/10">
+                  <Link
+                    href={story.linkHref}
+                    className="inline-flex items-center space-x-1.5 text-xs font-sans uppercase tracking-wider text-[#FBF9F5] group-hover:text-[#E07A5F] font-semibold transition-colors min-h-[44px]"
+                  >
+                    <span>{story.linkText}</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </Link>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* Bottom Publication Banner */}
+        <div className="mt-12 sm:mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-sans text-[#A8A29E]">
+          <div className="flex items-center space-x-2">
+            <Compass className="w-4 h-4 text-[#E07A5F]" />
+            <span>Furniture World Journal · Architectural Perspectives from Our Atelier</span>
           </div>
 
-          <div className="editorial-service-pill p-6 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xs space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-[#2B5238]/20 text-[#86EFAC] flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <h4 className="font-serif text-lg text-white font-normal">10-Year Warranty</h4>
-            <p className="text-xs font-sans text-[#A8A29E] leading-relaxed">
-              Solid European timber frames and steel-anchored mortise & tenon joinery built to endure.
-            </p>
-          </div>
-
-          <div className="editorial-service-pill p-6 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xs space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-[#D97706]/15 text-[#FBBF24] flex items-center justify-center">
-              <Wrench className="w-5 h-5" />
-            </div>
-            <h4 className="font-serif text-lg text-white font-normal">Complimentary Assembly</h4>
-            <p className="text-xs font-sans text-[#A8A29E] leading-relaxed">
-              Level mounting, leg fittings, and complete debris removal included at zero extra charge.
-            </p>
-          </div>
-
-          <div className="editorial-service-pill p-6 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xs space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-[#C84D1B]/15 text-[#C84D1B] flex items-center justify-center">
-              <MapPin className="w-5 h-5" />
-            </div>
-            <h4 className="font-serif text-lg text-white font-normal">Flagship Experience</h4>
-            <p className="text-xs font-sans text-[#A8A29E] leading-relaxed">
-              100-Ft Road, Indiranagar. Open Mon–Sat for private viewing appointments and material swatches.
-            </p>
-          </div>
+          <Link
+            href="/collections"
+            className="inline-flex items-center space-x-1.5 uppercase tracking-wider text-[#FBF9F5] hover:text-[#E07A5F] font-semibold transition-colors min-h-[44px]"
+          >
+            <span>Explore All Atelier Collections</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </div>
     </section>
