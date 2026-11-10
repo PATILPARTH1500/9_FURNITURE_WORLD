@@ -297,16 +297,20 @@ export const CustomerReviewsCarousel: React.FC = () => {
             * Curated patron reflections & living stories from Furniture Village residence installations.
           </p>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1">
             {CUSTOMER_REVIEWS.map((_, dotIdx) => (
               <button
                 key={dotIdx}
                 onClick={() => setCurrentIndex(dotIdx)}
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  dotIdx === currentIndex ? 'w-8 bg-[#1A1816]' : 'w-2 bg-stone-300 hover:bg-stone-400'
-                }`}
+                className="min-h-[28px] min-w-[28px] flex items-center justify-center p-1 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#C84D1B] rounded-full"
                 aria-label={`Go to slide ${dotIdx + 1}`}
-              />
+              >
+                <span
+                  className={`h-2 rounded-full transition-all duration-300 pointer-events-none block ${
+                    dotIdx === currentIndex ? 'w-8 bg-[#1A1816]' : 'w-2 bg-stone-300 hover:bg-stone-400'
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </div>

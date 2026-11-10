@@ -9,7 +9,29 @@
       name="description"
       content="Retro-modern sofas, solid wood dining tables, and warm bedroom furniture designed for comfortable family living."
     />
+    <link rel="canonical" href="https://furnitureworld.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="FURNITURE WORLD — Handcrafted Furniture, Beautifully Made for Your Home" />
+    <meta property="og:description" content="Retro-modern sofas, solid wood dining tables, and warm bedroom furniture designed for comfortable family living." />
+    <meta property="og:url" content="https://furnitureworld.com/" />
+    <meta property="og:site_name" content="Furniture World" />
+    <meta property="og:image" content="https://furnitureworld.com/images/collections/collection-sanctuary-seating.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="FURNITURE WORLD — Handcrafted Furniture, Beautifully Made for Your Home" />
+    <meta name="twitter:description" content="Retro-modern sofas, solid wood dining tables, and warm bedroom furniture designed for comfortable family living." />
+    <meta name="twitter:image" content="https://furnitureworld.com/images/collections/collection-sanctuary-seating.webp" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- LCP Image Preload for Instant First Contentful Paint -->
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/images/collections/collection-sanctuary-seating.webp"
+      fetchpriority="high"
+    />
+
     <!-- Google Fonts Preconnect & Stylesheets -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,6 +39,41 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Structured Data (Schema.org FurnitureStore) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FurnitureStore",
+        "name": "Furniture World",
+        "description": "Retro-modern sofas, solid wood dining tables, and warm bedroom furniture designed for comfortable family living.",
+        "url": "https://furnitureworld.com",
+        "telephone": "+91-80-4000-8879",
+        "email": "care@furnitureworld.com",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "100 Feet Road, Indiranagar",
+          "addressLocality": "Bengaluru",
+          "addressRegion": "Karnataka",
+          "postalCode": "560038",
+          "addressCountry": "IN"
+        },
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "opens": "10:00",
+          "closes": "19:00"
+        },
+        "priceRange": "₹₹₹"
+      }
+    </script>
   </head>
   <body class="font-sans bg-[#FBF9F5] text-[#1A1816] antialiased selection:bg-[#C84D1B] selection:text-white min-h-screen flex flex-col overflow-x-hidden">
     <div id="root"></div>

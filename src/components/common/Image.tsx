@@ -37,6 +37,7 @@ export const Image: React.FC<ImageProps> = ({
       src={src}
       alt={alt}
       loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : undefined}
       sizes={sizes}
       className={className}
       style={{ ...fillStyles, ...style }}

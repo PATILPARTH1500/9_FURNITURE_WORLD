@@ -11,12 +11,21 @@ export const Footer: React.FC = () => {
     >
       <span id="footer" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
       {/* Background brand watermark */}
-      <div
-        className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.025] text-[12vw] font-serif leading-none tracking-tight font-light text-white uppercase whitespace-nowrap"
+      <svg
+        className="absolute right-0 bottom-0 pointer-events-none select-none opacity-[0.025] w-full h-[12vw] overflow-visible"
         aria-hidden="true"
+        role="presentation"
       >
-        {BRAND_CONFIG.name}
-      </div>
+        <text
+          x="100%"
+          y="90%"
+          textAnchor="end"
+          fill="currentColor"
+          className="text-white font-serif uppercase tracking-tight font-light text-[12vw]"
+        >
+          {BRAND_CONFIG.name}
+        </text>
+      </svg>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16 pb-16 border-b border-white/10">
@@ -46,7 +55,7 @@ export const Footer: React.FC = () => {
                 <p className="font-normal mt-0.5">100 Feet Road</p>
                 <Link
                   href="#visit-us"
-                  className="inline-flex items-center text-[#C84D1B] hover:text-[#C84D1B]/80 font-medium text-[11px] uppercase tracking-wider mt-2 group"
+                  className="inline-flex items-center text-[#E57341] hover:text-[#FBF9F5] font-medium text-[11px] uppercase tracking-wider mt-2 group"
                 >
                   <span>View Showroom Details</span>
                   <ArrowUpRight className="w-3 h-3 ml-1 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -113,7 +122,7 @@ export const Footer: React.FC = () => {
                 <Phone className="w-3.5 h-3.5 text-[#C84D1B]" />
                 <span>{BRAND_CONFIG.contact.phone}</span>
               </p>
-              <p className="text-[11px] text-[#78716C] pt-1">
+              <p className="text-[11px] text-[#A8A29E] pt-1">
                 {BRAND_CONFIG.contact.hours}
               </p>
             </div>
@@ -121,10 +130,10 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#78716C] gap-4">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-[#A8A29E] gap-4">
           <div className="space-y-1 text-center md:text-left">
             <p>© {new Date().getFullYear()} {BRAND_CONFIG.name}. All rights reserved.</p>
-            <p className="text-[11px] text-[#57534E]">
+            <p className="text-[11px] text-[#A8A29E]">
               {BRAND_CONFIG.contact.legalEntity} · GSTIN: {BRAND_CONFIG.contact.gstin}
             </p>
           </div>

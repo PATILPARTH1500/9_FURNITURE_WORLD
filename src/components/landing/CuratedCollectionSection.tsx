@@ -153,7 +153,7 @@ export const CuratedCollectionSection: React.FC = () => {
         <div className="collection-header grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-16 pb-12 border-b border-[#1A1816]/10">
           <div className="lg:col-span-7 space-y-3">
             <div className="flex items-center space-x-2">
-              <span className="font-sans text-xs tracking-[0.2em] uppercase text-[#C84D1B] font-semibold">
+              <span className="font-sans text-xs tracking-[0.2em] uppercase text-[#B54113] font-semibold">
                 Permanent Living Suites
               </span>
             </div>
@@ -260,8 +260,8 @@ export const CuratedCollectionSection: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#1A1816]/10">
             <div className="space-y-1">
               <div className="flex items-center space-x-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
-                <span className="text-xs font-sans uppercase tracking-[0.16em] text-[#C84D1B] font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B54113]" />
+                <span className="text-xs font-sans uppercase tracking-[0.16em] text-[#B54113] font-semibold">
                   Individual Works
                 </span>
               </div>
@@ -289,7 +289,7 @@ export const CuratedCollectionSection: React.FC = () => {
                     }`}
                   >
                     <span>{tab.label}</span>
-                    <span className="ml-1.5 opacity-60 text-[10px]">({tab.count})</span>
+                    <span className={`ml-1.5 text-[10px] ${isActive ? 'text-white/80' : 'text-[#57534E]'}`}>({tab.count})</span>
                   </button>
                 );
               })}
@@ -434,7 +434,7 @@ export const CuratedCollectionSection: React.FC = () => {
           </div>
           <Link
             href="/collections"
-            className="inline-flex items-center space-x-1.5 font-semibold uppercase tracking-wider text-[#C84D1B] hover:text-[#1A1816] transition-colors"
+            className="inline-flex items-center space-x-1.5 font-semibold uppercase tracking-wider text-[#B54113] hover:text-[#1A1816] transition-colors"
           >
             <span>View All Living Suites</span>
             <ArrowUpRight className="w-3.5 h-3.5" />

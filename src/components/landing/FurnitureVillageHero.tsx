@@ -66,8 +66,8 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
           <motion.div variants={itemVariants} className="space-y-3 sm:space-y-4">
             {/* Curated Brand Pre-title Badge */}
             <div className="flex items-center space-x-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B] shrink-0" aria-hidden="true" />
-              <span className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#C84D1B] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#B54113] shrink-0" aria-hidden="true" />
+              <span className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#B54113] font-semibold">
                 {BRAND_CONFIG.name} · Atelier Collection 2026
               </span>
             </div>
