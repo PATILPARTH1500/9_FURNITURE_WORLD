@@ -17,6 +17,7 @@ export const Navbar: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('home');
+  const [navTheme, setNavTheme] = useState<'light' | 'dark'>('light');
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
 
@@ -30,14 +31,6 @@ export const Navbar: React.FC = () => {
     });
     return () => unsub();
   }, [getTotalCount]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Keyboard shortcut: Cmd+K / Ctrl+K opens search, Escape closes mobile menu / dropdown
   useEffect(() => {
@@ -76,10 +69,11 @@ export const Navbar: React.FC = () => {
     return () => document.removeEventListener('click', handleOutsideClick);
   }, []);
 
-  // Active section tracking across the 9 canonical homepage sections
+  // Active section tracking & dynamic light/dark navbar theming across homepage sections
   useEffect(() => {
     if (location.pathname !== '/') {
       setActiveSection('');
+      setNavTheme('light');
       return;
     }
 
@@ -95,32 +89,57 @@ export const Navbar: React.FC = () => {
       'visit-us',
     ];
 
-    const updateActiveSection = () => {
+    const updateNavState = () => {
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 20);
+
       // Check if scrolled near the bottom of page (Visit Us / Footer)
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 160) {
+      if (window.innerHeight + scrollY >= document.documentElement.scrollHeight - 160) {
         setActiveSection('visit-us');
-        return;
+      } else {
+        const scrollPos = scrollY + 130; // 130px offset below header
+        let matched = 'home';
+        for (let i = sectionIds.length - 1; i >= 0; i--) {
+          const id = sectionIds[i];
+          const el = document.getElementById(id);
+          if (el) {
+            const top = el.offsetTop;
+            if (scrollPos >= top) {
+              matched = id;
+              break;
+            }
+          }
+        }
+        setActiveSection(matched);
       }
 
-      const scrollPos = window.scrollY + 130; // 130px offset below header
+      // Determine navbar theme based on the section currently beneath the header (y = 0..72px)
+      // Dark sections: 'residence-tour', 'our-story', 'journal', 'visit-us'
+      const darkSections = ['residence-tour', 'our-story', 'journal', 'visit-us'];
+      let isUnderneathDark = false;
 
-      for (let i = sectionIds.length - 1; i >= 0; i--) {
-        const id = sectionIds[i];
+      for (const id of darkSections) {
         const el = document.getElementById(id);
         if (el) {
-          const top = el.offsetTop;
-          if (scrollPos >= top) {
-            setActiveSection(id);
-            return;
+          const rect = el.getBoundingClientRect();
+          // The navbar is ~70px tall, so sample when the dark section intersects y=40px
+          if (rect.top <= 44 && rect.bottom >= 20) {
+            isUnderneathDark = true;
+            break;
           }
         }
       }
-      setActiveSection('home');
+
+      setNavTheme(isUnderneathDark ? 'dark' : 'light');
     };
 
-    window.addEventListener('scroll', updateActiveSection, { passive: true });
-    updateActiveSection();
-    return () => window.removeEventListener('scroll', updateActiveSection);
+    window.addEventListener('scroll', updateNavState, { passive: true });
+    window.addEventListener('resize', updateNavState, { passive: true });
+    updateNavState();
+    return () => {
+      window.removeEventListener('scroll', updateNavState);
+      window.removeEventListener('resize', updateNavState);
+    };
   }, [location.pathname]);
 
   const handleMobileNavClick = (href: string) => {
@@ -156,11 +175,26 @@ export const Navbar: React.FC = () => {
     <>
       <header
         ref={navRef}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
-          scrolled
-            ? 'bg-[#FBF9F5]/96 backdrop-blur-md border-b border-[#1A1816]/10 shadow-[0_4px_24px_rgba(26,24,22,0.04)] py-3 sm:py-3.5'
-            : 'bg-[#FBF9F5]/90 backdrop-blur-sm border-b border-[#1A1816]/6 py-4 sm:py-5 lg:py-5'
+        data-nav-theme={navTheme}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out backdrop-blur-md ${
+          navTheme === 'dark'
+            ? scrolled
+              ? 'border-b border-white/12 shadow-[0_4px_24px_rgba(0,0,0,0.4)] py-3 sm:py-3.5'
+              : 'border-b border-white/10 py-4 sm:py-5 lg:py-5'
+            : scrolled
+              ? 'border-b border-[#1A1816]/10 shadow-[0_4px_24px_rgba(26,24,22,0.04)] py-3 sm:py-3.5'
+              : 'border-b border-[#1A1816]/6 py-4 sm:py-5 lg:py-5'
         }`}
+        style={{
+          backgroundColor:
+            navTheme === 'dark'
+              ? scrolled
+                ? 'rgba(22, 20, 18, 0.95)'
+                : 'rgba(22, 20, 18, 0.88)'
+              : scrolled
+                ? 'rgba(251, 249, 245, 0.95)'
+                : 'rgba(251, 249, 245, 0.88)',
+        }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 flex items-center justify-between gap-4">
           {/* 1. Brand Wordmark */}
@@ -173,10 +207,20 @@ export const Navbar: React.FC = () => {
             className="group flex flex-col text-left focus:outline-hidden shrink-0"
             aria-label={`${BRAND_CONFIG.name} — Home`}
           >
-            <span className="font-serif text-lg sm:text-xl lg:text-2xl tracking-[0.06em] text-[#1A1816] group-hover:text-[#C84D1B] transition-colors duration-200 font-semibold leading-tight">
+            <span
+              className={`font-serif text-lg sm:text-xl lg:text-2xl tracking-[0.06em] transition-colors duration-200 font-semibold leading-tight ${
+                navTheme === 'dark'
+                  ? 'text-[#FAF8F5] group-hover:text-[#E7C89F]'
+                  : 'text-[#1A1816] group-hover:text-[#C84D1B]'
+              }`}
+            >
               {BRAND_CONFIG.name}
             </span>
-            <span className="font-sans text-[9px] uppercase tracking-[0.24em] text-[#666059] block -mt-0.5">
+            <span
+              className={`font-sans text-[9px] uppercase tracking-[0.24em] block -mt-0.5 transition-colors duration-200 ${
+                navTheme === 'dark' ? 'text-[#E7C89F]' : 'text-[#666059]'
+              }`}
+            >
               Atelier & Residence
             </span>
           </Link>
@@ -191,17 +235,26 @@ export const Navbar: React.FC = () => {
               const targetKey = item.href.replace(/^\/?#/, '');
               const isActive = location.pathname === '/' && activeSection === targetKey;
 
+              const linkColor =
+                navTheme === 'dark'
+                  ? isActive
+                    ? 'text-[#E7C89F] font-semibold'
+                    : 'text-white/80 hover:text-white'
+                  : isActive
+                    ? 'text-[#C84D1B] font-semibold'
+                    : 'text-[#1A1816]/80 hover:text-[#1A1816]';
+
+              const indicatorColor = navTheme === 'dark' ? 'bg-[#E7C89F]' : 'bg-[#C84D1B]';
+
               return (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`group relative py-1 transition-colors duration-200 focus:outline-hidden ${
-                    isActive ? 'text-[#C84D1B] font-semibold' : 'text-[#1A1816]/80 hover:text-[#1A1816]'
-                  }`}
+                  className={`group relative py-1 transition-colors duration-200 focus:outline-hidden ${linkColor}`}
                 >
                   <span>{item.label}</span>
                   <span
-                    className={`absolute bottom-0 left-0 h-[1.5px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out ${
+                    className={`absolute bottom-0 left-0 h-[1.5px] ${indicatorColor} rounded-full transition-all duration-300 ease-out ${
                       isActive ? 'w-full' : 'w-0 group-hover:w-full'
                     }`}
                     aria-hidden="true"
@@ -223,17 +276,29 @@ export const Navbar: React.FC = () => {
                 aria-expanded={moreDropdownOpen}
                 aria-haspopup="true"
                 className={`group relative inline-flex items-center space-x-1 py-1 transition-colors duration-200 focus:outline-hidden cursor-pointer ${
-                  isSecondaryActive ? 'text-[#C84D1B] font-semibold' : 'text-[#1A1816]/80 hover:text-[#1A1816]'
+                  navTheme === 'dark'
+                    ? isSecondaryActive
+                      ? 'text-[#E7C89F] font-semibold'
+                      : 'text-white/80 hover:text-white'
+                    : isSecondaryActive
+                      ? 'text-[#C84D1B] font-semibold'
+                      : 'text-[#1A1816]/80 hover:text-[#1A1816]'
                 }`}
               >
                 <span>More</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                    moreDropdownOpen ? 'rotate-180 text-[#C84D1B]' : 'text-[#1A1816]/60 group-hover:text-[#1A1816]'
+                    moreDropdownOpen
+                      ? `rotate-180 ${navTheme === 'dark' ? 'text-[#E7C89F]' : 'text-[#C84D1B]'}`
+                      : navTheme === 'dark'
+                        ? 'text-white/60 group-hover:text-white'
+                        : 'text-[#1A1816]/60 group-hover:text-[#1A1816]'
                   }`}
                 />
                 <span
-                  className={`absolute bottom-0 left-0 h-[1.5px] bg-[#C84D1B] rounded-full transition-all duration-300 ease-out ${
+                  className={`absolute bottom-0 left-0 h-[1.5px] ${
+                    navTheme === 'dark' ? 'bg-[#E7C89F]' : 'bg-[#C84D1B]'
+                  } rounded-full transition-all duration-300 ease-out ${
                     isSecondaryActive ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}
                   aria-hidden="true"
@@ -247,33 +312,49 @@ export const Navbar: React.FC = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 6, scale: 0.98 }}
                     transition={{ duration: 0.18, ease: 'easeOut' }}
-                    className="absolute top-full left-0 mt-2 w-56 bg-[#FBF9F5] border border-[#1A1816]/12 rounded-2xl shadow-[0_12px_36px_rgba(26,24,22,0.12)] p-2 z-50 backdrop-blur-md"
+                    className={`absolute top-full left-0 mt-2 w-56 rounded-2xl shadow-xl p-2 z-50 backdrop-blur-md transition-colors duration-200 ${
+                      navTheme === 'dark'
+                        ? 'bg-[#1E1B18] border border-white/15 text-[#FAF8F5] shadow-[0_12px_36px_rgba(0,0,0,0.5)]'
+                        : 'bg-[#FBF9F5] border border-[#1A1816]/12 text-[#1A1816] shadow-[0_12px_36px_rgba(26,24,22,0.12)]'
+                    }`}
                   >
                     <div className="flex flex-col space-y-1">
                       {secondaryNavItems.map((item, idx) => {
                         const targetKey = item.href.replace(/^\/?#/, '');
                         const isActive = location.pathname === '/' && activeSection === targetKey;
 
+                        const itemClass =
+                          navTheme === 'dark'
+                            ? isActive
+                              ? 'bg-[#E7C89F]/15 text-[#E7C89F] font-semibold'
+                              : 'text-white/80 hover:text-white hover:bg-white/10'
+                            : isActive
+                              ? 'bg-[#C84D1B]/10 text-[#C84D1B] font-semibold'
+                              : 'text-[#1A1816]/80 hover:text-[#1A1816] hover:bg-[#1A1816]/5';
+
+                        const dotColor =
+                          navTheme === 'dark'
+                            ? isActive
+                              ? 'bg-[#E7C89F]'
+                              : 'bg-white/30'
+                            : isActive
+                              ? 'bg-[#C84D1B]'
+                              : 'bg-[#1A1816]/20';
+
+                        const numColor = navTheme === 'dark' ? 'text-[#D0C4B4]' : 'text-[#666059]';
+
                         return (
                           <Link
                             key={item.label}
                             href={item.href}
                             onClick={() => setMoreDropdownOpen(false)}
-                            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-sans tracking-wide transition-colors ${
-                              isActive
-                                ? 'bg-[#C84D1B]/10 text-[#C84D1B] font-semibold'
-                                : 'text-[#1A1816]/80 hover:text-[#1A1816] hover:bg-[#1A1816]/5'
-                            }`}
+                            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-sans tracking-wide transition-colors ${itemClass}`}
                           >
                             <span className="flex items-center space-x-2">
-                              <span
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  isActive ? 'bg-[#C84D1B]' : 'bg-[#1A1816]/20'
-                                }`}
-                              />
+                              <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
                               <span>{item.label}</span>
                             </span>
-                            <span className="text-[10px] text-[#666059] font-mono">0{6 + idx}</span>
+                            <span className={`text-[10px] ${numColor} font-mono`}>0{6 + idx}</span>
                           </Link>
                         );
                       })}
@@ -289,12 +370,20 @@ export const Navbar: React.FC = () => {
             {/* Search Button */}
             <button
               onClick={() => setSearchOpen(true)}
-              className="inline-flex items-center space-x-1.5 p-2 rounded-full text-[#1A1816]/80 hover:text-[#1A1816] hover:bg-[#1A1816]/5 transition-colors cursor-pointer"
+              className={`inline-flex items-center space-x-1.5 p-2 rounded-full transition-colors cursor-pointer ${
+                navTheme === 'dark'
+                  ? 'text-white/80 hover:text-white hover:bg-white/10'
+                  : 'text-[#1A1816]/80 hover:text-[#1A1816] hover:bg-[#1A1816]/5'
+              }`}
               aria-label="Search furniture collection"
               title="Search (Cmd+K)"
             >
               <Search className="w-4 h-4 shrink-0" />
-              <span className="hidden xl:inline text-xs font-sans tracking-wide uppercase text-[#666059]">
+              <span
+                className={`hidden xl:inline text-xs font-sans tracking-wide uppercase ${
+                  navTheme === 'dark' ? 'text-[#D0C4B4]' : 'text-[#666059]'
+                }`}
+              >
                 Search
               </span>
             </button>
@@ -302,7 +391,11 @@ export const Navbar: React.FC = () => {
             {/* Shopping Bag Button */}
             <button
               onClick={() => setIsOpen(true)}
-              className="relative p-2 rounded-full text-[#1A1816]/85 hover:text-[#C84D1B] hover:bg-[#1A1816]/5 transition-colors shrink-0 cursor-pointer"
+              className={`relative p-2 rounded-full transition-colors shrink-0 cursor-pointer ${
+                navTheme === 'dark'
+                  ? 'text-white/85 hover:text-[#E7C89F] hover:bg-white/10'
+                  : 'text-[#1A1816]/85 hover:text-[#C84D1B] hover:bg-[#1A1816]/5'
+              }`}
               aria-label={`Shopping bag with ${cartCount} items`}
             >
               <ShoppingBag className="w-4 h-4 shrink-0" />
@@ -316,7 +409,11 @@ export const Navbar: React.FC = () => {
             {/* Catalogue Direct CTA */}
             <Link
               href="/collections"
-              className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-sans uppercase tracking-wider font-semibold text-white bg-[#1A1816] hover:bg-[#C84D1B] px-4 sm:px-5 py-2.5 rounded-full transition-all duration-300 shadow-xs group shrink-0"
+              className={`hidden sm:inline-flex items-center space-x-1.5 text-xs font-sans uppercase tracking-wider font-semibold px-4 sm:px-5 py-2.5 rounded-full transition-all duration-300 shadow-xs group shrink-0 ${
+                navTheme === 'dark'
+                  ? 'text-white bg-[#C84D1B] hover:bg-[#D9531E]'
+                  : 'text-white bg-[#1A1816] hover:bg-[#C84D1B]'
+              }`}
             >
               <span>Explore Works</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-white/80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -325,7 +422,11 @@ export const Navbar: React.FC = () => {
             {/* Mobile Hamburger Toggle (>=44px touch target) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#1A1816] hover:text-[#C84D1B] transition-colors rounded-full hover:bg-[#1A1816]/5 focus:outline-hidden shrink-0 cursor-pointer"
+              className={`md:hidden p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors rounded-full focus:outline-hidden shrink-0 cursor-pointer ${
+                navTheme === 'dark'
+                  ? 'text-[#FAF8F5] hover:text-[#E7C89F] hover:bg-white/10'
+                  : 'text-[#1A1816] hover:text-[#C84D1B] hover:bg-[#1A1816]/5'
+              }`}
               aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileMenuOpen}
             >

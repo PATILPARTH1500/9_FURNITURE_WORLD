@@ -74,6 +74,7 @@ export const ArtOfLivingSection: React.FC = () => {
     <section
       id="our-story"
       ref={sectionRef}
+      data-theme="dark"
       className="relative z-20 bg-[#161412] text-[#FBF9F5] py-28 sm:py-36 border-t border-white/10 overflow-hidden"
     >
       <span id="art-of-living" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
@@ -82,21 +83,21 @@ export const ArtOfLivingSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           {/* Left Column: Layered Architectural Photography */}
           <div ref={imageSpreadRef} className="lg:col-span-6 relative">
-            <div className="relative aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] w-full rounded-3xl overflow-hidden border border-white/12 shadow-[0_24px_60px_rgba(0,0,0,0.5)] bg-black/40 group">
+            <div className="relative aspect-[3/4] sm:aspect-[3/4] lg:aspect-[4/5] w-full rounded-3xl overflow-hidden border border-white/12 shadow-[0_24px_60px_rgba(0,0,0,0.5)] bg-black/40 group">
               <Image
-                src="/images/film/interior-villa.webp"
-                alt="Architectural Villa Living Room with Handcrafted Furniture"
+                src="/images/story/artisan-craftsmanship.webp"
+                alt="Master artisan woodworker hand-planing solid European white oak and American walnut timber on workbench"
                 fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-104 filter brightness-[0.92]"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-104 filter brightness-[0.95]"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
 
             {/* Overlapping Macro Joinery Inset */}
-            <div className="art-macro-inset hidden sm:block absolute -bottom-8 -right-8 w-48 sm:w-56 aspect-square rounded-2xl overflow-hidden border-2 border-white/20 shadow-[0_20px_48px_rgba(0,0,0,0.6)] bg-black/60 group">
+            <div className="art-macro-inset hidden sm:block absolute -bottom-6 -right-6 lg:-bottom-8 lg:-right-8 w-44 sm:w-52 lg:w-56 aspect-square rounded-2xl overflow-hidden border-2 border-white/20 shadow-[0_20px_48px_rgba(0,0,0,0.6)] bg-black/60 group z-10">
               <Image
-                src="/images/film/macro-joinery.webp"
-                alt="Precision Interlocking Mortise and Tenon Timber Joint"
+                src="/images/story/macro-wood-joinery.webp"
+                alt="Precision interlocking mortise-and-tenon solid oak and walnut timber joinery detail"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-108"
                 sizes="224px"
