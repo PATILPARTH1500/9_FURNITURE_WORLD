@@ -35,7 +35,7 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
   const otherCollections = COLLECTIONS_DATA.filter((c) => c.slug !== collection.slug);
 
   return (
-    <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-28 pb-24 relative overflow-hidden">
+    <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-0 pb-24 relative overflow-hidden">
       {/* Hero Header */}
       <div className="relative h-[56vh] min-h-[460px] w-full border-b border-stone-200/80 overflow-hidden flex items-end">
         <Image

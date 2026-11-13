@@ -5,10 +5,31 @@
 :root {
   --background: #FBF9F5;
   --foreground: #1A1816;
+  --navbar-height-mobile: 78px;
+  --navbar-height-tablet: 82px;
+  --navbar-height-desktop: 86px;
+  --navbar-height: var(--navbar-height-mobile);
   --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-cormorant: 'Cormorant Garamond', Georgia, serif;
   --font-inter: var(--font-sans);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --navbar-height: var(--navbar-height-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --navbar-height: var(--navbar-height-desktop);
+  }
+}
+
+/* Shared Architectural Layout Rule for Global Fixed Navbar Clearance */
+.app-navbar-offset {
+  padding-top: var(--navbar-height);
 }
 
 @layer base {

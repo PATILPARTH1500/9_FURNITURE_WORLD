@@ -363,7 +363,7 @@ export const AccountPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cream py-12 sm:py-16 px-4 sm:px-6 lg:px-12">
+    <div className="min-h-screen bg-cream py-8 sm:py-12 px-4 sm:px-6 lg:px-12">
       <div className="max-w-6xl mx-auto">
         {/* Breadcrumb Navigation */}
         <div className="mb-6 flex items-center space-x-2 text-xs font-sans text-[#666059]">

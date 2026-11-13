@@ -43,7 +43,7 @@ export default function CartPage() {
   };
 
   return (
-    <main className="min-h-screen bg-cream text-checkerboard pt-32 pb-24 relative overflow-hidden bg-architectural-grid">
+    <main className="min-h-screen bg-cream text-checkerboard pt-8 sm:pt-12 pb-24 relative overflow-hidden bg-architectural-grid">
       <div className="absolute inset-0 bg-fine-grain pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">

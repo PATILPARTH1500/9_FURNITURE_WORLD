@@ -91,7 +91,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   ];
 
   return (
-    <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-28 pb-24 relative overflow-hidden">
+    <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-6 sm:pt-8 pb-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Navigation Breadcrumb */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between text-xs font-sans text-[#78716C] gap-2 border-b border-stone-200/80 pb-4">

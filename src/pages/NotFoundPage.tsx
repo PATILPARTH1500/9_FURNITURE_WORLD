@@ -11,7 +11,7 @@ export default function NotFoundPage() {
   ];
 
   return (
-    <main className="min-h-[85vh] flex flex-col items-center justify-center px-6 py-24 text-center bg-cream text-checkerboard relative overflow-hidden bg-architectural-grid">
+    <main className="min-h-[75vh] flex flex-col items-center justify-center px-6 py-12 sm:py-16 text-center bg-cream text-checkerboard relative overflow-hidden bg-architectural-grid">
       <div className="absolute inset-0 bg-fine-grain pointer-events-none" />
 
       <div className="max-w-2xl mx-auto space-y-6 relative z-10">

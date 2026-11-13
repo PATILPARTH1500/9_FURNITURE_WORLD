@@ -26,7 +26,7 @@ export default function CollectionsPage() {
       : PRODUCTS_CATALOG.filter((p) => p.category === activeCategory);
 
   return (
-    <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-32 pb-24 relative overflow-hidden">
+    <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-8 sm:pt-12 pb-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {/* Header */}
         <div className="max-w-3xl space-y-4 mb-16">

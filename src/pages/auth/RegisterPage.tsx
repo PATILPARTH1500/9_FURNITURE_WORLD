@@ -114,7 +114,7 @@ export const RegisterPage: React.FC = () => {
   // If email verification confirmation screen is active
   if (verificationPending) {
     return (
-      <div className="min-h-[85vh] flex items-center justify-center bg-cream px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="min-h-[80vh] flex items-center justify-center bg-cream px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
         <div className="w-full max-w-md bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-8 sm:p-10 shadow-[0_16px_40px_rgba(26,24,22,0.06)] text-center animate-fadeIn">
           <div className="w-14 h-14 rounded-full bg-tangerine/10 text-tangerine flex items-center justify-center mx-auto mb-6">
             <Mail className="w-7 h-7" />
@@ -172,7 +172,7 @@ export const RegisterPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center bg-cream px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div className="min-h-[80vh] flex items-center justify-center bg-cream px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
       <div className="w-full max-w-md">
         {/* Header Branding */}
         <div className="text-center mb-8">

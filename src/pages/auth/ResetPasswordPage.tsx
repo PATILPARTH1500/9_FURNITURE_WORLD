@@ -82,7 +82,7 @@ export const ResetPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center bg-cream px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    <div className="min-h-[80vh] flex items-center justify-center bg-cream px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block group mb-3">

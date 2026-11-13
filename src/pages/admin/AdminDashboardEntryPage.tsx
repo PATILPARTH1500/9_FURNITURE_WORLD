@@ -80,7 +80,7 @@ export const AdminDashboardEntryPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#141210] text-[#FAF8F5] py-10 px-4 sm:px-6 lg:px-12">
+    <div className="min-h-screen bg-[#141210] text-[#FAF8F5] py-8 sm:py-10 px-4 sm:px-6 lg:px-12">
       <div className="max-w-6xl mx-auto">
         {/* Top bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-8 border-b border-white/10 mb-8">

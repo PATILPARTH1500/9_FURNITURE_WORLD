@@ -56,6 +56,10 @@ export function App() {
     }
   }, [location.pathname, location.hash]);
 
+  // Homepage features an integrated full-bleed hero with internal transparent-navbar clearance.
+  // All other application routes receive shared global sticky navbar clearance.
+  const isHomepage = location.pathname === '/';
+
   return (
     <AuthProvider>
       <div className="font-sans bg-cream text-checkerboard antialiased selection:bg-tangerine selection:text-white min-h-screen flex flex-col overflow-x-hidden">
@@ -67,8 +71,8 @@ export function App() {
           <CartDrawer />
         </Suspense>
 
-        {/* 3. Main Content Router */}
-        <div className="grow">
+        {/* 3. Main Content Router with Global Sticky Navbar Clearance */}
+        <div id="main-content" className={`grow flex flex-col ${isHomepage ? '' : 'app-navbar-offset'}`}>
           <Suspense fallback={<RouteLoadingFallback />}>
             <Routes>
               {/* Public Storefront Routes */}
