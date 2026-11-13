@@ -43,12 +43,12 @@ export const AdminLoginPage: React.FC = () => {
       }
 
       // Verify admin status from database
-      const adminAuthorized = await verifyAdminStatus();
+      const verification = await verifyAdminStatus();
 
-      if (!adminAuthorized) {
+      if (!verification.isAdmin) {
         await signOut();
         setIsSubmitting(false);
-        setErrorMessage('Access Denied: This account does not possess administrator privileges.');
+        setErrorMessage(verification.error || 'Access Denied: This account does not possess administrator privileges.');
         return;
       }
 

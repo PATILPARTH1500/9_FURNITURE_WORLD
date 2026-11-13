@@ -98,7 +98,7 @@ export const AdminDashboardEntryPage: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-[#A89F91] font-sans">
-                PostgreSQL 17 RLS Enforced • Supabase Project <code className="text-white/80">plixtrmiidhxiybgujdb</code>
+                PostgreSQL 17.11 Verified RLS Enforced • Supabase Project <code className="text-white/80">plixtrmiidhxiybgujdb</code>
               </p>
             </div>
           </div>

@@ -14,6 +14,11 @@ export interface CustomerProfile {
   updatedAt: string;
 }
 
+export interface AdminVerificationResult {
+  isAdmin: boolean;
+  error?: string;
+}
+
 export interface AuthContextType {
   user: User | null;
   profile: CustomerProfile | null;
@@ -31,7 +36,7 @@ export interface AuthContextType {
   resendVerificationEmail: (email: string) => Promise<{ success: boolean; error?: string }>;
   updateProfile: (updates: { fullName?: string; avatarUrl?: string; phone?: string | null }) => Promise<{ success: boolean; error?: string }>;
   uploadAvatar: (file: File) => Promise<{ success: boolean; avatarUrl?: string; error?: string }>;
-  verifyAdminStatus: () => Promise<boolean>;
+  verifyAdminStatus: () => Promise<AdminVerificationResult>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -401,7 +406,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user]);
 
-  // Upload Avatar to Supabase Storage
+  // Upload Avatar to Supabase Storage with previous file cleanup
   const uploadAvatar = useCallback(async (file: File) => {
     if (!user) {
       return { success: false, error: 'You must be logged in to upload an avatar.' };
@@ -416,10 +421,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, error: 'Avatar image must be smaller than 2 MB.' };
     }
 
+    // Identify previous avatar path for cleanup if it belongs to this user
+    let previousObjectPath: string | null = null;
+    if (profile?.avatarUrl) {
+      const bucketMarker = '/avatars/';
+      const markerIndex = profile.avatarUrl.indexOf(bucketMarker);
+      if (markerIndex !== -1) {
+        const candidatePath = profile.avatarUrl.substring(markerIndex + bucketMarker.length).split('?')[0];
+        // Enforce user folder boundary
+        if (candidatePath.startsWith(`${user.id}/`)) {
+          previousObjectPath = candidatePath;
+        }
+      }
+    }
+
     try {
       const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
       const filePath = `${user.id}/avatar-${Date.now()}.${ext}`;
 
+      // 1. Upload new avatar object
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, {
@@ -434,33 +454,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
       const avatarUrl = urlData.publicUrl;
 
+      // 2. Persist new avatar URL to user profile
       const result = await updateProfile({ avatarUrl });
       if (!result.success) {
+        // Keep previous avatar intact if database update failed
         return { success: false, error: result.error };
       }
 
+      // 3. Remove previous avatar only after replacement and profile update succeed
+      if (previousObjectPath && previousObjectPath !== filePath) {
+        try {
+          await supabase.storage.from('avatars').remove([previousObjectPath]);
+        } catch (cleanupErr) {
+          console.warn('[Storage] Non-critical warning cleaning up previous avatar:', cleanupErr);
+        }
+      }
+
       return { success: true, avatarUrl };
-    } catch (err) {
+    } catch {
       return { success: false, error: 'Failed to upload avatar image.' };
     }
-  }, [user, updateProfile]);
+  }, [user, profile?.avatarUrl, updateProfile]);
 
-  // Verify Admin Status dynamically from Supabase
-  const verifyAdminStatus = useCallback(async (): Promise<boolean> => {
-    if (!user) return false;
+  // Verify Admin Status dynamically from Supabase (Strictly fails closed without profile query fallback)
+  const verifyAdminStatus = useCallback(async (): Promise<AdminVerificationResult> => {
+    if (!user) {
+      return { isAdmin: false, error: 'Unauthenticated session.' };
+    }
+
     try {
       const { data, error } = await supabase.rpc('is_admin');
       if (error) {
-        const { data: profileRow } = await supabase
-          .from('profiles')
-          .select('role, is_admin')
-          .eq('id', user.id)
-          .maybeSingle();
-        return Boolean(profileRow?.is_admin || profileRow?.role === 'admin');
+        console.error('[Security] is_admin RPC failed — failing closed:', error.message);
+        return {
+          isAdmin: false,
+          error: 'Atelier cryptographic verification failed. Access denied.',
+        };
       }
-      return Boolean(data);
-    } catch {
-      return false;
+
+      const isAdmin = Boolean(data);
+      return {
+        isAdmin,
+        error: isAdmin ? undefined : 'Account does not possess verified administrator privileges.',
+      };
+    } catch (err) {
+      console.error('[Security] is_admin RPC exception — failing closed:', err);
+      return {
+        isAdmin: false,
+        error: 'Security boundary error during administrative handshake.',
+      };
     }
   }, [user]);
 

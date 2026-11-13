@@ -4,10 +4,11 @@ import { useAuth } from '@/context/AuthContext';
 import { ShieldAlert, ArrowLeft } from 'lucide-react';
 
 export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, isLoading, verifyAdminStatus, profile } = useAuth();
+  const { isAuthenticated, isLoading, verifyAdminStatus, profile, session } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isAdminVerified, setIsAdminVerified] = useState<boolean | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [isVerifying, setIsVerifying] = useState<boolean>(true);
 
   useEffect(() => {
@@ -23,9 +24,13 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
       }
 
       setIsVerifying(true);
-      const verified = await verifyAdminStatus();
+      setAuthError(null);
+      const result = await verifyAdminStatus();
       if (isMounted) {
-        setIsAdminVerified(verified);
+        setIsAdminVerified(result.isAdmin);
+        if (!result.isAdmin && result.error) {
+          setAuthError(result.error);
+        }
         setIsVerifying(false);
       }
     };
@@ -37,7 +42,7 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
     return () => {
       isMounted = false;
     };
-  }, [isAuthenticated, isLoading, verifyAdminStatus, profile?.isAdmin]);
+  }, [isAuthenticated, isLoading, verifyAdminStatus, session?.access_token, profile?.isAdmin]);
 
   if (isLoading || isVerifying) {
     return (
@@ -69,9 +74,15 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
           <h1 className="font-serif text-2xl sm:text-3xl text-white font-normal mb-3">
             Atelier Access Restricted
           </h1>
-          <p className="text-xs sm:text-sm text-[#A89F91] leading-relaxed mb-8 font-sans">
+          <p className="text-xs sm:text-sm text-[#A89F91] leading-relaxed mb-6 font-sans">
             Your authenticated session is registered as a customer patron account. Access to the administration console requires certified atelier managerial privileges.
           </p>
+
+          {authError && (
+            <div className="mb-6 p-3.5 rounded-2xl bg-black/40 border border-white/10 text-[11px] text-[#C4BCB1] font-mono">
+              Diagnostic: {authError}
+            </div>
+          )}
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
