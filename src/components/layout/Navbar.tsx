@@ -25,7 +25,7 @@ export const Navbar: React.FC = () => {
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
 
-  const { user, profile, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated, isAdmin } = useAuth();
   const customerName = profile?.fullName || user?.user_metadata?.full_name || user?.user_metadata?.name || 'Account';
   const avatarUrl = profile?.avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   const initials = customerName
@@ -435,6 +435,21 @@ export const Navbar: React.FC = () => {
               </span>
             </Link>
 
+            {/* Atelier Admin Shortcut for Staff */}
+            {isAuthenticated && isAdmin && (
+              <Link
+                href="/admin"
+                title="Atelier Administration Console"
+                className={`hidden md:inline-flex items-center space-x-1 py-1 px-2.5 rounded-full text-[10px] font-semibold uppercase tracking-wider transition-colors ${
+                  navTheme === 'dark'
+                    ? 'bg-tangerine/20 text-tangerine border border-tangerine/40 hover:bg-tangerine hover:text-white'
+                    : 'bg-[#1A1816] text-tangerine hover:bg-tangerine hover:text-white'
+                }`}
+              >
+                <span>Atelier</span>
+              </Link>
+            )}
+
             {/* Shopping Bag Button */}
             <button
               onClick={() => setIsOpen(true)}
@@ -557,6 +572,22 @@ export const Navbar: React.FC = () => {
                   <ArrowUpRight className="w-4 h-4 text-[#666059]" />
                 </Link>
               </div>
+
+              {/* Atelier Admin Shortcut in Mobile Drawer */}
+              {isAuthenticated && isAdmin && (
+                <div className="pt-1.5 pb-1">
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center justify-between p-3 rounded-2xl bg-[#1A1816] text-tangerine hover:bg-black transition-colors"
+                  >
+                    <span className="font-serif text-xs font-semibold uppercase tracking-wider">
+                      Atelier Management Console
+                    </span>
+                    <ArrowUpRight className="w-4 h-4 text-tangerine" />
+                  </Link>
+                </div>
+              )}
 
               {/* All 9 Major Navigation Destinations */}
               <div className="py-6 space-y-6">

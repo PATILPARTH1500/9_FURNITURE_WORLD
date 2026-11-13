@@ -7,6 +7,9 @@ export interface CustomerProfile {
   id: string;
   fullName: string | null;
   avatarUrl: string | null;
+  role: 'customer' | 'admin' | 'concierge';
+  isAdmin: boolean;
+  phone: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -17,6 +20,8 @@ export interface AuthContextType {
   session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isAdmin: boolean;
+  role: 'customer' | 'admin' | 'concierge';
   signInWithPassword: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ success: boolean; needsEmailVerification?: boolean; error?: string }>;
   signInWithGoogle: (redirectTo?: string) => Promise<{ success: boolean; error?: string }>;
@@ -24,7 +29,9 @@ export interface AuthContextType {
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
   resendVerificationEmail: (email: string) => Promise<{ success: boolean; error?: string }>;
-  updateProfile: (updates: { fullName?: string; avatarUrl?: string }) => Promise<{ success: boolean; error?: string }>;
+  updateProfile: (updates: { fullName?: string; avatarUrl?: string; phone?: string | null }) => Promise<{ success: boolean; error?: string }>;
+  uploadAvatar: (file: File) => Promise<{ success: boolean; avatarUrl?: string; error?: string }>;
+  verifyAdminStatus: () => Promise<boolean>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -55,6 +62,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: data.id,
           fullName: data.full_name,
           avatarUrl: data.avatar_url,
+          role: (data.role as 'customer' | 'admin' | 'concierge') || 'customer',
+          isAdmin: Boolean(data.is_admin || data.role === 'admin'),
+          phone: data.phone || null,
           createdAt: data.created_at,
           updatedAt: data.updated_at,
         };
@@ -81,6 +91,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: newProfileData.id,
           fullName: newProfileData.full_name,
           avatarUrl: newProfileData.avatar_url,
+          role: (newProfileData.role as 'customer' | 'admin' | 'concierge') || 'customer',
+          isAdmin: Boolean(newProfileData.is_admin || newProfileData.role === 'admin'),
+          phone: newProfileData.phone || null,
           createdAt: newProfileData.created_at,
           updatedAt: newProfileData.updated_at,
         };
@@ -334,15 +347,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   // Update Customer Profile
-  const updateProfile = useCallback(async (updates: { fullName?: string; avatarUrl?: string }) => {
+  const updateProfile = useCallback(async (updates: { fullName?: string; avatarUrl?: string; phone?: string | null }) => {
     if (!user) {
       return { success: false, error: 'You must be logged in to update your profile.' };
     }
 
     try {
-      const payload: { full_name?: string; avatar_url?: string } = {};
+      const payload: { full_name?: string; avatar_url?: string; phone?: string | null } = {};
       if (updates.fullName !== undefined) payload.full_name = updates.fullName.trim();
       if (updates.avatarUrl !== undefined) payload.avatar_url = updates.avatarUrl;
+      if (updates.phone !== undefined) {
+        const cleanPhone = updates.phone ? updates.phone.trim() : null;
+        if (cleanPhone && !/^\+?[0-9\s-]{10,15}$/.test(cleanPhone)) {
+          return { success: false, error: 'Please enter a valid phone number (10 to 15 digits).' };
+        }
+        payload.phone = cleanPhone;
+      }
 
       const { data, error } = await supabase
         .from('profiles')
@@ -360,6 +380,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: data.id,
           fullName: data.full_name,
           avatarUrl: data.avatar_url,
+          role: (data.role as 'customer' | 'admin' | 'concierge') || 'customer',
+          isAdmin: Boolean(data.is_admin || data.role === 'admin'),
+          phone: data.phone || null,
           createdAt: data.created_at,
           updatedAt: data.updated_at,
         });
@@ -378,6 +401,69 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user]);
 
+  // Upload Avatar to Supabase Storage
+  const uploadAvatar = useCallback(async (file: File) => {
+    if (!user) {
+      return { success: false, error: 'You must be logged in to upload an avatar.' };
+    }
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      return { success: false, error: 'Please upload a valid image (JPEG, PNG, or WebP).' };
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      return { success: false, error: 'Avatar image must be smaller than 2 MB.' };
+    }
+
+    try {
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const filePath = `${user.id}/avatar-${Date.now()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true,
+        });
+
+      if (uploadError) {
+        return { success: false, error: uploadError.message };
+      }
+
+      const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      const avatarUrl = urlData.publicUrl;
+
+      const result = await updateProfile({ avatarUrl });
+      if (!result.success) {
+        return { success: false, error: result.error };
+      }
+
+      return { success: true, avatarUrl };
+    } catch (err) {
+      return { success: false, error: 'Failed to upload avatar image.' };
+    }
+  }, [user, updateProfile]);
+
+  // Verify Admin Status dynamically from Supabase
+  const verifyAdminStatus = useCallback(async (): Promise<boolean> => {
+    if (!user) return false;
+    try {
+      const { data, error } = await supabase.rpc('is_admin');
+      if (error) {
+        const { data: profileRow } = await supabase
+          .from('profiles')
+          .select('role, is_admin')
+          .eq('id', user.id)
+          .maybeSingle();
+        return Boolean(profileRow?.is_admin || profileRow?.role === 'admin');
+      }
+      return Boolean(data);
+    } catch {
+      return false;
+    }
+  }, [user]);
+
   // Refresh Profile
   const refreshProfile = useCallback(async () => {
     if (user) {
@@ -391,6 +477,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     session,
     isLoading,
     isAuthenticated: Boolean(user && session),
+    isAdmin: Boolean(profile?.isAdmin),
+    role: profile?.role || 'customer',
     signInWithPassword,
     signUp,
     signInWithGoogle,
@@ -399,6 +487,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updatePassword,
     resendVerificationEmail,
     updateProfile,
+    uploadAvatar,
+    verifyAdminStatus,
     refreshProfile,
   }), [
     user,
@@ -413,6 +503,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updatePassword,
     resendVerificationEmail,
     updateProfile,
+    uploadAvatar,
+    verifyAdminStatus,
     refreshProfile,
   ]);
 

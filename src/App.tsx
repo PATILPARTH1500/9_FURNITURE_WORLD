@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 import { scrollToSection } from '@/utils/navigation';
 import { AuthProvider } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { AdminProtectedRoute } from '@/components/auth/AdminProtectedRoute';
 
 // Lazy load cart drawer so catalog dependencies are deferred
 const CartDrawer = lazy(() =>
@@ -28,6 +29,10 @@ const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'))
 const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const AuthCallbackPage = lazy(() => import('@/pages/auth/AuthCallbackPage'));
 const AccountPage = lazy(() => import('@/pages/account/AccountPage'));
+
+// Atelier Administration Routes (Phase 02 / Phase 04)
+const AdminLoginPage = lazy(() => import('@/pages/admin/AdminLoginPage'));
+const AdminDashboardEntryPage = lazy(() => import('@/pages/admin/AdminDashboardEntryPage'));
 
 function RouteLoadingFallback() {
   return (
@@ -87,6 +92,25 @@ export function App() {
                   <ProtectedRoute>
                     <AccountPage />
                   </ProtectedRoute>
+                }
+              />
+
+              {/* Atelier Administration Routes (Protected by RBAC & Session Security) */}
+              <Route path="/admin/login" element={<AdminLoginPage />} />
+              <Route
+                path="/admin"
+                element={
+                  <AdminProtectedRoute>
+                    <AdminDashboardEntryPage />
+                  </AdminProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/*"
+                element={
+                  <AdminProtectedRoute>
+                    <AdminDashboardEntryPage />
+                  </AdminProtectedRoute>
                 }
               />
 
