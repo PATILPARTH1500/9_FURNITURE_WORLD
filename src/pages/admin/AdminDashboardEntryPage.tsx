@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import Link from '@/components/common/Link';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase/client';
+import { AdminProductManagement } from '@/components/admin/AdminProductManagement';
 import {
   LayoutDashboard,
   Package,
@@ -24,7 +25,6 @@ import {
   ChevronRight,
   ExternalLink,
   Building2,
-  Plus,
 } from 'lucide-react';
 
 export type AdminTab =
@@ -243,7 +243,7 @@ export const AdminDashboardEntryPage: React.FC = () => {
   // Exactly 6 store management navigation sections
   const navItems: { id: AdminTab; label: string; icon: React.FC<{ className?: string }>; badge?: string }[] = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'products', label: 'Products', icon: Package, badge: 'Phase 03' },
+    { id: 'products', label: 'Products', icon: Package, badge: products.length ? String(products.length) : undefined },
     { id: 'orders', label: 'Orders', icon: ShoppingBag },
     { id: 'inventory', label: 'Inventory', icon: Boxes },
     { id: 'customers', label: 'Customers', icon: Users, badge: customers.length ? String(customers.length) : undefined },
@@ -751,53 +751,7 @@ export const AdminDashboardEntryPage: React.FC = () => {
           {/* TAB 2: PRODUCTS */}
           {/* ========================================================= */}
           {activeTab === 'products' && (
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1A1816]/10">
-                <div>
-                  <h2 className="font-serif text-xl text-checkerboard font-medium">Products</h2>
-                  <p className="text-xs text-[#666059]">
-                    Manage furniture items, dimensions, variants, finishes, and pricing.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  disabled
-                  className="inline-flex items-center space-x-1.5 py-2 px-4 rounded-xl bg-stone-200 text-[#8C827A] text-xs font-semibold cursor-not-allowed opacity-75"
-                  title="Coming in Phase 03"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add New Product (Phase 03)</span>
-                </button>
-              </div>
-
-              {/* Status Note */}
-              <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 shadow-2xs">
-                <div className="flex items-center space-x-2 font-medium text-amber-800 mb-1">
-                  <Clock className="w-4 h-4 text-amber-700" />
-                  <span>Product Catalogue Integration — Scheduled for Phase 03</span>
-                </div>
-                <p className="text-[#666059] leading-relaxed">
-                  The storefront currently displays 9 curated showroom suites (Zenith Lounge Chair, Monolith Dining Table, Horizon Credenza, etc.) with real dimensions, materials, and care guides. Full CRUD management, variant pricing, and high-resolution photo uploads will be enabled in Phase 03.
-                </p>
-              </div>
-
-              {/* Preview Card */}
-              <div className="bg-[#FAF8F5] border border-[#1A1816]/10 rounded-2xl p-8 text-center shadow-[0_4px_20px_rgba(26,24,22,0.04)]">
-                <div className="w-12 h-12 rounded-full bg-white border border-[#1A1816]/10 flex items-center justify-center text-tangerine mx-auto mb-3 shadow-2xs">
-                  <Package className="w-6 h-6" />
-                </div>
-                <h3 className="font-serif text-lg text-checkerboard font-medium mb-1">
-                  {products.length === 0 ? '0 Database Products' : `${products.length} Products Found`}
-                </h3>
-                <p className="text-xs text-[#666059] max-w-md mx-auto leading-relaxed mb-6">
-                  When products are added to Supabase, you will be able to edit specifications, change availability status, upload images, and control storefront visibility.
-                </p>
-                <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-white border border-[#1A1816]/10 text-xs text-[#666059] shadow-2xs">
-                  <span>Planned Features:</span>
-                  <span className="text-checkerboard font-medium">• Dimensions (cm/kg) • Wood Finishes & Fabrics • Assembly Guides</span>
-                </div>
-              </div>
-            </div>
+            <AdminProductManagement onProductChange={loadDashboardData} />
           )}
 
           {/* ========================================================= */}

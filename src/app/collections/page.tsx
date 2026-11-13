@@ -1,29 +1,101 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
-import { ArrowUpRight, Layers } from 'lucide-react';
-import { PRODUCTS_CATALOG, COLLECTIONS_DATA } from '@/data/catalog';
+import { ArrowUpRight, Layers, SlidersHorizontal, Loader2 } from 'lucide-react';
+import { COLLECTIONS_DATA, PRODUCTS_CATALOG } from '@/data/catalog';
+import { productService, DbCategory } from '@/lib/services/productService';
+import { Product } from '@/types';
 import { formatPrice } from '@/config/brand';
 
-type CategoryFilter = 'all' | 'seating' | 'tables' | 'beds' | 'lighting';
-
-const CATEGORY_TABS: { id: CategoryFilter; label: string }[] = [
-  { id: 'all', label: 'All Pieces' },
-  { id: 'seating', label: 'Sofas & Seating' },
-  { id: 'tables', label: 'Dining & Accent Tables' },
-  { id: 'beds', label: 'Bedrooms' },
-  { id: 'lighting', label: 'Architectural Lighting' },
-];
+type SortOption = 'featured' | 'price-asc' | 'price-desc' | 'newest';
 
 export default function CollectionsPage() {
-  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
+  const [products, setProducts] = useState<Product[]>(PRODUCTS_CATALOG);
+  const [categories, setCategories] = useState<DbCategory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<SortOption>('featured');
 
-  const filteredProducts =
-    activeCategory === 'all'
-      ? PRODUCTS_CATALOG
-      : PRODUCTS_CATALOG.filter((p) => p.category === activeCategory);
+  useEffect(() => {
+    let isMounted = true;
+    async function loadStorefront() {
+      setIsLoading(true);
+      try {
+        const [prodRes, catRes] = await Promise.all([
+          productService.getPublishedProducts(),
+          productService.getCategories(),
+        ]);
+
+        if (isMounted) {
+          if (prodRes.data && prodRes.data.length > 0) {
+            setProducts(prodRes.data);
+          }
+          if (catRes.data && catRes.data.length > 0) {
+            setCategories(catRes.data);
+          }
+        }
+      } catch (err: unknown) {
+        console.warn('[Collections] Falling back to default catalogue:', err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+    loadStorefront();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Category Tabs
+  const categoryTabs = useMemo(() => {
+    const defaultTabs = [
+      { id: 'all', label: 'All Pieces' },
+      { id: 'seating', label: 'Sofas & Seating' },
+      { id: 'tables', label: 'Dining & Accent Tables' },
+      { id: 'beds', label: 'Bedrooms' },
+      { id: 'lighting', label: 'Architectural Lighting' },
+    ];
+
+    if (categories.length === 0) return defaultTabs;
+
+    return [
+      { id: 'all', label: 'All Pieces' },
+      ...categories.map((c) => ({ id: c.slug, label: c.name })),
+    ];
+  }, [categories]);
+
+  // Filter and sort products
+  const filteredProducts = useMemo(() => {
+    let result = products;
+
+    if (activeCategory !== 'all') {
+      result = result.filter((p) => p.category === activeCategory);
+    }
+
+    const sorted = [...result];
+    switch (sortBy) {
+      case 'price-asc':
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case 'newest':
+        sorted.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
+        break;
+      case 'featured':
+      default:
+        sorted.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        break;
+    }
+    return sorted;
+  }, [products, activeCategory, sortBy]);
 
   return (
     <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-8 sm:pt-12 pb-24 relative overflow-hidden">
@@ -92,20 +164,21 @@ export default function CollectionsPage() {
           </div>
         </div>
 
-        {/* Category Filter Tabs */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-12 border-b border-stone-200/80">
-          <div className="flex flex-wrap items-center gap-2 md:gap-3 text-xs font-sans uppercase tracking-wider font-semibold">
-            {CATEGORY_TABS.map((tab) => {
+        {/* Filter Navigation and Sorting */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-4 border-b border-stone-200/80">
+          {/* Category Tabs */}
+          <div className="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+            {categoryTabs.map((tab) => {
               const count =
                 tab.id === 'all'
-                  ? PRODUCTS_CATALOG.length
-                  : PRODUCTS_CATALOG.filter((p) => p.category === tab.id).length;
+                  ? products.length
+                  : products.filter((p) => p.category === tab.id).length;
 
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveCategory(tab.id)}
-                  className={`py-2 px-4 rounded-full transition-all flex items-center space-x-2 ${
+                  className={`px-4 py-2 rounded-full text-xs font-sans font-medium transition-all shrink-0 flex items-center space-x-2 cursor-pointer ${
                     activeCategory === tab.id
                       ? 'text-white bg-[#1A1816] shadow-xs'
                       : 'text-[#57534E] bg-white hover:bg-stone-50 border border-stone-200/80'
@@ -124,88 +197,153 @@ export default function CollectionsPage() {
             })}
           </div>
 
-          <span className="font-sans text-xs text-[#78716C] font-normal">
-            Showing {filteredProducts.length} Architectural Pieces
-          </span>
+          {/* Sort By Dropdown */}
+          <div className="flex items-center space-x-3 shrink-0">
+            <div className="flex items-center space-x-2 bg-white border border-stone-200/80 px-3 py-1.5 rounded-full text-xs text-[#57534E] shadow-2xs">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#C84D1B]" />
+              <label htmlFor="sort-by-select" className="sr-only">Sort by</label>
+              <select
+                id="sort-by-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                aria-label="Sort products by"
+                className="bg-transparent text-xs text-[#1A1816] font-medium outline-none cursor-pointer"
+              >
+                <option value="featured">Featured First</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="newest">Newest Additions</option>
+              </select>
+            </div>
+            <span className="font-sans text-xs text-[#78716C] font-normal hidden sm:inline">
+              Showing {filteredProducts.length} pieces
+            </span>
+          </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.map((product) => (
-            <Link
-              key={product.id}
-              href={`/products/${product.slug}`}
-              className="group flex flex-col rounded-2xl border border-stone-200/80 bg-white overflow-hidden hover:border-[#1A1816]/30 transition-all duration-500 shadow-[0_4px_20px_rgba(26,24,22,0.03)] hover:shadow-[0_12px_32px_rgba(26,24,22,0.08)]"
+        {/* Loading Indicator */}
+        {isLoading && products.length === 0 ? (
+          <div className="py-24 text-center">
+            <Loader2 className="w-8 h-8 text-[#C84D1B] animate-spin mx-auto mb-3" />
+            <p className="text-sm font-serif text-[#1A1816]">Loading Furniture Village Catalogue...</p>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="py-24 text-center space-y-3 bg-white rounded-3xl border border-stone-200/80 p-8">
+            <p className="font-serif text-2xl text-[#1A1816]">No furniture found in this category</p>
+            <p className="text-xs text-[#78716C]">Please choose another category or reset your filter.</p>
+            <button
+              onClick={() => setActiveCategory('all')}
+              className="px-4 py-2 bg-[#1A1816] text-white text-xs rounded-full cursor-pointer hover:bg-stone-800 transition-colors"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-[#F2EFE9]">
-                <Image
-                  src={product.images.hero}
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-104"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              </div>
+              View All Pieces
+            </button>
+          </div>
+        ) : (
+          /* Products Grid */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map((product) => {
+              const primaryVariant = product.variants?.[0];
+              const isInStock = product.variants?.some((v) => v.inStock && (v.stock === undefined || v.stock > 0)) ?? true;
 
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                <div>
-                  <span className="font-sans text-[11px] uppercase tracking-widest text-[#C84D1B] font-semibold block mb-1">
-                    {product.category}
-                  </span>
-                  <div className="flex items-baseline justify-between gap-2">
-                    <h3 className="font-serif text-xl text-[#1A1816] group-hover:text-[#C84D1B] transition-colors font-normal">
-                      {product.name}
-                    </h3>
-                    <span className="font-sans text-base font-semibold text-[#1A1816]">
-                      {formatPrice(product.price)}
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#57534E] mt-1.5 line-clamp-2 leading-relaxed">
-                    {product.subtitle}
-                  </p>
-                </div>
-
-                {/* Swatches preview */}
-                <div className="flex items-center space-x-1.5 pt-2">
-                  {product.materials.woodOptions.slice(0, 3).map((w) => (
-                    <span
-                      key={w.id}
-                      title={w.name}
-                      className="w-3 h-3 rounded-full border border-black/15"
-                      style={{ backgroundColor: w.colorHex }}
+              return (
+                <Link
+                  key={product.id}
+                  href={`/products/${product.slug}`}
+                  className="group flex flex-col rounded-2xl border border-stone-200/80 bg-white overflow-hidden hover:border-[#1A1816]/30 transition-all duration-500 shadow-[0_4px_20px_rgba(26,24,22,0.03)] hover:shadow-[0_12px_32px_rgba(26,24,22,0.08)]"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-[#F2EFE9]">
+                    <Image
+                      src={product.images.hero}
+                      alt={product.name}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-104"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-                  ))}
-                  {product.materials.upholsteryOptions.length > 0 && (
-                    <>
-                      <span className="text-[#78716C]/40 text-xs px-0.5">/</span>
-                      {product.materials.upholsteryOptions.slice(0, 3).map((f) => (
+                    {/* Stock badge */}
+                    <div className="absolute top-3 right-3 z-10">
+                      {isInStock ? (
+                        <span className="inline-flex items-center space-x-1 text-[10px] uppercase font-sans tracking-wider px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs border border-stone-200 text-emerald-800 font-medium shadow-2xs">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                          <span>In Stock</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center space-x-1 text-[10px] uppercase font-sans tracking-wider px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-xs border border-stone-200 text-stone-600 font-medium shadow-2xs">
+                          <span>Out of Stock</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <span className="font-sans text-[11px] uppercase tracking-widest text-[#C84D1B] font-semibold block mb-1">
+                        {product.category}
+                      </span>
+                      <div className="flex items-baseline justify-between gap-2">
+                        <h3 className="font-serif text-xl text-[#1A1816] group-hover:text-[#C84D1B] transition-colors font-normal">
+                          {product.name}
+                        </h3>
+                        <div className="text-right">
+                          <span className="font-sans text-base font-semibold text-[#1A1816]">
+                            {formatPrice(product.price)}
+                          </span>
+                          {product.compareAtPrice && product.compareAtPrice > product.price && (
+                            <span className="block text-[11px] text-[#78716C] line-through font-normal">
+                              {formatPrice(product.compareAtPrice)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-xs text-[#57534E] mt-1.5 line-clamp-2 leading-relaxed">
+                        {product.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Finishes preview */}
+                    <div className="flex items-center space-x-1.5 pt-2">
+                      {product.materials.woodOptions.slice(0, 3).map((w) => (
                         <span
-                          key={f.id}
-                          title={f.name}
+                          key={w.id}
+                          title={w.name}
                           className="w-3 h-3 rounded-full border border-black/15"
-                          style={{ backgroundColor: f.colorHex }}
+                          style={{ backgroundColor: w.colorHex }}
                         />
                       ))}
-                    </>
-                  )}
-                  <span className="text-[11px] font-sans text-[#78716C] pl-1">
-                    +{product.materials.woodOptions.length + product.materials.upholsteryOptions.length} finishes
-                  </span>
-                </div>
+                      {product.materials.upholsteryOptions.length > 0 && (
+                        <>
+                          <span className="text-[#78716C]/40 text-xs px-0.5">/</span>
+                          {product.materials.upholsteryOptions.slice(0, 3).map((f) => (
+                            <span
+                              key={f.id}
+                              title={f.name}
+                              className="w-3 h-3 rounded-full border border-black/15"
+                              style={{ backgroundColor: f.colorHex }}
+                            />
+                          ))}
+                        </>
+                      )}
+                      <span className="text-[11px] font-sans text-[#78716C] pl-1">
+                        {product.variants.length > 1
+                          ? `${product.variants.length} finishes available`
+                          : primaryVariant?.finishName || 'Custom Finish'}
+                      </span>
+                    </div>
 
-                <div className="pt-4 border-t border-stone-200/80 flex items-center justify-between text-xs">
-                  <span className="uppercase tracking-wider text-xs font-semibold text-[#1A1816] group-hover:text-[#C84D1B] flex items-center space-x-1 transition-colors">
-                    <span>Inspect Piece</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-[#C84D1B] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
-                  <span className="text-xs text-[#78716C] font-normal">
-                    {product.designer}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+                    <div className="pt-4 border-t border-stone-200/80 flex items-center justify-between text-xs">
+                      <span className="uppercase tracking-wider text-xs font-semibold text-[#1A1816] group-hover:text-[#C84D1B] flex items-center space-x-1 transition-colors">
+                        <span>Inspect Piece</span>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#C84D1B] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </span>
+                      <span className="text-xs text-[#78716C] font-normal">
+                        {product.designer}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </main>
   );

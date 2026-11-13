@@ -1,9 +1,13 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
 import { notFound } from '@/components/common/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import { COLLECTIONS_DATA, PRODUCTS_CATALOG } from '@/data/catalog';
+import { productService } from '@/lib/services/productService';
+import { Product } from '@/types';
 import { formatPrice } from '@/config/brand';
 
 interface CollectionPageProps {
@@ -21,16 +25,43 @@ export function generateStaticParams() {
 export default function CollectionDetailPage({ params }: CollectionPageProps) {
   const collection = COLLECTIONS_DATA.find((c) => c.slug === params.slug);
 
+  const [products, setProducts] = useState<Product[]>(() => {
+    return PRODUCTS_CATALOG.filter((p) => {
+      if (collection?.slug === 'sanctuary-seating') return p.category === 'seating';
+      if (collection?.slug === 'monolith-dining') return p.category === 'tables';
+      return true;
+    });
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadCollectionProducts = async () => {
+      try {
+        const { data } = await productService.getPublishedProducts();
+        if (isMounted && data && data.length > 0) {
+          const filtered = data.filter((p) => {
+            if (collection?.slug === 'sanctuary-seating') return p.category === 'seating';
+            if (collection?.slug === 'monolith-dining') return p.category === 'tables';
+            return true;
+          });
+          if (filtered.length > 0) {
+            setProducts(filtered);
+          }
+        }
+      } catch (err: unknown) {
+        console.warn('Collection products load note:', err);
+      }
+    };
+    loadCollectionProducts();
+    return () => {
+      isMounted = false;
+    };
+  }, [collection?.slug]);
+
   if (!collection) {
     notFound();
+    return null;
   }
-
-  // Filter products relevant to this collection
-  const collectionProducts = PRODUCTS_CATALOG.filter((p) => {
-    if (collection.slug === 'sanctuary-seating') return p.category === 'seating';
-    if (collection.slug === 'monolith-dining') return p.category === 'tables';
-    return true;
-  });
 
   const otherCollections = COLLECTIONS_DATA.filter((c) => c.slug !== collection.slug);
 
@@ -104,16 +135,16 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
               Pieces in this Collection
             </h2>
             <p className="text-xs text-[#78716C] mt-1">
-              Thoughtfully crafted and hand-finished with high quality, natural materials.
+              Architectural furniture pieces created to form a unified living aesthetic.
             </p>
           </div>
-          <span className="font-sans text-xs text-[#1A1816] font-medium bg-white px-3.5 py-1.5 rounded-full border border-stone-200/80 shadow-2xs self-start sm:self-auto">
-            {collectionProducts.length} Handcrafted Works
+          <span className="font-sans text-xs text-[#78716C]">
+            Showing {products.length} Curated Designs
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {collectionProducts.map((product) => (
+          {products.map((product) => (
             <Link
               key={product.id}
               href={`/products/${product.slug}`}
@@ -125,7 +156,7 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
                   alt={product.name}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-104"
-                  sizes="(max-width: 768px) 100vw, 33vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
               </div>
 
@@ -138,9 +169,16 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
                     <h3 className="font-serif text-xl text-[#1A1816] group-hover:text-[#C84D1B] transition-colors font-normal">
                       {product.name}
                     </h3>
-                    <span className="font-sans text-base font-semibold text-[#1A1816]">
-                      {formatPrice(product.price)}
-                    </span>
+                    <div className="text-right">
+                      <span className="font-sans text-base font-semibold text-[#1A1816]">
+                        {formatPrice(product.price)}
+                      </span>
+                      {product.compareAtPrice && product.compareAtPrice > product.price && (
+                        <span className="block text-[11px] text-[#78716C] line-through font-normal">
+                          {formatPrice(product.compareAtPrice)}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <p className="text-xs text-[#57534E] mt-1.5 line-clamp-2 leading-relaxed">
                     {product.subtitle}

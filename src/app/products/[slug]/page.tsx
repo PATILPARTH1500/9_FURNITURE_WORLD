@@ -1,10 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
-import { Check, ShieldCheck, Truck, RotateCcw, Plus, Minus, Film, Camera, ArrowUpRight, Ruler, Award } from 'lucide-react';
+import {
+  Check,
+  ShieldCheck,
+  Truck,
+  RotateCcw,
+  Plus,
+  Minus,
+  Film,
+  Camera,
+  ArrowUpRight,
+  Ruler,
+  Award,
+  Info,
+} from 'lucide-react';
 import { PRODUCTS_CATALOG, WOOD_MATERIALS, UPHOLSTERY_MATERIALS } from '@/data/catalog';
+import { productService } from '@/lib/services/productService';
+import { Product, ProductVariant } from '@/types';
 import { formatPrice } from '@/config/brand';
 import { useSceneStore } from '@/store/useSceneStore';
 import { useCartStore } from '@/store/useCartStore';
@@ -16,13 +31,67 @@ interface ProductPageProps {
 }
 
 export default function ProductDetailPage({ params }: ProductPageProps) {
-  const product = PRODUCTS_CATALOG.find((p) => p.slug === params.slug) || PRODUCTS_CATALOG[0];
+  // Initialize from catalog for instant hydration, then load live Supabase record
+  const initialProduct = useMemo(() => {
+    return PRODUCTS_CATALOG.find((p) => p.slug === params.slug) || PRODUCTS_CATALOG[0];
+  }, [params.slug]);
+
+  const [product, setProduct] = useState<Product>(initialProduct);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'photos' | 'video'>('photos');
-  const [selectedPhoto, setSelectedPhoto] = useState<'hero' | 'editorial' | 'detail' | 'inSitu'>('hero');
+  const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
 
   const { selectedWoodId, selectedFabricId, setSelectedWood, setSelectedFabric } = useSceneStore();
   const { addItem, setIsOpen: setCartOpen } = useCartStore();
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLiveProduct() {
+      try {
+        const { data } = await productService.getProductBySlug(params.slug);
+        if (isMounted && data) {
+          setProduct(data);
+        }
+      } catch (err: unknown) {
+        console.warn('Live product fetch note:', err);
+      }
+    }
+    loadLiveProduct();
+    return () => {
+      isMounted = false;
+    };
+  }, [params.slug]);
+
+  // Active variant
+  const currentVariant: ProductVariant = useMemo(() => {
+    if (product.variants && product.variants.length > selectedVariantIndex) {
+      return product.variants[selectedVariantIndex];
+    }
+    return product.variants?.[0] || {
+      id: `var-${product.id}`,
+      sku: product.sku || `${product.slug}-STD`,
+      name: `${product.name} Standard`,
+      finishName: 'Standard Finish',
+      woodMaterialId: 'oak-natural',
+      fabricMaterialId: 'boucle-cream',
+      price: product.price,
+      inStock: true,
+      leadTimeWeeks: product.leadTimeWeeks || 2,
+      images: [product.images.hero],
+    };
+  }, [product, selectedVariantIndex]);
+
+  // Gallery Images
+  const galleryImages: string[] = useMemo(() => {
+    if (product.gallery && product.gallery.length > 0) {
+      return product.gallery;
+    }
+    const imgs = [product.images.hero, product.images.editorial, product.images.detail, product.images.inSitu].filter(Boolean);
+    return Array.from(new Set(imgs));
+  }, [product]);
+
+  const activePhotoSrc = galleryImages[activeImageIndex] || galleryImages[0] || product.images.hero;
 
   const selectedWood = WOOD_MATERIALS.find((w) => w.id === selectedWoodId) || WOOD_MATERIALS[0];
   const selectedFabric =
@@ -65,30 +134,25 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   })();
 
   // Related companion pieces to complete the room
-  const relatedProducts = PRODUCTS_CATALOG.filter((p) => p.id !== product.id).slice(0, 3);
+  const relatedProducts = PRODUCTS_CATALOG.filter((p) => p.slug !== product.slug).slice(0, 3);
+
+  const activePrice = currentVariant.price || product.price;
+  const activeCompareAtPrice = currentVariant.compareAtPrice || product.compareAtPrice;
 
   const handleAddToCart = () => {
-    const currentVariant = product.variants[0];
     addItem({
       productId: product.id,
       variantId: currentVariant.id,
       productName: product.name,
-      variantName: `${selectedWood.name} / ${selectedFabric.name}`,
-      woodFinish: selectedWood.name,
-      fabricFinish: selectedFabric.name,
-      unitPrice: product.price,
+      variantName: currentVariant.finishName || `${selectedWood.name} / ${selectedFabric.name}`,
+      woodFinish: currentVariant.woodSpecies || selectedWood.name,
+      fabricFinish: currentVariant.upholsteryFabric || selectedFabric.name,
+      unitPrice: activePrice,
       quantity,
-      image: product.images.hero,
+      image: activePhotoSrc,
     });
     setCartOpen(true);
   };
-
-  const photoOptions = [
-    { key: 'hero' as const, label: 'Main Angle', src: product.images.hero },
-    { key: 'editorial' as const, label: 'In Room', src: product.images.editorial },
-    { key: 'detail' as const, label: 'Close-Up', src: product.images.detail },
-    { key: 'inSitu' as const, label: 'Lifestyle', src: product.images.inSitu },
-  ];
 
   return (
     <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-6 sm:pt-8 pb-24 relative overflow-hidden">
@@ -102,9 +166,16 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             <span>/</span>
             <span className="text-[#1A1816] font-medium">{product.name}</span>
           </nav>
-          <span className="uppercase tracking-widest text-[11px] font-semibold text-[#C84D1B]">
-            {product.category}
-          </span>
+          <div className="flex items-center space-x-2">
+            {product.sku && (
+              <span className="font-mono text-[11px] text-[#8C827A] px-2 py-0.5 rounded bg-white border border-stone-200">
+                SKU: {product.sku}
+              </span>
+            )}
+            <span className="uppercase tracking-widest text-[11px] font-semibold text-[#C84D1B]">
+              {product.category}
+            </span>
+          </div>
         </div>
 
         {/* Main 2-Column Product Grid */}
@@ -114,20 +185,22 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
             {/* View Mode Toggle: Photos vs Room Video */}
             <div className="flex items-center space-x-2 text-xs font-sans tracking-wide overflow-x-auto pb-1">
               <button
+                type="button"
                 onClick={() => setActiveTab('photos')}
-                className={`py-2 px-4 rounded-full border transition-all flex items-center space-x-2 ${
+                className={`py-2 px-4 rounded-full border transition-all flex items-center space-x-2 cursor-pointer ${
                   activeTab === 'photos'
                     ? 'border-[#1A1816] bg-[#1A1816] text-white font-medium shadow-xs'
                     : 'border-stone-200/80 bg-white text-[#57534E] hover:text-[#1A1816] font-normal'
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
-                <span>Product Photography (4 Angles)</span>
+                <span>Gallery Photography ({galleryImages.length})</span>
               </button>
 
               <button
+                type="button"
                 onClick={() => setActiveTab('video')}
-                className={`py-2 px-4 rounded-full border transition-all flex items-center space-x-2 ${
+                className={`py-2 px-4 rounded-full border transition-all flex items-center space-x-2 cursor-pointer ${
                   activeTab === 'video'
                     ? 'border-[#1A1816] bg-[#1A1816] text-white font-medium shadow-xs'
                     : 'border-stone-200/80 bg-white text-[#57534E] hover:text-[#1A1816] font-normal'
@@ -144,8 +217,8 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 {/* Main Large Photo */}
                 <div className="relative aspect-[4/3] rounded-2xl border border-stone-200/80 overflow-hidden bg-white shadow-[0_4px_20px_rgba(26,24,22,0.04)]">
                   <Image
-                    src={product.images[selectedPhoto]}
-                    alt={`${product.name} - ${selectedPhoto}`}
+                    src={activePhotoSrc}
+                    alt={`${product.name} - view ${activeImageIndex + 1}`}
                     fill
                     className="object-cover transition-all duration-300"
                     priority
@@ -154,27 +227,25 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 </div>
 
                 {/* Thumbnail Bar */}
-                <div className="grid grid-cols-4 gap-3">
-                  {photoOptions.map((opt) => (
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+                  {galleryImages.map((src, idx) => (
                     <button
-                      key={opt.key}
-                      onClick={() => setSelectedPhoto(opt.key)}
-                      className={`relative aspect-square rounded-xl overflow-hidden border transition-all ${
-                        selectedPhoto === opt.key
-                          ? 'border-[#1A1816] ring-1 ring-[#1A1816] shadow-2xs'
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`relative aspect-square rounded-xl overflow-hidden border transition-all cursor-pointer ${
+                        activeImageIndex === idx
+                          ? 'border-[#1A1816] ring-2 ring-[#1A1816]/30 shadow-2xs'
                           : 'border-stone-200/80 hover:border-stone-400 opacity-80 hover:opacity-100 bg-white'
                       }`}
                     >
                       <Image
-                        src={opt.src}
-                        alt={`${product.name} thumbnail`}
+                        src={src}
+                        alt={`${product.name} thumbnail ${idx + 1}`}
                         fill
                         className="object-cover"
                         sizes="160px"
                       />
-                      <span className="absolute bottom-1 left-1 right-1 bg-black/60 text-white text-[9px] font-sans font-medium rounded py-0.5 text-center truncate px-1">
-                        {opt.label}
-                      </span>
                     </button>
                   ))}
                 </div>
@@ -222,35 +293,70 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-sans">
-                <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
-                  <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Width</span>
-                  <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.widthCm} cm</span>
-                </div>
-                <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
-                  <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Depth</span>
-                  <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.depthCm} cm</span>
-                </div>
-                <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
-                  <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Height</span>
-                  <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.heightCm} cm</span>
-                </div>
-                <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
-                  <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Net Weight</span>
-                  <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.weightKg} kg</span>
-                </div>
+                {product.dimensions.widthCm > 0 && (
+                  <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                    <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Width</span>
+                    <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.widthCm} cm</span>
+                  </div>
+                )}
+                {product.dimensions.depthCm > 0 && (
+                  <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                    <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Depth</span>
+                    <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.depthCm} cm</span>
+                  </div>
+                )}
+                {product.dimensions.heightCm > 0 && (
+                  <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                    <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Height</span>
+                    <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.heightCm} cm</span>
+                  </div>
+                )}
+                {product.dimensions.seatHeightCm ? (
+                  <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                    <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Seat Height</span>
+                    <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.seatHeightCm} cm</span>
+                  </div>
+                ) : product.dimensions.weightKg > 0 ? (
+                  <div className="p-3 bg-[#F2EFE9]/60 rounded-xl border border-stone-200/80 text-center">
+                    <span className="text-[#78716C] block text-[10px] font-sans uppercase tracking-wider">Net Weight</span>
+                    <span className="text-[#1A1816] font-sans text-base font-semibold">{product.dimensions.weightKg} kg</span>
+                  </div>
+                ) : null}
+              </div>
+
+              {/* Warranty and Care Details */}
+              <div className="space-y-3 pt-3 border-t border-stone-200/80 text-xs">
+                {product.warrantyInfo && (
+                  <div className="flex items-start space-x-2 text-[#57534E]">
+                    <ShieldCheck className="w-4 h-4 text-[#C84D1B] shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-[#1A1816]">Warranty: </span>
+                      <span>{product.warrantyInfo}</span>
+                    </div>
+                  </div>
+                )}
+                {product.careInstructions && (
+                  <div className="flex items-start space-x-2 text-[#57534E]">
+                    <Info className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-[#1A1816]">Care Instructions: </span>
+                      <span>{product.careInstructions}</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="pt-2 flex items-center justify-between text-xs font-sans text-[#78716C]">
                 <span className="flex items-center space-x-1.5">
                   <Award className="w-3.5 h-3.5 text-[#C84D1B]" />
-                  <span>FSC® 100% Certified Sustainable Timber</span>
+                  <span>FSC® 100% Certified Sustainable Materials</span>
                 </span>
                 <span>Crafted in Karnataka, India</span>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Pricing, Finishes & Shopping Actions */}
+          {/* Right Column: Pricing, Variants & Shopping Actions */}
           <div className="lg:col-span-5 space-y-8">
             <div className="space-y-3 pb-6 border-b border-stone-200/80">
               <span className="font-sans text-xs tracking-widest uppercase text-[#C84D1B] font-semibold">
@@ -261,14 +367,25 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               </h1>
               <div className="flex items-baseline space-x-3 pt-2">
                 <span className="font-sans text-3xl text-[#1A1816] font-semibold">
-                  {formatPrice(product.price, true)}
+                  {formatPrice(activePrice, true)}
                 </span>
-                <span className="text-xs font-sans text-[#2B5238] font-semibold bg-[#2B5238]/10 px-3 py-1 rounded-full border border-[#2B5238]/20">
-                  In Stock · White Glove Setup
-                </span>
+                {activeCompareAtPrice && activeCompareAtPrice > activePrice && (
+                  <span className="font-sans text-lg text-[#78716C] line-through font-normal">
+                    {formatPrice(activeCompareAtPrice)}
+                  </span>
+                )}
+                {currentVariant.inStock ? (
+                  <span className="text-xs font-sans text-[#2B5238] font-semibold bg-[#2B5238]/10 px-3 py-1 rounded-full border border-[#2B5238]/20">
+                    In Stock · White Glove Setup
+                  </span>
+                ) : (
+                  <span className="text-xs font-sans text-stone-600 font-semibold bg-stone-100 px-3 py-1 rounded-full border border-stone-200">
+                    Made to Order ({currentVariant.leadTimeWeeks || 3} Weeks)
+                  </span>
+                )}
               </div>
               <p className="text-xs text-[#78716C]">
-                Inclusive of all applicable GST, delivery to room of choice, and full packaging removal.
+                Inclusive of all applicable GST, delivery to room of choice, and full packaging removal across India.
               </p>
             </div>
 
@@ -276,52 +393,53 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               {product.description}
             </p>
 
-            {/* Finish Selection */}
-            <div className="space-y-6 pt-4 border-t border-stone-200/80">
-              {/* Wood finish */}
-              <div className="space-y-3">
+            {/* Variant / Finish Selection */}
+            {product.variants && product.variants.length > 1 ? (
+              <div className="space-y-4 pt-4 border-t border-stone-200/80">
                 <div className="flex justify-between text-xs font-sans">
-                  <span className="uppercase text-[#78716C] font-medium tracking-wider">Wood Finish</span>
-                  <span className="text-[#1A1816] font-medium">{selectedWood.name}</span>
+                  <span className="uppercase text-[#78716C] font-medium tracking-wider">Select Finish / Variant</span>
+                  <span className="text-[#1A1816] font-medium">{currentVariant.name}</span>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {WOOD_MATERIALS.map((wood) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {product.variants.map((v, idx) => (
                     <button
-                      key={wood.id}
-                      onClick={() => setSelectedWood(wood.id)}
-                      className={`p-3 rounded-xl border text-left transition-all ${
-                        selectedWoodId === wood.id
+                      key={v.id || idx}
+                      type="button"
+                      onClick={() => setSelectedVariantIndex(idx)}
+                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                        selectedVariantIndex === idx
                           ? 'border-[#1A1816] bg-[#1A1816]/5 ring-1 ring-[#1A1816] shadow-2xs'
                           : 'border-stone-200/80 hover:border-stone-400 bg-white'
                       }`}
                     >
-                      <div className="flex items-center space-x-2 mb-1.5">
-                        <span
-                          className="w-3.5 h-3.5 rounded-full border border-black/15"
-                          style={{ backgroundColor: wood.colorHex }}
-                        />
-                        {selectedWoodId === wood.id && <Check className="w-3 h-3 text-[#1A1816] ml-auto" />}
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-semibold text-[#1A1816]">{v.finishName || v.name}</span>
+                        {selectedVariantIndex === idx && <Check className="w-3.5 h-3.5 text-[#1A1816]" />}
                       </div>
-                      <p className="text-xs font-medium text-[#1A1816] truncate">{wood.name}</p>
+                      <div className="flex items-center justify-between text-[11px] text-[#78716C]">
+                        <span>{formatPrice(v.price)}</span>
+                        <span>{v.inStock ? 'In Stock' : `${v.leadTimeWeeks}w lead`}</span>
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
-
-              {/* Upholstery finish */}
-              {product.materials.upholsteryOptions.length > 0 && (
+            ) : (
+              /* Finish Swatches for single-variant items */
+              <div className="space-y-6 pt-4 border-t border-stone-200/80">
                 <div className="space-y-3">
                   <div className="flex justify-between text-xs font-sans">
-                    <span className="uppercase text-[#78716C] font-medium tracking-wider">Tactile Fabric</span>
-                    <span className="text-[#1A1816] font-medium">{selectedFabric.name}</span>
+                    <span className="uppercase text-[#78716C] font-medium tracking-wider">Wood Finish</span>
+                    <span className="text-[#1A1816] font-medium">{selectedWood.name}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
-                    {UPHOLSTERY_MATERIALS.map((fab) => (
+                    {WOOD_MATERIALS.map((wood) => (
                       <button
-                        key={fab.id}
-                        onClick={() => setSelectedFabric(fab.id)}
-                        className={`p-3 rounded-xl border text-left transition-all ${
-                          selectedFabricId === fab.id
+                        key={wood.id}
+                        type="button"
+                        onClick={() => setSelectedWood(wood.id)}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                          selectedWoodId === wood.id
                             ? 'border-[#1A1816] bg-[#1A1816]/5 ring-1 ring-[#1A1816] shadow-2xs'
                             : 'border-stone-200/80 hover:border-stone-400 bg-white'
                         }`}
@@ -329,33 +447,67 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                         <div className="flex items-center space-x-2 mb-1.5">
                           <span
                             className="w-3.5 h-3.5 rounded-full border border-black/15"
-                            style={{ backgroundColor: fab.colorHex }}
+                            style={{ backgroundColor: wood.colorHex }}
                           />
-                          {selectedFabricId === fab.id && <Check className="w-3 h-3 text-[#1A1816] ml-auto" />}
+                          {selectedWoodId === wood.id && <Check className="w-3 h-3 text-[#1A1816] ml-auto" />}
                         </div>
-                        <p className="text-xs font-medium text-[#1A1816] truncate">{fab.name}</p>
+                        <p className="text-xs font-medium text-[#1A1816] truncate">{wood.name}</p>
                       </button>
                     ))}
                   </div>
                 </div>
-              )}
-            </div>
+
+                {product.materials.upholsteryOptions.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-xs font-sans">
+                      <span className="uppercase text-[#78716C] font-medium tracking-wider">Tactile Fabric</span>
+                      <span className="text-[#1A1816] font-medium">{selectedFabric.name}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {UPHOLSTERY_MATERIALS.map((fab) => (
+                        <button
+                          key={fab.id}
+                          type="button"
+                          onClick={() => setSelectedFabric(fab.id)}
+                          className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                            selectedFabricId === fab.id
+                              ? 'border-[#1A1816] bg-[#1A1816]/5 ring-1 ring-[#1A1816] shadow-2xs'
+                              : 'border-stone-200/80 hover:border-stone-400 bg-white'
+                          }`}
+                        >
+                          <div className="flex items-center space-x-2 mb-1.5">
+                            <span
+                              className="w-3.5 h-3.5 rounded-full border border-black/15"
+                              style={{ backgroundColor: fab.colorHex }}
+                            />
+                            {selectedFabricId === fab.id && <Check className="w-3 h-3 text-[#1A1816] ml-auto" />}
+                          </div>
+                          <p className="text-xs font-medium text-[#1A1816] truncate">{fab.name}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Quantity and Add to Bag */}
             <div className="space-y-4 pt-6 border-t border-stone-200/80">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center border border-stone-200/80 bg-white rounded-xl px-3 py-3 shadow-2xs">
                   <button
+                    type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="p-1 hover:text-[#1A1816] transition-colors text-[#78716C]"
+                    className="p-1 hover:text-[#1A1816] transition-colors text-[#78716C] cursor-pointer"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="px-4 font-sans text-sm font-semibold text-[#1A1816]">{quantity}</span>
                   <button
+                    type="button"
                     onClick={() => setQuantity(quantity + 1)}
-                    className="p-1 hover:text-[#1A1816] transition-colors text-[#78716C]"
+                    className="p-1 hover:text-[#1A1816] transition-colors text-[#78716C] cursor-pointer"
                     aria-label="Increase quantity"
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -363,10 +515,11 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 </div>
 
                 <button
+                  type="button"
                   onClick={handleAddToCart}
-                  className="flex-1 bg-[#1A1816] hover:bg-[#C84D1B] text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-semibold transition-all duration-300 shadow-sm hover:shadow-md active:scale-98"
+                  className="flex-1 bg-[#1A1816] hover:bg-[#C84D1B] text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-semibold transition-all duration-300 shadow-sm hover:shadow-md active:scale-98 cursor-pointer"
                 >
-                  Add to Cart · {formatPrice(product.price * quantity)}
+                  Add to Cart · {formatPrice(activePrice * quantity)}
                 </button>
               </div>
 
@@ -374,7 +527,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               <div className="grid grid-cols-2 gap-4 pt-4 text-xs text-[#57534E] font-sans bg-white p-4 rounded-xl border border-stone-200/80">
                 <div className="flex items-center space-x-2">
                   <ShieldCheck className="w-4 h-4 text-[#C84D1B] shrink-0" />
-                  <span>10-Year Frame Warranty</span>
+                  <span>{product.warrantyInfo ? 'Genuine Brand Warranty' : '5-Year Frame Warranty'}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Truck className="w-4 h-4 text-[#C84D1B] shrink-0" />
@@ -386,7 +539,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Check className="w-4 h-4 text-[#C84D1B] shrink-0" />
-                  <span>Free Setup & Assembly</span>
+                  <span>{product.assemblyRequired ? 'Free Assembly Included' : 'No Assembly Required'}</span>
                 </div>
               </div>
             </div>

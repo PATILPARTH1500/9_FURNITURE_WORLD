@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from '@/components/common/Image';
 import Link from '@/components/common/Link';
-import { Search, X, ArrowUpRight } from 'lucide-react';
+import { Search, X, ArrowUpRight, Loader2 } from 'lucide-react';
 import { PRODUCTS_CATALOG } from '@/data/catalog';
+import { productService } from '@/lib/services/productService';
+import { Product } from '@/types';
 import { formatPrice } from '@/config/brand';
 
 interface SearchModalProps {
@@ -14,7 +16,34 @@ interface SearchModalProps {
 
 export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
+  const [catalog, setCatalog] = useState<Product[]>(PRODUCTS_CATALOG);
+  const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Load live published products from Supabase
+  useEffect(() => {
+    let isMounted = true;
+    const loadLiveCatalog = async () => {
+      setIsSearching(true);
+      try {
+        const { data } = await productService.getPublishedProducts();
+        if (isMounted && data && data.length > 0) {
+          setCatalog(data);
+        }
+      } catch (err: unknown) {
+        console.warn('Search modal live load note:', err);
+      } finally {
+        if (isMounted) setIsSearching(false);
+      }
+    };
+
+    if (isOpen) {
+      loadLiveCatalog();
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -36,16 +65,22 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
 
   if (!isOpen) return null;
 
-  const filtered = PRODUCTS_CATALOG.filter((p) => {
+  const filtered = catalog.filter((p) => {
     const q = query.toLowerCase().trim();
     if (!q) return true;
-    return (
-      p.name.toLowerCase().includes(q) ||
-      p.subtitle.toLowerCase().includes(q) ||
-      p.category.toLowerCase().includes(q) ||
-      p.materials.woodOptions.some((w) => w.name.toLowerCase().includes(q)) ||
-      p.materials.upholsteryOptions.some((u) => u.name.toLowerCase().includes(q))
-    );
+    const nameMatch = p.name.toLowerCase().includes(q);
+    const subtitleMatch = p.subtitle ? p.subtitle.toLowerCase().includes(q) : false;
+    const descMatch = p.description ? p.description.toLowerCase().includes(q) : false;
+    const catMatch = p.category ? p.category.toLowerCase().includes(q) : false;
+    const skuMatch = p.sku ? p.sku.toLowerCase().includes(q) : false;
+    const woodMatch = p.materials?.woodOptions
+      ? p.materials.woodOptions.some((w) => w.name.toLowerCase().includes(q))
+      : false;
+    const fabricMatch = p.materials?.upholsteryOptions
+      ? p.materials.upholsteryOptions.some((u) => u.name.toLowerCase().includes(q))
+      : false;
+
+    return nameMatch || subtitleMatch || descMatch || catMatch || skuMatch || woodMatch || fabricMatch;
   });
 
   return (
@@ -59,7 +94,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
 
       {/* Modal Dialog */}
       <div className="relative w-full max-w-2xl rounded-2xl bg-[#FBF9F5] border border-stone-200/80 shadow-[0_24px_60px_rgba(26,24,22,0.18)] overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200">
-        {/* Top Architectural Search Bar */}
+        {/* Top Search Bar */}
         <div className="p-4 sm:p-6 border-b border-stone-200/80 flex items-center gap-3 bg-white">
           <Search className="w-5 h-5 text-[#C84D1B] shrink-0" />
           <input
@@ -67,13 +102,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search for sofas, dining tables, beds..."
-            className="w-full font-sans text-sm sm:text-base text-[#1A1816] bg-transparent placeholder:text-[#78716C]/60 outline-hidden"
+            placeholder="Search for sofas, dining tables, beds, lighting..."
+            className="w-full font-sans text-sm sm:text-base text-[#1A1816] bg-transparent placeholder:text-[#78716C]/60 outline-none"
           />
+          {isSearching && <Loader2 className="w-4 h-4 text-stone-400 animate-spin shrink-0" />}
           {query ? (
             <button
+              type="button"
               onClick={() => setQuery('')}
-              className="p-1 rounded-full hover:bg-stone-100 text-[#78716C] transition-colors"
+              className="p-1 rounded-full hover:bg-stone-100 text-[#78716C] transition-colors cursor-pointer"
               aria-label="Clear query"
             >
               <X className="w-4 h-4" />
@@ -84,8 +121,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
             </span>
           )}
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-stone-100 text-[#78716C] hover:text-[#1A1816] transition-colors ml-1"
+            className="p-1.5 rounded-full hover:bg-stone-100 text-[#78716C] hover:text-[#1A1816] transition-colors ml-1 cursor-pointer"
             aria-label="Close search modal"
           >
             <X className="w-5 h-5" />
@@ -97,11 +135,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
           <span className="text-[10px] uppercase tracking-wider text-[#78716C] font-semibold mr-1 shrink-0">
             Suggested:
           </span>
-          {['Bouclé', 'Walnut', 'Seating', 'Tables', 'Bed', 'Oak'].map((term) => (
+          {['Bouclé', 'Walnut', 'Seating', 'Tables', 'Bed', 'Oak', 'Lamp'].map((term) => (
             <button
               key={term}
+              type="button"
               onClick={() => setQuery(term)}
-              className="px-2.5 py-1 rounded-full bg-white hover:bg-stone-50 border border-stone-200/80 text-[#57534E] text-[11px] font-medium transition-colors whitespace-nowrap"
+              className="px-2.5 py-1 rounded-full bg-white hover:bg-stone-50 border border-stone-200/80 text-[#57534E] text-[11px] font-medium transition-colors whitespace-nowrap cursor-pointer"
             >
               {term}
             </button>
@@ -113,7 +152,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
           {filtered.length === 0 ? (
             <div className="py-12 text-center space-y-2">
               <p className="font-serif text-xl text-[#1A1816] font-light">No matching furniture found</p>
-              <p className="text-xs text-[#78716C]">Try searching for &quot;chair&quot;, &quot;table&quot;, or &quot;velvet&quot;.</p>
+              <p className="text-xs text-[#78716C]">Try searching for &quot;chair&quot;, &quot;table&quot;, &quot;oak&quot; or &quot;sofa&quot;.</p>
             </div>
           ) : (
             filtered.map((product) => (

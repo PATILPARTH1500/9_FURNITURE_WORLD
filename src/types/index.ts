@@ -40,8 +40,12 @@ export interface ProductVariant {
   price: number;
   compareAtPrice?: number;
   inStock: boolean;
+  stock?: number;
   leadTimeWeeks: number;
   images: string[];
+  woodSpecies?: string;
+  upholsteryFabric?: string;
+  status?: 'active' | 'draft' | 'archived';
 }
 
 export interface Product {
@@ -50,11 +54,12 @@ export interface Product {
   name: string;
   designer: string;
   year: number;
-  category: 'seating' | 'tables' | 'storage' | 'lighting' | 'objects' | 'beds';
+  category: string;
   subtitle: string;
   description: string;
   architecturalStatement: string;
   price: number;
+  compareAtPrice?: number;
   currency: string;
   dimensions: DimensionSpec;
   materials: {
@@ -70,9 +75,20 @@ export interface Product {
     detail: string;
     inSitu: string;
   };
+  gallery?: string[];
   featured: boolean;
   tags: string[];
   sku?: string;
+  status?: 'active' | 'draft' | 'archived';
+  isPublished?: boolean;
+  warrantyInfo?: string;
+  primaryMaterial?: string;
+  secondaryMaterial?: string;
+  careInstructions?: string;
+  assemblyRequired?: boolean;
+  leadTimeWeeks?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Collection {
