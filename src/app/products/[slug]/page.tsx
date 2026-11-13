@@ -31,12 +31,14 @@ interface ProductPageProps {
 }
 
 export default function ProductDetailPage({ params }: ProductPageProps) {
-  // Initialize from catalog for instant hydration, then load live Supabase record
+  // Initialize from catalog if slug matches seeded pieces, otherwise start null and load live
   const initialProduct = useMemo(() => {
-    return PRODUCTS_CATALOG.find((p) => p.slug === params.slug) || PRODUCTS_CATALOG[0];
+    return PRODUCTS_CATALOG.find((p) => p.slug === params.slug) || null;
   }, [params.slug]);
 
-  const [product, setProduct] = useState<Product>(initialProduct);
+  const [product, setProduct] = useState<Product | null>(initialProduct);
+  const [loading, setLoading] = useState<boolean>(!initialProduct);
+  const [notFoundState, setNotFoundState] = useState<boolean>(false);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState<number>(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'photos' | 'video'>('photos');
@@ -49,22 +51,49 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
     let isMounted = true;
     async function loadLiveProduct() {
       try {
+        setLoading(!initialProduct);
         const { data } = await productService.getProductBySlug(params.slug);
-        if (isMounted && data) {
-          setProduct(data);
+        if (isMounted) {
+          if (data) {
+            setProduct(data);
+            setNotFoundState(false);
+          } else if (!initialProduct) {
+            setNotFoundState(true);
+          }
         }
       } catch (err: unknown) {
         console.warn('Live product fetch note:', err);
+        if (isMounted && !initialProduct) {
+          setNotFoundState(true);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
     loadLiveProduct();
     return () => {
       isMounted = false;
     };
-  }, [params.slug]);
+  }, [params.slug, initialProduct]);
 
   // Active variant
   const currentVariant: ProductVariant = useMemo(() => {
+    if (!product) {
+      return {
+        id: 'placeholder',
+        sku: 'PLACEHOLDER',
+        name: 'Standard',
+        finishName: 'Standard',
+        woodMaterialId: 'oak-natural',
+        fabricMaterialId: 'boucle-cream',
+        price: 0,
+        inStock: false,
+        leadTimeWeeks: 2,
+        images: ['/images/placeholder.webp'],
+      };
+    }
     if (product.variants && product.variants.length > selectedVariantIndex) {
       return product.variants[selectedVariantIndex];
     }
@@ -78,20 +107,21 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
       price: product.price,
       inStock: true,
       leadTimeWeeks: product.leadTimeWeeks || 2,
-      images: [product.images.hero],
+      images: [product.images?.hero || '/images/placeholder.webp'],
     };
   }, [product, selectedVariantIndex]);
 
   // Gallery Images
   const galleryImages: string[] = useMemo(() => {
+    if (!product) return [];
     if (product.gallery && product.gallery.length > 0) {
       return product.gallery;
     }
-    const imgs = [product.images.hero, product.images.editorial, product.images.detail, product.images.inSitu].filter(Boolean);
+    const imgs = [product.images?.hero, product.images?.editorial, product.images?.detail, product.images?.inSitu].filter(Boolean) as string[];
     return Array.from(new Set(imgs));
   }, [product]);
 
-  const activePhotoSrc = galleryImages[activeImageIndex] || galleryImages[0] || product.images.hero;
+  const activePhotoSrc = galleryImages[activeImageIndex] || galleryImages[0] || product?.images?.hero || '/images/placeholder.webp';
 
   const selectedWood = WOOD_MATERIALS.find((w) => w.id === selectedWoodId) || WOOD_MATERIALS[0];
   const selectedFabric =
@@ -99,6 +129,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
 
   // Dynamic contextual room tour video matching the product's living space
   const roomTourVideo = (() => {
+    if (!product) return { src: '', poster: '', roomName: '' };
     switch (product.category) {
       case 'seating':
         return {
@@ -134,12 +165,15 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   })();
 
   // Related companion pieces to complete the room
-  const relatedProducts = PRODUCTS_CATALOG.filter((p) => p.slug !== product.slug).slice(0, 3);
+  const relatedProducts = product
+    ? PRODUCTS_CATALOG.filter((p) => p.slug !== product.slug).slice(0, 3)
+    : [];
 
-  const activePrice = currentVariant.price || product.price;
-  const activeCompareAtPrice = currentVariant.compareAtPrice || product.compareAtPrice;
+  const activePrice = currentVariant.price || product?.price || 0;
+  const activeCompareAtPrice = currentVariant.compareAtPrice || product?.compareAtPrice;
 
   const handleAddToCart = () => {
+    if (!product) return;
     addItem({
       productId: product.id,
       variantId: currentVariant.id,
@@ -153,6 +187,33 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
     });
     setCartOpen(true);
   };
+
+  if (loading && !product) {
+    return (
+      <main className="min-h-[70vh] flex flex-col items-center justify-center bg-[#FBF9F5] px-4">
+        <div className="w-8 h-8 rounded-full border-2 border-stone-300 border-t-[#C84D1B] animate-spin mb-4" />
+        <p className="text-xs font-mono uppercase tracking-widest text-[#78716C]">Loading Piece Details...</p>
+      </main>
+    );
+  }
+
+  if (notFoundState || !product) {
+    return (
+      <main className="min-h-[70vh] flex flex-col items-center justify-center bg-[#FBF9F5] px-4 text-center">
+        <span className="text-xs font-mono uppercase tracking-widest text-[#C84D1B] mb-3">Catalogue Reference</span>
+        <h1 className="text-3xl md:text-4xl font-serif text-[#1A1816] mb-4">Piece Not Found</h1>
+        <p className="text-[#78716C] max-w-md mb-8 text-sm leading-relaxed">
+          The requested furniture piece could not be located in our active catalogue. It may be currently archived, in draft status, or unpublished.
+        </p>
+        <Link
+          href="/collections"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#1A1816] text-white hover:bg-[#C84D1B] transition-colors text-sm font-medium"
+        >
+          Explore Active Collections
+        </Link>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#FBF9F5] text-[#1A1816] pt-6 sm:pt-8 pb-24 relative overflow-hidden">
