@@ -46,10 +46,10 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
 
   if (isLoading || isVerifying) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#1A1816] text-[#FAF8F5] px-4">
-        <div className="w-9 h-9 rounded-full border-2 border-white/15 border-t-tangerine animate-spin mb-4" />
-        <p className="font-serif text-sm tracking-[0.2em] uppercase text-[#D4CDC3]">
-          Verifying Account...
+      <div className="min-h-screen flex flex-col items-center justify-center bg-cream text-checkerboard px-4">
+        <div className="w-9 h-9 rounded-full border-2 border-checkerboard/15 border-t-tangerine animate-spin mb-4" />
+        <p className="font-serif text-sm tracking-[0.2em] uppercase text-[#666059]">
+          Verifying Admin Access...
         </p>
       </div>
     );
@@ -62,24 +62,24 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
 
   if (!isAdminVerified) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1A1816] text-[#FAF8F5] px-4 py-16">
-        <div className="max-w-md w-full bg-[#24211E] border border-white/10 rounded-3xl p-8 sm:p-10 text-center shadow-2xl">
-          <div className="w-16 h-16 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center mx-auto mb-6 border border-red-500/20">
+      <div className="min-h-screen flex items-center justify-center bg-cream text-checkerboard px-4 py-16">
+        <div className="max-w-md w-full bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-8 sm:p-10 text-center shadow-[0_16px_40px_rgba(26,24,22,0.06)]">
+          <div className="w-16 h-16 rounded-full bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-6 border border-red-200">
             <ShieldAlert className="w-8 h-8" />
           </div>
 
-          <span className="text-[10px] uppercase tracking-[0.25em] text-red-400 font-semibold block mb-2">
+          <span className="text-[10px] uppercase tracking-[0.25em] text-red-600 font-semibold block mb-2">
             403 — Access Denied
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl text-white font-normal mb-3">
+          <h1 className="font-serif text-2xl sm:text-3xl text-checkerboard font-normal mb-3">
             Admin Access Restricted
           </h1>
-          <p className="text-xs sm:text-sm text-[#A89F91] leading-relaxed mb-6 font-sans">
-            Your account does not have administrator privileges. Access to the admin panel is restricted to authorized staff.
+          <p className="text-xs sm:text-sm text-[#666059] leading-relaxed mb-6 font-sans">
+            Your account does not have administrator privileges. Access to the admin panel is restricted to authorized admin accounts.
           </p>
 
           {authError && (
-            <div className="mb-6 p-3.5 rounded-2xl bg-black/40 border border-white/10 text-[11px] text-[#C4BCB1] font-mono">
+            <div className="mb-6 p-3.5 rounded-2xl bg-white border border-[#1A1816]/10 text-[11px] text-[#666059] font-mono">
               Diagnostic: {authError}
             </div>
           )}
@@ -96,7 +96,7 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="w-full sm:w-auto py-3 px-6 rounded-full border border-white/15 text-white/80 hover:text-white hover:bg-white/5 text-xs uppercase tracking-wider font-semibold transition-all cursor-pointer"
+              className="w-full sm:w-auto py-3 px-6 rounded-full border border-[#1A1816]/15 text-checkerboard hover:bg-white text-xs uppercase tracking-wider font-semibold transition-all cursor-pointer"
             >
               Back to Home
             </button>

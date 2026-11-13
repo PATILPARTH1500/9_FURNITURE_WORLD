@@ -671,7 +671,7 @@ export const AccountPage: React.FC = () => {
                       </span>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-sm font-semibold capitalize text-checkerboard">
-                          {profile?.role || 'Customer'}
+                          {isAdmin ? 'Admin' : 'User'}
                         </span>
                         {isAdmin && (
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-tangerine/10 text-tangerine font-semibold uppercase">
