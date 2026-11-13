@@ -183,7 +183,7 @@ export const ArtOfLivingSection: React.FC = () => {
                 href="/collections/sanctuary-seating"
                 className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white/10 hover:bg-white/15 border border-white/20 text-[#FAF8F5] font-semibold px-7 py-4 rounded-full transition-all duration-300"
               >
-                <span>View Living Suite</span>
+                <span>View Living Room Collection</span>
                 <ArrowUpRight className="w-3.5 h-3.5 text-white/70" />
               </Link>
             </div>

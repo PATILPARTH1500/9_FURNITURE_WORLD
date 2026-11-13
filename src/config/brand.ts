@@ -48,29 +48,37 @@ export const BRAND_CONFIG: BrandConfig = {
   },
   navigation: [
     { label: "Home", href: "/#home" },
-    { label: "Residence Tour", href: "/#residence-tour" },
+    { label: "Virtual Tour", href: "/#virtual-tour" },
     { label: "Collections", href: "/#collections" },
-    { label: "Our Story", href: "/#our-story" },
-    { label: "Materials & Craft", href: "/#materials-craft" },
+    { label: "About Us", href: "/#our-story" },
+    { label: "Materials", href: "/#materials-craft" },
     { label: "Collectible Cars", href: "/#collectible-cars" },
     { label: "Room Finder", href: "/#room-finder" },
     { label: "Journal", href: "/#journal" },
     { label: "Visit Us", href: "/#visit-us" },
   ],
-  announcement: "White-glove room delivery & assembly across major Indian cities",
+  announcement: "Free room delivery & assembly across major Indian cities",
 };
+
+const inrFormatter = new Intl.NumberFormat('en-IN', {
+  style: 'currency',
+  currency: 'INR',
+  maximumFractionDigits: 0,
+});
 
 /**
  * Centralized currency and price formatter for India (INR)
- * Formats numbers using standard Indian grouping (e.g. ₹1,850 or ₹1,50,000)
+ * Formats numbers using standard Indian digit grouping (e.g. ₹999, ₹12,499, ₹1,25,000)
  */
 export function formatPrice(amount: number, includeCode: boolean = false): string {
   if (typeof amount !== 'number' || isNaN(amount)) {
-    return `${BRAND_CONFIG.currencySymbol}0`;
+    return inrFormatter.format(0);
   }
-  const formatted = amount.toLocaleString('en-IN');
+  const formatted = inrFormatter.format(Math.round(amount));
   if (includeCode) {
-    return `${BRAND_CONFIG.currencySymbol}${formatted} ${BRAND_CONFIG.currency}`;
+    return `${formatted} ${BRAND_CONFIG.currency}`;
   }
-  return `${BRAND_CONFIG.currencySymbol}${formatted}`;
+  return formatted;
 }
+
+export const formatINR = formatPrice;

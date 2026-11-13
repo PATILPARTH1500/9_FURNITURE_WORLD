@@ -122,10 +122,10 @@ const ROOM_OPTIONS: RoomData[] = [
     roomNumber: '05',
     name: 'Master Bedroom',
     roomTag: 'Scene 05 · Acoustic Calm',
-    headline: 'A Quiet Sanctuary for Deep Restful Sleep',
+    headline: 'A Quiet Space for Deep Restful Sleep',
     subtitle: 'Atmosphere: Muted dusk stillness & channel-tufted velvet',
     description:
-      'The bedroom should be a sanctuary of acoustic calm. Our plush upholstered headboards naturally dampen room echoes, while the solid oak frame supports restorative rest with zero squeaks.',
+      'The bedroom should be a peaceful, quiet space. Our upholstered headboards soften room sounds, while the solid oak frame supports restful sleep without squeaks.',
     image: '/videos/scenes/posters/scene-5-bedroom.webp',
     architecturalDetails: [
       { label: 'Spatial Light', value: 'Diffused dusk illumination & sheer linen drapes' },
@@ -265,7 +265,7 @@ export const RoomDiscoverySection: React.FC = () => {
 
           <div className="space-y-3 max-w-md">
             <p className="font-sans text-sm sm:text-base text-[#57534E] leading-relaxed font-normal">
-              Each space in our residence has its own rhythm, lighting, and personality. Explore the rooms below to preview their architectural details, or enter any room to experience its full cinematic walkthrough.
+              Each room has its own style, lighting, and personality. Explore the rooms below to see furniture details, or enter any room to experience the full virtual tour.
             </p>
             <div className="flex items-center space-x-2 text-xs font-sans text-[#78716C]">
               <Sparkles className="w-3.5 h-3.5 text-[#C84D1B]" />

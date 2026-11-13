@@ -50,7 +50,7 @@ export const ResidenceTourIntroLoader: React.FC<ResidenceTourIntroLoaderProps> =
   return (
     <div
       role="region"
-      aria-label="Residence Tour Preparation"
+      aria-label="Virtual Tour Loading"
       aria-live="polite"
       className={`absolute inset-0 z-40 flex flex-col justify-between pt-24 sm:pt-28 md:pt-32 pb-6 px-6 sm:px-10 md:px-14 bg-[#141210]/95 backdrop-blur-xl transition-[opacity,transform] duration-700 ease-out select-none ${
         isDismissed
@@ -63,7 +63,7 @@ export const ResidenceTourIntroLoader: React.FC<ResidenceTourIntroLoaderProps> =
         <div className="flex items-center gap-3">
           <span className="w-2 h-2 rounded-full bg-[#C84D1B] animate-pulse" />
           <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.22em] text-[#E8E2D9]/75">
-            Atelier Architectural Walkthrough · 2026
+            Virtual Tour · 2026 Collection
           </span>
         </div>
 
@@ -150,8 +150,8 @@ export const ResidenceTourIntroLoader: React.FC<ResidenceTourIntroLoaderProps> =
 
             {/* Subtitle */}
             <p className="font-sans text-xs sm:text-sm text-[#C4B5A5] max-w-md mb-6 sm:mb-8 tracking-wide font-light">
-              Preparing your cinematic residence experience. Preloading all five architectural rooms
-              into memory for seamless, frame-synchronized spatial exploration.
+              Loading your virtual tour experience. Preparing all five rooms
+              for smooth exploration.
             </p>
 
             {/* Architectural SVG Floor Plan Linework with Reactive Room Statuses */}
@@ -354,11 +354,10 @@ export const ResidenceTourIntroLoader: React.FC<ResidenceTourIntroLoaderProps> =
           /* FAST-FORWARD 5-SCENE CHECKLIST VIEW (WHEN SKIP INTRO IS CLICKED) */
           <div className="w-full max-w-xl mx-auto flex flex-col items-center">
             <h2 className="font-serif italic text-2xl sm:text-3xl text-[#FAF8F5] tracking-tight mb-1.5">
-              Preparing Residence Walkthrough
+              Preparing Virtual Tour
             </h2>
             <p className="font-sans text-xs text-[#C4B5A5] mb-5 tracking-wide font-light">
-              Intro animation bypassed. All five cinematic scenes must finish preloading and decode
-              their initial frames before the tour unlocks.
+              Intro skipped. Loading all five rooms before the virtual tour begins.
             </p>
 
             {/* 5-Scene Status Checklist */}

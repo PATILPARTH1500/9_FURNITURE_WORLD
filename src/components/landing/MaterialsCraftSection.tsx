@@ -315,7 +315,7 @@ export const MaterialsCraftSection: React.FC = () => {
             {/* Quality Checklist */}
             <div className="space-y-2.5 pt-2 border-t border-[#1A1816]/10">
               <span className="font-sans text-xs uppercase tracking-wider text-[#666059] font-semibold block">
-                Atelier Craft Standards
+                Craftsmanship Standards
               </span>
               <ul className="space-y-2">
                 {selectedMaterial.attributes.map((attr, aIdx) => (
@@ -339,7 +339,7 @@ export const MaterialsCraftSection: React.FC = () => {
                 href="/collections"
                 className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#1A1816] hover:bg-[#C84D1B] text-white font-semibold px-6 sm:px-7 py-3.5 rounded-full shadow-2xs transition-all duration-300"
               >
-                <span>Explore Works in this Material</span>
+                <span>Explore Furniture in this Material</span>
                 <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>

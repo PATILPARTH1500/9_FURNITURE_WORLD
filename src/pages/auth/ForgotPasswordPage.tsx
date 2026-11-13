@@ -51,14 +51,14 @@ export const ForgotPasswordPage: React.FC = () => {
               {BRAND_CONFIG.name}
             </span>
             <span className="block text-[9px] uppercase tracking-[0.28em] text-[#666059] -mt-0.5">
-              Account Recovery
+              Reset Password
             </span>
           </Link>
           <h1 className="font-serif text-3xl sm:text-4xl text-checkerboard font-normal tracking-tight">
             Reset Password
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-[#666059] font-sans">
-            Enter your email to receive secure recovery instructions.
+            Enter your email to receive a password reset link.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ export const ForgotPasswordPage: React.FC = () => {
               <div className="w-14 h-14 rounded-full bg-green-50 text-green-700 flex items-center justify-center mx-auto mb-5 border border-green-200">
                 <CheckCircle className="w-7 h-7" />
               </div>
-              <h2 className="font-serif text-2xl text-checkerboard mb-2">Instructions Dispatched</h2>
+              <h2 className="font-serif text-2xl text-checkerboard mb-2">Reset Link Sent</h2>
               <p className="text-xs sm:text-sm text-[#666059] leading-relaxed mb-6 font-sans">
                 If an account exists for <span className="font-semibold text-checkerboard">{email}</span>,
                 you will receive an email containing a secure link to reset your password.
@@ -84,7 +84,7 @@ export const ForgotPasswordPage: React.FC = () => {
                 >
                   <RefreshCw className="w-3.5 h-3.5 text-tangerine" />
                   <span>
-                    {cooldown > 0 ? `Resend link in ${cooldown}s` : 'Resend Recovery Email'}
+                    {cooldown > 0 ? `Resend link in ${cooldown}s` : 'Resend Reset Email'}
                   </span>
                 </button>
 
@@ -93,7 +93,7 @@ export const ForgotPasswordPage: React.FC = () => {
                   className="inline-flex items-center justify-center space-x-1.5 w-full py-2.5 text-xs text-[#666059] hover:text-checkerboard transition-colors font-sans"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Back to Sign In</span>
+                  <span>Back to Login</span>
                 </Link>
               </div>
             </div>
@@ -108,7 +108,7 @@ export const ForgotPasswordPage: React.FC = () => {
 
               <div>
                 <label className="block text-[11px] uppercase tracking-wider font-medium text-[#666059] mb-1.5">
-                  Account Email
+                  Email Address
                 </label>
                 <div className="relative">
                   <input
@@ -116,7 +116,7 @@ export const ForgotPasswordPage: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    placeholder="architect@atelier.com"
+                    placeholder="name@example.com"
                     className="w-full bg-white border border-[#1A1816]/15 rounded-2xl px-4 py-3 pl-10 text-sm text-checkerboard placeholder:text-[#9E9891] focus:outline-hidden focus:border-tangerine focus:ring-1 focus:ring-tangerine transition-all"
                     autoComplete="email"
                   />
@@ -129,7 +129,7 @@ export const ForgotPasswordPage: React.FC = () => {
                 disabled={isSubmitting}
                 className="w-full mt-2 flex items-center justify-center space-x-2 py-3 px-6 rounded-full bg-checkerboard hover:bg-tangerine text-white text-xs uppercase tracking-wider font-semibold transition-all duration-300 shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span>{isSubmitting ? 'Sending Link...' : 'Send Recovery Link'}</span>
+                <span>{isSubmitting ? 'Sending Link...' : 'Send Reset Link'}</span>
                 {!isSubmitting && <ArrowRight className="w-3.5 h-3.5" />}
               </button>
 
@@ -139,7 +139,7 @@ export const ForgotPasswordPage: React.FC = () => {
                   className="inline-flex items-center space-x-1.5 text-xs text-[#666059] hover:text-checkerboard transition-colors font-sans"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Return to Sign In</span>
+                  <span>Back to Login</span>
                 </Link>
               </div>
             </form>

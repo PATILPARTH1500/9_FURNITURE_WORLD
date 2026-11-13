@@ -47,7 +47,7 @@ export const Footer: React.FC = () => {
           {/* Showrooms Column */}
           <div className="md:col-span-3 space-y-4 text-xs">
             <h4 className="text-xs uppercase tracking-widest text-[#FBF9F5] font-medium">
-              Flagship Atelier
+              Flagship Showroom
             </h4>
             <div className="space-y-4 text-[#A8A29E]">
               <div>

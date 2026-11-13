@@ -52,7 +52,7 @@ export const AddressService = {
 
       return { data: addresses };
     } catch (err) {
-      return { data: [], error: 'Failed to retrieve residence registry.' };
+      return { data: [], error: 'Failed to load saved addresses.' };
     }
   },
 
@@ -128,7 +128,7 @@ export const AddressService = {
         },
       };
     } catch {
-      return { error: 'Failed to save address to registry.' };
+      return { error: 'Failed to save address.' };
     }
   },
 

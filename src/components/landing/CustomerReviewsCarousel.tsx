@@ -195,7 +195,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
 
           <div className="flex items-center space-x-4">
             <p className="hidden lg:block text-xs font-sans text-[#78716C]">
-              Impressions from flagship showroom visitors and direct residence deliveries.
+              Reviews from showroom visitors and home deliveries.
             </p>
 
             <div className="flex items-center space-x-2">
@@ -294,7 +294,7 @@ export const CustomerReviewsCarousel: React.FC = () => {
         {/* Dots Indicators */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs font-sans text-[#78716C]">
-            * Curated patron reflections & living stories from Furniture Village residence installations.
+            * Genuine customer reviews and verified home deliveries from Furniture Village.
           </p>
 
           <div className="flex items-center space-x-1">

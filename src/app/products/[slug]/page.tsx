@@ -35,19 +35,19 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
         return {
           src: '/videos/scenes/desktop/scene-1-living.mp4',
           poster: '/videos/scenes/posters/scene-1-living.webp',
-          roomName: 'Living Residence Gallery',
+          roomName: 'Living Room Setting',
         };
       case 'tables':
         return {
           src: '/videos/scenes/desktop/scene-2-dining.mp4',
           poster: '/videos/scenes/posters/scene-2-dining.webp',
-          roomName: 'Dining Room Pavilion',
+          roomName: 'Dining Room Setting',
         };
       case 'beds':
         return {
           src: '/videos/scenes/desktop/scene-5-bedroom.mp4',
           poster: '/videos/scenes/posters/scene-5-bedroom.webp',
-          roomName: 'Master Bedroom Suite',
+          roomName: 'Bedroom Setting',
         };
       case 'lighting':
         return {
@@ -205,7 +205,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               </p>
               <div className="pt-2 flex items-center justify-between text-xs text-[#78716C] border-t border-stone-200/80 font-normal">
                 <span>Designed by {product.designer}</span>
-                <span className="font-sans text-[#C84D1B] font-medium">{product.year} Atelier Release</span>
+                <span className="font-sans text-[#C84D1B] font-medium">{product.year} Collection</span>
               </div>
             </div>
 
@@ -215,7 +215,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 <div className="flex items-center space-x-2">
                   <Ruler className="w-4 h-4 text-[#C84D1B]" />
                   <h3 className="font-sans text-xs uppercase tracking-widest text-[#1A1816] font-medium">
-                    Architectural Blueprint & Dimensions
+                    Dimensions & Specifications
                   </h3>
                 </div>
                 <span className="font-sans text-xs text-[#78716C]">Metric (cm / kg)</span>
@@ -366,7 +366,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                   onClick={handleAddToCart}
                   className="flex-1 bg-[#1A1816] hover:bg-[#C84D1B] text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-semibold transition-all duration-300 shadow-sm hover:shadow-md active:scale-98"
                 >
-                  Add to Bag · {formatPrice(product.price * quantity)}
+                  Add to Cart · {formatPrice(product.price * quantity)}
                 </button>
               </div>
 

@@ -65,7 +65,7 @@ export default function HomePage() {
       {/* SCREEN 01: Dedicated Furniture Village Hero Experience (Instant First Paint & Brand Statement) */}
       <FurnitureVillageHero />
 
-      {/* SCREEN 02: Cinematic Scroll-Driven 5-Scene Residence Tour (Progressive Video Scrubbing) */}
+      {/* SCREEN 02: Cinematic Scroll-Driven 5-Scene Virtual Tour (Progressive Video Scrubbing) */}
       <CinematicResidenceTour />
 
       {/* SECTION 03 & 04: Featured Collections (Lookbook) & Curated Furniture (Showroom Floor) */}
@@ -74,19 +74,19 @@ export default function HomePage() {
       {/* SECTION 05: Brand Philosophy — The Art of Living (Manifesto & Commitments) */}
       <ArtOfLivingSection />
 
-      {/* SECTION 06: Materials & Craftsmanship (Tactile Details & Swatch Inspector) */}
+      {/* SECTION 06: Materials (Tactile Details & Swatch Inspector) */}
       <MaterialsCraftSection />
 
       {/* SECTION 07: Collectible Toy Cars & Lifestyle Feature (Scene 04 Family Lounge Narrative) */}
       <CollectibleToyCarSection />
 
-      {/* Interactive Room Discovery — Reconnect with Residence Scenes */}
+      {/* Interactive Room Discovery — Reconnect with Room Scenes */}
       <RoomDiscoverySection />
 
       {/* Real Homes & Verified Reviews Carousel */}
       <CustomerReviewsCarousel />
 
-      {/* SECTION 08: Editorial Feature & Flagship Atelier (Consultation & Service Hallmarks) */}
+      {/* SECTION 08: Editorial Feature & Flagship Store (Consultation & Service Hallmarks) */}
       <EditorialSpreadSection />
 
       {/* SECTION 09: Visit Us / Flagship Showroom Experience */}

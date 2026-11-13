@@ -22,7 +22,7 @@ const ProductRoute = lazy(() => import('@/pages/ProductDetailPage'));
 const CartPage = lazy(() => import('@/app/cart/page'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'));
 
-// Authentication & Customer Sanctuary Routes
+// Customer Authentication & Account Routes
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage'));
 const ForgotPasswordPage = lazy(() => import('@/pages/auth/ForgotPasswordPage'));
@@ -30,7 +30,7 @@ const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'));
 const AuthCallbackPage = lazy(() => import('@/pages/auth/AuthCallbackPage'));
 const AccountPage = lazy(() => import('@/pages/account/AccountPage'));
 
-// Atelier Administration Routes (Phase 02 / Phase 04)
+// Admin Panel Routes
 const AdminLoginPage = lazy(() => import('@/pages/admin/AdminLoginPage'));
 const AdminDashboardEntryPage = lazy(() => import('@/pages/admin/AdminDashboardEntryPage'));
 
@@ -85,7 +85,7 @@ export function App() {
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/auth/callback" element={<AuthCallbackPage />} />
 
-              {/* Protected Customer Sanctuary Dashboard */}
+              {/* Protected Customer Account Dashboard */}
               <Route
                 path="/account"
                 element={
@@ -95,7 +95,7 @@ export function App() {
                 }
               />
 
-              {/* Atelier Administration Routes (Protected by RBAC & Session Security) */}
+              {/* Admin Panel Routes (Protected by RBAC & Session Security) */}
               <Route path="/admin/login" element={<AdminLoginPage />} />
               <Route
                 path="/admin"

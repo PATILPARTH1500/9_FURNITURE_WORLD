@@ -45,7 +45,7 @@ export const CuratedCollectionSection: React.FC = () => {
   });
 
   const categories: CategoryTab[] = [
-    { id: 'all', label: 'All Works', count: PRODUCTS_CATALOG.length },
+    { id: 'all', label: 'All Furniture', count: PRODUCTS_CATALOG.length },
     {
       id: 'seating',
       label: 'Seating & Sofas',
@@ -262,7 +262,7 @@ export const CuratedCollectionSection: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#B54113]" />
                 <span className="text-xs font-sans uppercase tracking-[0.16em] text-[#B54113] font-semibold">
-                  Individual Works
+                  Individual Furniture Pieces
                 </span>
               </div>
               <h3 className="font-serif text-3xl sm:text-4xl text-[#1A1816] font-normal">

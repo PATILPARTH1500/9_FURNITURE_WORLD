@@ -849,6 +849,7 @@ export const CinematicResidenceTour: React.FC = () => {
       >
         <span id="tour" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
         <span id="explore" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
+        <span id="virtual-tour" className="absolute -top-24 pointer-events-none" aria-hidden="true" />
 
         {/* Pinned Viewport with dynamic mobile height */}
         <div
@@ -987,7 +988,7 @@ export const CinematicResidenceTour: React.FC = () => {
               type="button"
               onClick={toggleAudio}
               className="group inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full bg-black/45 hover:bg-black/70 border border-white/20 hover:border-[#C84D1B]/70 text-white/90 hover:text-white backdrop-blur-md shadow-xl transition-all duration-200 cursor-pointer min-h-[44px] min-w-[44px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C84D1B]"
-              aria-label={isMuted ? 'Unmute ambient residence sound' : 'Mute ambient residence sound'}
+              aria-label={isMuted ? 'Unmute ambient sound' : 'Mute ambient sound'}
             >
               {isMuted ? (
                 <svg

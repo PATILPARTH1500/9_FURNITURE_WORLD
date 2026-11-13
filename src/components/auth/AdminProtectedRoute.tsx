@@ -49,7 +49,7 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#1A1816] text-[#FAF8F5] px-4">
         <div className="w-9 h-9 rounded-full border-2 border-white/15 border-t-tangerine animate-spin mb-4" />
         <p className="font-serif text-sm tracking-[0.2em] uppercase text-[#D4CDC3]">
-          Authenticating Atelier Credentials...
+          Verifying Account...
         </p>
       </div>
     );
@@ -69,13 +69,13 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
           </div>
 
           <span className="text-[10px] uppercase tracking-[0.25em] text-red-400 font-semibold block mb-2">
-            403 — Unauthorized Protocol
+            403 — Access Denied
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl text-white font-normal mb-3">
-            Atelier Access Restricted
+            Admin Access Restricted
           </h1>
           <p className="text-xs sm:text-sm text-[#A89F91] leading-relaxed mb-6 font-sans">
-            Your authenticated session is registered as a customer patron account. Access to the administration console requires certified atelier managerial privileges.
+            Your account does not have administrator privileges. Access to the admin panel is restricted to authorized staff.
           </p>
 
           {authError && (
@@ -91,14 +91,14 @@ export const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ c
               className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 py-3 px-6 rounded-full bg-tangerine hover:bg-tangerine/90 text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-md cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Return to Account</span>
+              <span>Return to My Account</span>
             </button>
             <button
               type="button"
               onClick={() => navigate('/')}
               className="w-full sm:w-auto py-3 px-6 rounded-full border border-white/15 text-white/80 hover:text-white hover:bg-white/5 text-xs uppercase tracking-wider font-semibold transition-all cursor-pointer"
             >
-              Back to Storefront
+              Back to Home
             </button>
           </div>
         </div>

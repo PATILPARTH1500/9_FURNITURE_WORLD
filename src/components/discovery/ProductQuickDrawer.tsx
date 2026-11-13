@@ -235,12 +235,12 @@ export const ProductQuickDrawer: React.FC = () => {
               {addedFeedback ? (
                 <>
                   <Check className="w-4 h-4" />
-                  <span>Added to Bag!</span>
+                  <span>Added to Cart!</span>
                 </>
               ) : (
                 <>
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Add to Bag</span>
+                  <span>Add to Cart</span>
                 </>
               )}
             </button>
@@ -262,7 +262,7 @@ export const ProductQuickDrawer: React.FC = () => {
               }}
               className="text-tangerine hover:text-coral font-medium transition-colors"
             >
-              Open Bag →
+              View Cart →
             </button>
           </div>
         </div>

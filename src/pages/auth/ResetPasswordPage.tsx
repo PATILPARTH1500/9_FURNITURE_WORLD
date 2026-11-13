@@ -90,14 +90,14 @@ export const ResetPasswordPage: React.FC = () => {
               {BRAND_CONFIG.name}
             </span>
             <span className="block text-[9px] uppercase tracking-[0.28em] text-[#666059] -mt-0.5">
-              Security Protocol
+              Set New Password
             </span>
           </Link>
           <h1 className="font-serif text-3xl sm:text-4xl text-checkerboard font-normal tracking-tight">
             Set New Password
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-[#666059] font-sans">
-            Create a strong, secure passphrase for your account.
+            Create a strong, secure password for your account.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export const ResetPasswordPage: React.FC = () => {
               </div>
               <h2 className="font-serif text-2xl text-checkerboard mb-2">Password Updated</h2>
               <p className="text-xs sm:text-sm text-[#666059] mb-4 font-sans">
-                Your credentials have been securely updated. Redirecting to your account dashboard...
+                Your password has been updated. Redirecting to your account...
               </p>
               <div className="w-5 h-5 rounded-full border-2 border-checkerboard/20 border-t-tangerine animate-spin mx-auto" />
             </div>

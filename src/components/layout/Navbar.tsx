@@ -235,13 +235,13 @@ export const Navbar: React.FC = () => {
                 navTheme === 'dark' ? 'text-[#E7C89F]' : 'text-[#666059]'
               }`}
             >
-              Atelier & Residence
+              Handcrafted Furniture
             </span>
           </Link>
 
           {/* 2. Desktop Navigation with Considered 9-Section Layout */}
           <nav
-            aria-label="Primary residence navigation"
+            aria-label="Main navigation"
             className="hidden md:flex items-center gap-5 lg:gap-7 text-xs font-sans tracking-[0.1em] uppercase font-medium shrink-0"
           >
             {/* Primary 5 Anchors */}
@@ -402,7 +402,7 @@ export const Navbar: React.FC = () => {
               </span>
             </button>
 
-            {/* Customer Account Sanctuary Entry */}
+            {/* Customer Account Profile Entry */}
             <Link
               href={isAuthenticated ? '/account' : '/login'}
               className={`inline-flex items-center space-x-1.5 p-2 rounded-full transition-colors ${
@@ -411,7 +411,7 @@ export const Navbar: React.FC = () => {
                   : 'text-[#1A1816]/85 hover:text-[#C84D1B] hover:bg-[#1A1816]/5'
               }`}
               aria-label={isAuthenticated ? `Customer Account: ${customerName}` : 'Customer Sign In'}
-              title={isAuthenticated ? `Signed in as ${customerName}` : 'Sign In / Register'}
+              title={isAuthenticated ? `Signed in as ${customerName}` : 'Sign In / Create Account'}
             >
               {isAuthenticated && avatarUrl ? (
                 <img
@@ -431,22 +431,22 @@ export const Navbar: React.FC = () => {
                   navTheme === 'dark' ? 'text-[#D0C4B4]' : 'text-[#666059]'
                 }`}
               >
-                {isAuthenticated ? 'Sanctuary' : 'Sign In'}
+                {isAuthenticated ? 'Profile' : 'Sign In'}
               </span>
             </Link>
 
-            {/* Atelier Admin Shortcut for Staff */}
+            {/* Admin Shortcut for Staff */}
             {isAuthenticated && isAdmin && (
               <Link
                 href="/admin"
-                title="Atelier Administration Console"
+                title="Admin Panel"
                 className={`hidden md:inline-flex items-center space-x-1 py-1 px-2.5 rounded-full text-[10px] font-semibold uppercase tracking-wider transition-colors ${
                   navTheme === 'dark'
                     ? 'bg-tangerine/20 text-tangerine border border-tangerine/40 hover:bg-tangerine hover:text-white'
                     : 'bg-[#1A1816] text-tangerine hover:bg-tangerine hover:text-white'
                 }`}
               >
-                <span>Atelier</span>
+                <span>Admin</span>
               </Link>
             )}
 
@@ -477,7 +477,7 @@ export const Navbar: React.FC = () => {
                   : 'text-white bg-[#1A1816] hover:bg-[#C84D1B]'
               }`}
             >
-              <span>Explore Works</span>
+              <span>Explore Furniture</span>
               <ArrowUpRight className="w-3.5 h-3.5 text-white/80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
 
@@ -529,7 +529,7 @@ export const Navbar: React.FC = () => {
                     {BRAND_CONFIG.name}
                   </span>
                   <span className="font-sans text-[9px] uppercase tracking-[0.24em] text-[#666059]">
-                    Atelier & Residence
+                    Handcrafted Furniture
                   </span>
                 </div>
                 <button
@@ -541,7 +541,7 @@ export const Navbar: React.FC = () => {
                 </button>
               </div>
 
-              {/* Customer Account Sanctuary in Mobile Drawer */}
+              {/* Customer Account Profile in Mobile Drawer */}
               <div className="pt-4 pb-1">
                 <Link
                   href={isAuthenticated ? '/account' : '/login'}
@@ -565,7 +565,7 @@ export const Navbar: React.FC = () => {
                         {isAuthenticated ? customerName : 'Customer Sign In'}
                       </span>
                       <span className="block text-[10px] text-[#666059] font-sans mt-0.5">
-                        {isAuthenticated ? 'Client Sanctuary & Portfolio' : 'Access bespoke curations'}
+                        {isAuthenticated ? 'My Account & Orders' : 'Sign in to your account'}
                       </span>
                     </div>
                   </div>
@@ -573,7 +573,7 @@ export const Navbar: React.FC = () => {
                 </Link>
               </div>
 
-              {/* Atelier Admin Shortcut in Mobile Drawer */}
+              {/* Admin Shortcut in Mobile Drawer */}
               {isAuthenticated && isAdmin && (
                 <div className="pt-1.5 pb-1">
                   <Link
@@ -582,20 +582,20 @@ export const Navbar: React.FC = () => {
                     className="flex items-center justify-between p-3 rounded-2xl bg-[#1A1816] text-tangerine hover:bg-black transition-colors"
                   >
                     <span className="font-serif text-xs font-semibold uppercase tracking-wider">
-                      Atelier Management Console
+                      Admin Panel
                     </span>
                     <ArrowUpRight className="w-4 h-4 text-tangerine" />
                   </Link>
                 </div>
               )}
 
-              {/* All 9 Major Navigation Destinations */}
+              {/* All Major Navigation Destinations */}
               <div className="py-6 space-y-6">
                 <span className="font-sans text-[11px] uppercase tracking-[0.2em] text-[#666059] block">
-                  Residence Navigation
+                  Menu
                 </span>
 
-                <nav className="flex flex-col space-y-1.5" aria-label="Mobile residence navigation">
+                <nav className="flex flex-col space-y-1.5" aria-label="Mobile navigation">
                   {BRAND_CONFIG.navigation.map((item, idx) => {
                     const targetKey = item.href.replace(/^\/?#/, '');
                     const isActive = location.pathname === '/' && activeSection === targetKey;
@@ -647,7 +647,7 @@ export const Navbar: React.FC = () => {
                   className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-white border border-[#1A1816]/15 text-[#1A1816] font-semibold px-4 py-3 rounded-full shadow-2xs hover:bg-[#F2EFE9] transition-colors cursor-pointer"
                 >
                   <Search className="w-3.5 h-3.5 text-[#C84D1B]" />
-                  <span>Search Furniture Collection</span>
+                  <span>Search Furniture</span>
                 </button>
 
                 <Link
@@ -655,7 +655,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full inline-flex items-center justify-center space-x-2 text-xs font-sans uppercase tracking-wider bg-[#1A1816] hover:bg-[#C84D1B] text-white font-semibold px-4 py-3 rounded-full shadow-sm transition-colors"
                 >
-                  <span>Explore Complete Catalogue</span>
+                  <span>Explore Furniture</span>
                   <ArrowUpRight className="w-3.5 h-3.5 text-white" />
                 </Link>
 

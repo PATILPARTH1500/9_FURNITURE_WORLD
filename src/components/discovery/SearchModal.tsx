@@ -67,7 +67,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by furniture, room, timber, or bouclé..."
+            placeholder="Search for sofas, dining tables, beds..."
             className="w-full font-sans text-sm sm:text-base text-[#1A1816] bg-transparent placeholder:text-[#78716C]/60 outline-hidden"
           />
           {query ? (

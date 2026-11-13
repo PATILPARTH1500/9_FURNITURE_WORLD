@@ -91,14 +91,14 @@ export const AdminDashboardEntryPage: React.FC = () => {
             <div>
               <div className="flex items-center space-x-2">
                 <h1 className="font-serif text-2xl text-white font-normal">
-                  Atelier Control Perimeter
+                  Admin Dashboard
                 </h1>
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-[10px] uppercase font-semibold tracking-wider">
                   Admin Verified
                 </span>
               </div>
               <p className="text-xs text-[#A89F91] font-sans">
-                PostgreSQL 17.11 Verified RLS Enforced • Supabase Project <code className="text-white/80">plixtrmiidhxiybgujdb</code>
+                PostgreSQL 17 Database • Project <code className="text-white/80">plixtrmiidhxiybgujdb</code>
               </p>
             </div>
           </div>
@@ -109,7 +109,7 @@ export const AdminDashboardEntryPage: React.FC = () => {
               className="inline-flex items-center space-x-1.5 py-2 px-4 rounded-full border border-white/15 text-xs text-[#C4BCB1] hover:text-white hover:bg-white/5 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Public Storefront</span>
+              <span>View Website</span>
             </Link>
 
             <button
@@ -118,7 +118,7 @@ export const AdminDashboardEntryPage: React.FC = () => {
               className="inline-flex items-center space-x-1.5 py-2 px-4 rounded-full border border-red-500/20 bg-red-950/30 hover:bg-red-950/60 text-red-300 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
-              <span>Sign Out</span>
+              <span>Logout</span>
             </button>
           </div>
         </div>
@@ -132,10 +132,10 @@ export const AdminDashboardEntryPage: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] uppercase tracking-[0.2em] text-tangerine font-semibold block mb-1">
-                  Verified Administrator
+                  Admin
                 </span>
                 <h2 className="font-serif text-2xl text-white">
-                  {profile?.fullName || 'Atelier Staff Operator'}
+                  {profile?.fullName || 'Administrator'}
                 </h2>
                 <p className="text-xs text-[#A89F91] mt-0.5">{user?.email}</p>
               </div>
@@ -152,15 +152,15 @@ export const AdminDashboardEntryPage: React.FC = () => {
               </div>
               <div>
                 <span className="block text-[10px] uppercase tracking-wider text-[#8C827A]">
-                  Privilege Status
+                  Admin Access
                 </span>
                 <span className="text-emerald-400 font-semibold mt-0.5 block">
-                  is_admin: true
+                  Active
                 </span>
               </div>
               <div className="col-span-2 sm:col-span-1">
                 <span className="block text-[10px] uppercase tracking-wider text-[#8C827A]">
-                  Authorization Boundary
+                  Admin User ID
                 </span>
                 <span className="text-white font-mono text-[11px] mt-0.5 block truncate max-w-[120px]">
                   {user?.id}
@@ -176,7 +176,7 @@ export const AdminDashboardEntryPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Database className="w-4 h-4 text-tangerine" />
               <h3 className="font-serif text-lg text-white">
-                Live Administrative RLS Telemetry
+                Database Overview
               </h3>
             </div>
             <button
@@ -186,47 +186,47 @@ export const AdminDashboardEntryPage: React.FC = () => {
               className="inline-flex items-center space-x-1.5 text-xs text-[#A89F91] hover:text-white transition-colors cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${stats.isLoading ? 'animate-spin' : ''}`} />
-              <span>Refresh Metrics</span>
+              <span>Refresh Data</span>
             </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div className="bg-[#1C1A18] border border-white/10 rounded-2xl p-5">
               <div className="flex items-center justify-between text-[#8C827A] mb-3">
-                <span className="text-xs uppercase tracking-wider font-medium">Customer Profiles</span>
+                <span className="text-xs uppercase tracking-wider font-medium">Customers</span>
                 <Users className="w-4 h-4 text-tangerine" />
               </div>
               <div className="text-3xl font-serif text-white">
                 {stats.isLoading ? '...' : (stats.profileCount ?? '0')}
               </div>
               <p className="text-[11px] text-[#8C827A] mt-2">
-                Accessible via <code className="text-white/60">is_admin()</code> RLS bypass
+                Total registered user profiles
               </p>
             </div>
 
             <div className="bg-[#1C1A18] border border-white/10 rounded-2xl p-5">
               <div className="flex items-center justify-between text-[#8C827A] mb-3">
-                <span className="text-xs uppercase tracking-wider font-medium">Residence Addresses</span>
+                <span className="text-xs uppercase tracking-wider font-medium">Saved Addresses</span>
                 <MapPin className="w-4 h-4 text-tangerine" />
               </div>
               <div className="text-3xl font-serif text-white">
                 {stats.isLoading ? '...' : (stats.addressCount ?? '0')}
               </div>
               <p className="text-[11px] text-[#8C827A] mt-2">
-                Indian address registry entries
+                Total saved delivery addresses
               </p>
             </div>
 
             <div className="bg-[#1C1A18] border border-white/10 rounded-2xl p-5">
               <div className="flex items-center justify-between text-[#8C827A] mb-3">
-                <span className="text-xs uppercase tracking-wider font-medium">Bespoke Orders</span>
+                <span className="text-xs uppercase tracking-wider font-medium">Orders</span>
                 <Package className="w-4 h-4 text-tangerine" />
               </div>
               <div className="text-3xl font-serif text-white">
                 {stats.isLoading ? '...' : (stats.orderCount ?? '0')}
               </div>
               <p className="text-[11px] text-[#8C827A] mt-2">
-                Restricted client INSERT architecture
+                Total customer orders
               </p>
             </div>
           </div>
@@ -240,30 +240,30 @@ export const AdminDashboardEntryPage: React.FC = () => {
             </div>
             <div>
               <span className="text-[10px] uppercase tracking-[0.2em] text-tangerine font-semibold block mb-1">
-                Roadmap Architecture
+                Upcoming Features
               </span>
               <h3 className="font-serif text-xl text-white mb-2">
-                Phase 04 Admin Suite Integration
+                Management Features
               </h3>
               <p className="text-xs sm:text-sm text-[#A89F91] leading-relaxed max-w-3xl mb-4 font-sans">
-                Phase 02 delivers the rock-solid RBAC foundation, cryptographic route protection, customer address registry, and storage security. The complete management interface (Product catalog editor, inventory level adjustment, order status dispatcher, and analytics) will be activated in Phase 04.
+                Our backend security and role-based permissions are active. Additional management tools for products, stock levels, orders, and activity logs are being integrated.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                 <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-white font-medium block">1. Catalog Management</span>
+                  <span className="text-white font-medium block">1. Product Management</span>
                   <span className="text-[11px] text-[#8C827A]">Furniture specs & media</span>
                 </div>
                 <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-white font-medium block">2. Inventory Sync</span>
+                  <span className="text-white font-medium block">2. Stock Management</span>
                   <span className="text-[11px] text-[#8C827A]">Warehouse allocations</span>
                 </div>
                 <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-white font-medium block">3. Order Fulfillment</span>
+                  <span className="text-white font-medium block">3. Order Management</span>
                   <span className="text-[11px] text-[#8C827A]">Tracking & status flow</span>
                 </div>
                 <div className="p-3 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-white font-medium block">4. Audit Surveillance</span>
+                  <span className="text-white font-medium block">4. Activity Logs</span>
                   <span className="text-[11px] text-[#8C827A]">Admin activity telemetry</span>
                 </div>
               </div>

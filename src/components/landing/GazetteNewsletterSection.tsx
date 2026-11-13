@@ -60,16 +60,16 @@ export const GazetteNewsletterSection: React.FC = () => {
           <div className="flex items-center justify-center space-x-2">
             <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
             <span className="font-mono text-xs uppercase tracking-widest text-tangerine font-semibold">
-              The Gazette
+              Newsletter
             </span>
           </div>
 
           <div className="space-y-3 max-w-xl mx-auto">
             <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl text-checkerboard font-semibold tracking-tight">
-              The Furniture Village Gazette
+              Furniture Village Newsletter
             </h3>
             <p className="font-sans text-sm sm:text-base text-walnut leading-relaxed font-normal">
-              Receive our seasonal architectural gazette, early access to limited timber releases, invitations to private showroom previews, and thoughtful essays on home craft.
+              Get our newsletter with new furniture launches, showroom events, and decorating tips for your home.
             </p>
           </div>
 
@@ -77,7 +77,7 @@ export const GazetteNewsletterSection: React.FC = () => {
           {status === 'success' ? (
             <div className="p-4 rounded-2xl bg-cream/70 border border-tangerine/30 max-w-md mx-auto flex items-center justify-center space-x-2.5 text-tangerine font-sans text-sm font-semibold">
               <Check className="w-5 h-5" />
-              <span>You have been subscribed to The Gazette. Welcome.</span>
+              <span>Thank you for subscribing to our newsletter.</span>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-3">

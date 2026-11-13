@@ -77,14 +77,14 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 border-b border-stone-200/80 relative z-10">
         <div className="max-w-3xl bg-white p-8 md:p-10 rounded-2xl border border-stone-200/80 border-l-4 border-l-[#C84D1B] shadow-[0_4px_20px_rgba(26,24,22,0.04)]">
           <span className="font-sans text-[11px] uppercase tracking-widest text-[#C84D1B] font-semibold block mb-2">
-            Curator&apos;s Architectural Note
+            Design Note
           </span>
           <p className="font-serif text-xl md:text-2xl text-[#1A1816] italic font-light leading-relaxed">
             &ldquo;{collection.curatorNote}&rdquo;
           </p>
           <div className="flex items-center justify-between pt-4 mt-4 border-t border-stone-200/80 text-xs">
             <span className="font-sans font-medium text-[#78716C]">
-              Design Philosophy · Furniture World Atelier
+              Design Philosophy · Furniture World
             </span>
             <span className="font-sans text-[11px] text-[#C84D1B] font-semibold">
               {collection.year || 2026} Edition
@@ -98,13 +98,13 @@ export default function CollectionDetailPage({ params }: CollectionPageProps) {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 pb-4 border-b border-stone-200/80 gap-4">
           <div>
             <span className="font-sans text-[11px] uppercase tracking-widest text-[#C84D1B] font-semibold block">
-              Architectural Specifications
+              Collection Pieces
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl text-[#1A1816] font-light mt-1">
-              Pieces in this Suite
+              Pieces in this Collection
             </h2>
             <p className="text-xs text-[#78716C] mt-1">
-              Ergonomically engineered and hand-finished with honest, tactile materials.
+              Thoughtfully crafted and hand-finished with high quality, natural materials.
             </p>
           </div>
           <span className="font-sans text-xs text-[#1A1816] font-medium bg-white px-3.5 py-1.5 rounded-full border border-stone-200/80 shadow-2xs self-start sm:self-auto">

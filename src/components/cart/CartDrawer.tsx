@@ -45,7 +45,7 @@ export const CartDrawer: React.FC = () => {
             <div className="flex items-center space-x-2">
               <ShoppingBag className="w-5 h-5 text-tangerine" />
               <h3 className="font-serif text-2xl font-semibold text-checkerboard">
-                Your Shopping Bag
+                Your Cart
               </h3>
               <span className="font-sans text-xs text-walnut font-semibold bg-cream px-2 py-0.5 rounded-full border border-checkerboard/10">
                 {items.reduce((acc, i) => acc + i.quantity, 0)}
@@ -66,7 +66,7 @@ export const CartDrawer: React.FC = () => {
               {qualifiesForFreeShipping ? (
                 <span className="text-olive font-semibold flex items-center space-x-1.5">
                   <ShieldCheck className="w-4 h-4 inline text-olive" />
-                  <span>Free room-of-choice home delivery unlocked!</span>
+                  <span>Free room delivery unlocked!</span>
                 </span>
               ) : (
                 <span className="flex items-center space-x-1.5">
@@ -116,9 +116,9 @@ export const CartDrawer: React.FC = () => {
               </div>
             ) : items.length === 0 ? (
               <div className="py-24 text-center space-y-4 text-walnut">
-                <p className="font-serif text-xl text-checkerboard font-medium">Your bag is currently empty.</p>
+                <p className="font-serif text-xl text-checkerboard font-medium">Your cart is empty.</p>
                 <p className="text-xs max-w-xs mx-auto text-walnut leading-relaxed font-normal">
-                  Browse our handcrafted collections to discover comfortable, architectural pieces for your home.
+                  Browse our collections to find comfortable furniture for your home.
                 </p>
                 <div className="pt-2">
                   <button
@@ -202,8 +202,8 @@ export const CartDrawer: React.FC = () => {
                   <span className="font-semibold text-checkerboard">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex items-center justify-between text-xs text-walnut">
-                  <span>White-Glove Delivery</span>
-                  <span>{qualifiesForFreeShipping ? 'FREE' : formatPrice(250)}</span>
+                  <span>Delivery & Assembly</span>
+                  <span>{qualifiesForFreeShipping ? 'Free' : formatPrice(250)}</span>
                 </div>
                 <div className="pt-2 border-t border-checkerboard/10 flex items-center justify-between">
                   <span className="font-serif text-lg font-semibold text-checkerboard">Total</span>
@@ -217,7 +217,7 @@ export const CartDrawer: React.FC = () => {
                 <button
                   onClick={handleCheckout}
                   disabled={isSubmitting}
-                  className="w-full py-3.5 bg-tangerine hover:bg-coral text-white font-medium text-xs uppercase tracking-wider rounded-full shadow-warm transition-all flex items-center justify-center space-x-2"
+                  className="w-full py-3.5 bg-tangerine hover:bg-coral text-white font-medium text-xs uppercase tracking-wider rounded-full shadow-warm transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <span>Processing Order...</span>
@@ -234,7 +234,7 @@ export const CartDrawer: React.FC = () => {
                   onClick={() => setIsOpen(false)}
                   className="w-full block text-center py-2 text-xs font-sans text-walnut hover:text-checkerboard transition-colors"
                 >
-                  View Full Cart & Summary
+                  View Full Cart
                 </Link>
               </div>
             </div>

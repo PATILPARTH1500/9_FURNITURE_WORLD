@@ -48,7 +48,7 @@ export const AdminLoginPage: React.FC = () => {
       if (!verification.isAdmin) {
         await signOut();
         setIsSubmitting(false);
-        setErrorMessage(verification.error || 'Access Denied: This account does not possess administrator privileges.');
+        setErrorMessage(verification.error || 'Access Denied: This account does not have administrator privileges.');
         return;
       }
 
@@ -56,7 +56,7 @@ export const AdminLoginPage: React.FC = () => {
       navigate(redirectTo, { replace: true });
     } catch {
       setIsSubmitting(false);
-      setErrorMessage('An unexpected authorization error occurred.');
+      setErrorMessage('An unexpected error occurred during login.');
     }
   };
 
@@ -70,7 +70,7 @@ export const AdminLoginPage: React.FC = () => {
             className="inline-flex items-center space-x-2 text-xs uppercase tracking-widest text-[#A89F91] hover:text-white transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Storefront Sanctuary</span>
+            <span>Back to Store</span>
           </Link>
         </div>
 
@@ -80,13 +80,13 @@ export const AdminLoginPage: React.FC = () => {
             <Shield className="w-7 h-7" />
           </div>
           <span className="text-[10px] uppercase tracking-[0.25em] text-tangerine font-semibold block mb-2">
-            Restricted System Protocol
+            Admin Access Only
           </span>
           <h1 className="font-serif text-3xl text-white font-normal tracking-tight">
-            Atelier Management
+            Admin Login
           </h1>
           <p className="mt-2 text-xs text-[#A89F91] font-sans">
-            Authentication portal for Furniture Village store operators & curators
+            Sign in to manage products, orders, and customer accounts
           </p>
         </div>
 
@@ -101,10 +101,10 @@ export const AdminLoginPage: React.FC = () => {
 
           {isAuthenticated && !isAdmin && (
             <div className="mb-6 p-4 rounded-2xl bg-amber-950/40 border border-amber-800/40 text-amber-200 text-xs">
-              <p className="font-semibold mb-1">Currently signed in as patron:</p>
+              <p className="font-semibold mb-1">Currently signed in as customer:</p>
               <p className="text-[#C4BCB1]">{user?.email}</p>
               <p className="mt-2 text-[11px] text-amber-300/80">
-                To access the administrative console, authenticate with an authorized administrator credential.
+                To access the admin panel, please sign in with an administrator account.
               </p>
             </div>
           )}
@@ -112,7 +112,7 @@ export const AdminLoginPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-[11px] uppercase tracking-wider font-medium text-[#C4BCB1] mb-1.5">
-                Staff Email Address
+                Admin Email Address
               </label>
               <div className="relative">
                 <input
@@ -129,7 +129,7 @@ export const AdminLoginPage: React.FC = () => {
 
             <div>
               <label className="block text-[11px] uppercase tracking-wider font-medium text-[#C4BCB1] mb-1.5">
-                Cryptographic Passphrase
+                Password
               </label>
               <div className="relative">
                 <input
@@ -152,19 +152,19 @@ export const AdminLoginPage: React.FC = () => {
               {isSubmitting ? (
                 <>
                   <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                  <span>Verifying Credentials...</span>
+                  <span>Verifying Account...</span>
                 </>
               ) : (
                 <>
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Authenticate Operator Session</span>
+                  <span>Login to Admin Panel</span>
                 </>
               )}
             </button>
           </form>
 
           <div className="mt-6 pt-6 border-t border-white/10 text-center text-[11px] text-[#A89F91]">
-            <span>All login events and authorization tokens are audited.</span>
+            <span>All admin actions are recorded for security.</span>
           </div>
         </div>
       </div>

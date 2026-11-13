@@ -32,7 +32,7 @@ export default function CollectionsPage() {
         <div className="max-w-3xl space-y-4 mb-16">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white border border-stone-200/80 text-[11px] font-sans uppercase tracking-widest text-[#C84D1B] font-semibold shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C84D1B]" />
-            <span>Permanent Atelier Collection</span>
+            <span>Furniture Collections 2026</span>
           </div>
 
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-[#1A1816] font-light tracking-tight leading-[1.08]">
@@ -49,7 +49,7 @@ export default function CollectionsPage() {
             <div className="flex items-center space-x-2">
               <Layers className="w-4 h-4 text-[#C84D1B]" />
               <h2 className="font-sans text-xs uppercase tracking-widest text-[#1A1816] font-medium">
-                Curated Design Suites
+                Featured Collections
               </h2>
             </div>
             <span className="font-sans text-xs text-[#78716C]">3 Suites</span>

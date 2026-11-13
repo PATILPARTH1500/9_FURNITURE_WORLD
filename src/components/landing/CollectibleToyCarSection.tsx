@@ -271,7 +271,7 @@ export const CollectibleToyCarSection: React.FC = () => {
         {/* Bottom Banner Triggering Scene 04 */}
         <div className="mt-12 sm:mt-14 pt-8 border-t border-stone-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs font-sans text-[#78716C] uppercase tracking-wider font-medium text-center sm:text-left">
-            Residence Living Collection · Family Lounge Living &amp; Active Play
+            Living Room Collection · Family Lounge &amp; Play
           </p>
           <MagneticButton
             href="/#residence-tour"

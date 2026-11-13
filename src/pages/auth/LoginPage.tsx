@@ -68,14 +68,14 @@ export const LoginPage: React.FC = () => {
               {BRAND_CONFIG.name}
             </span>
             <span className="block text-[9px] uppercase tracking-[0.28em] text-[#666059] -mt-0.5">
-              Customer Sanctuary
+              My Account
             </span>
           </Link>
           <h1 className="font-serif text-3xl sm:text-4xl text-checkerboard font-normal tracking-tight">
             Welcome Back
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-[#666059] font-sans">
-            Access your residence portfolio, bespoke orders & curations.
+            Sign in to manage your orders, saved addresses, and profile.
           </p>
         </div>
 
@@ -138,7 +138,7 @@ export const LoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="architect@atelier.com"
+                  placeholder="name@example.com"
                   className="w-full bg-white border border-[#1A1816]/15 rounded-2xl px-4 py-3 pl-10 text-sm text-checkerboard placeholder:text-[#9E9891] focus:outline-hidden focus:border-tangerine focus:ring-1 focus:ring-tangerine transition-all"
                   autoComplete="email"
                 />
@@ -185,7 +185,7 @@ export const LoginPage: React.FC = () => {
               disabled={isSubmitting || isGoogleSubmitting}
               className="w-full mt-2 flex items-center justify-center space-x-2 py-3 px-6 rounded-full bg-checkerboard hover:bg-tangerine text-white text-xs uppercase tracking-wider font-semibold transition-all duration-300 shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>{isSubmitting ? 'Signing in...' : 'Sign In'}</span>
+              <span>{isSubmitting ? 'Logging in...' : 'Login'}</span>
               {!isSubmitting && <ArrowRight className="w-3.5 h-3.5" />}
             </button>
           </form>

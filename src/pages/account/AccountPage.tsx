@@ -26,6 +26,7 @@ import {
   Briefcase,
   Building,
   ShieldAlert,
+  RefreshCw,
 } from 'lucide-react';
 
 export const AccountPage: React.FC = () => {
@@ -59,9 +60,14 @@ export const AccountPage: React.FC = () => {
 
   // Address registry state
   const [addresses, setAddresses] = useState<CustomerAddress[]>([]);
-  const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
+  const [hasFetchedAddresses, setHasFetchedAddresses] = useState(false);
   const [addressError, setAddressError] = useState<string | null>(null);
   const [addressSuccess, setAddressSuccess] = useState<string | null>(null);
+
+  // Request tracking to prevent stale state updates and race conditions
+  const fetchRequestIdRef = useRef(0);
+  const isMountedRef = useRef(true);
 
   // Add / Edit address form state
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
@@ -81,14 +87,14 @@ export const AccountPage: React.FC = () => {
   });
 
   // Customer display metadata
-  const customerEmail = user?.email || 'customer@residence.com';
-  const customerName = profile?.fullName || user?.user_metadata?.full_name || user?.user_metadata?.name || 'Valued Patron';
+  const customerEmail = user?.email || 'customer@example.com';
+  const customerName = profile?.fullName || user?.user_metadata?.full_name || user?.user_metadata?.name || 'Customer';
   const avatarUrl = profile?.avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   const isGoogleUser = user?.app_metadata?.provider === 'google' || user?.identities?.some((id) => id.provider === 'google');
   const isEmailVerified = Boolean(user?.email_confirmed_at);
 
   const memberSince = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString('en-US', {
+    ? new Date(user.created_at).toLocaleDateString('en-IN', {
         month: 'long',
         year: 'numeric',
       })
@@ -110,25 +116,60 @@ export const AccountPage: React.FC = () => {
     }
   }, [profile]);
 
-  // Load addresses when tab is active or user changes
+  // Fetch saved addresses from Supabase with request tracking
   const loadAddresses = useCallback(async () => {
-    if (!user) return;
+    if (!user) {
+      if (isMountedRef.current) {
+        setAddresses([]);
+        setHasFetchedAddresses(false);
+        setIsLoadingAddresses(false);
+      }
+      return;
+    }
+
+    const currentRequestId = ++fetchRequestIdRef.current;
     setIsLoadingAddresses(true);
     setAddressError(null);
+
     const result = await AddressService.fetchAddresses(user.id);
+
+    // Guard against stale state updates from unmounted component or out-of-order responses
+    if (!isMountedRef.current || currentRequestId !== fetchRequestIdRef.current) {
+      return;
+    }
+
     setIsLoadingAddresses(false);
     if (result.error) {
       setAddressError(result.error);
+      // Keep hasFetchedAddresses as false so UI handles error distinctly from empty state
     } else {
       setAddresses(result.data);
+      setHasFetchedAddresses(true);
+      setAddressError(null);
     }
   }, [user]);
 
+  // Fetch addresses as soon as the account page initializes with an authenticated user
   useEffect(() => {
-    if (activeTab === 'addresses' && user) {
+    isMountedRef.current = true;
+    if (user?.id) {
+      loadAddresses();
+    } else {
+      setAddresses([]);
+      setHasFetchedAddresses(false);
+      setIsLoadingAddresses(false);
+    }
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, [user?.id, loadAddresses]);
+
+  // Fallback: If customer clicks the addresses tab and addresses have not been fetched yet (e.g. error retry)
+  useEffect(() => {
+    if (activeTab === 'addresses' && user && !hasFetchedAddresses && !isLoadingAddresses) {
       loadAddresses();
     }
-  }, [activeTab, user, loadAddresses]);
+  }, [activeTab, user, hasFetchedAddresses, isLoadingAddresses, loadAddresses]);
 
   const handleSaveProfile = async () => {
     if (!editedName.trim()) {
@@ -282,7 +323,7 @@ export const AccountPage: React.FC = () => {
       setAddressError(result.error);
     } else {
       setIsAddressModalOpen(false);
-      setAddressSuccess(editingAddressId ? 'Residence address successfully updated.' : 'New residence destination registered.');
+      setAddressSuccess(editingAddressId ? 'Address updated successfully.' : 'New address saved successfully.');
       setTimeout(() => setAddressSuccess(null), 3500);
       await loadAddresses();
     }
@@ -290,7 +331,7 @@ export const AccountPage: React.FC = () => {
 
   const handleDeleteAddress = async (addressId: string) => {
     if (!user) return;
-    if (!window.confirm('Are you sure you wish to remove this delivery residence from your registry?')) {
+    if (!window.confirm('Are you sure you want to delete this delivery address?')) {
       return;
     }
 
@@ -298,7 +339,7 @@ export const AccountPage: React.FC = () => {
     if (result.error) {
       setAddressError(result.error);
     } else {
-      setAddressSuccess('Address removed from registry.');
+      setAddressSuccess('Address deleted successfully.');
       setTimeout(() => setAddressSuccess(null), 3000);
       await loadAddresses();
     }
@@ -310,7 +351,7 @@ export const AccountPage: React.FC = () => {
     if (result.error) {
       setAddressError(result.error);
     } else {
-      setAddressSuccess('Primary residence updated.');
+      setAddressSuccess('Default address updated.');
       setTimeout(() => setAddressSuccess(null), 3000);
       await loadAddresses();
     }
@@ -330,7 +371,7 @@ export const AccountPage: React.FC = () => {
             Home
           </Link>
           <span>/</span>
-          <span className="text-checkerboard font-medium">Customer Sanctuary</span>
+          <span className="text-checkerboard font-medium">My Account</span>
         </div>
 
         {/* Hero Customer Card */}
@@ -379,7 +420,7 @@ export const AccountPage: React.FC = () => {
                   {isAdmin && (
                     <span className="inline-flex items-center space-x-1 px-3 py-1 rounded-full bg-[#1A1816] text-tangerine text-[10px] font-semibold tracking-wider uppercase border border-tangerine/30 shadow-xs">
                       <ShieldAlert className="w-3 h-3 text-tangerine" />
-                      <span>Atelier Administrator</span>
+                      <span>Admin</span>
                     </span>
                   )}
                 </div>
@@ -400,13 +441,13 @@ export const AccountPage: React.FC = () => {
                   {isEmailVerified && (
                     <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 text-[10px] font-medium tracking-wide">
                       <ShieldCheck className="w-3 h-3 text-green-600" />
-                      <span>Verified Client</span>
+                      <span>Email Verified</span>
                     </span>
                   )}
 
                   <div className="flex items-center space-x-1.5 text-[#8C827A]">
                     <Calendar className="w-3.5 h-3.5" />
-                    <span>Member since {memberSince}</span>
+                    <span>Joined on {memberSince}</span>
                   </div>
                 </div>
               </div>
@@ -420,7 +461,7 @@ export const AccountPage: React.FC = () => {
                   className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-[#1A1816] hover:bg-tangerine text-white text-xs uppercase tracking-wider font-semibold transition-all duration-200 shadow-md"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-tangerine" />
-                  <span>Atelier Console</span>
+                  <span>Admin Panel</span>
                 </Link>
               )}
 
@@ -430,7 +471,7 @@ export const AccountPage: React.FC = () => {
                 className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full border border-[#1A1816]/20 bg-white hover:bg-red-50 hover:border-red-200 hover:text-red-700 text-checkerboard text-xs uppercase tracking-wider font-semibold transition-all duration-200 shadow-2xs cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span>Sign Out</span>
+                <span>Logout</span>
               </button>
             </div>
           </div>
@@ -483,18 +524,31 @@ export const AccountPage: React.FC = () => {
                 : 'border-transparent text-[#666059] hover:text-checkerboard'
             }`}
           >
-            Profile & Details
+            Personal Details
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('addresses')}
-            className={`pb-3 px-4 text-xs uppercase tracking-[0.14em] font-semibold transition-colors cursor-pointer border-b-2 whitespace-nowrap ${
+            className={`pb-3 px-4 text-xs uppercase tracking-[0.14em] font-semibold transition-colors cursor-pointer border-b-2 whitespace-nowrap inline-flex items-center space-x-1.5 ${
               activeTab === 'addresses'
                 ? 'border-tangerine text-checkerboard'
                 : 'border-transparent text-[#666059] hover:text-checkerboard'
             }`}
           >
-            Residence Addresses ({addresses.length})
+            <span>Saved Addresses</span>
+            <span className="font-mono text-xs">
+              {!hasFetchedAddresses && isLoadingAddresses ? (
+                <span className="text-[#8C827A] font-normal tracking-widest animate-pulse" aria-label="Loading addresses">
+                  (...)
+                </span>
+              ) : !hasFetchedAddresses && addressError ? (
+                <span className="text-red-500 font-bold" title={addressError} aria-label="Error loading address count">
+                  (!)
+                </span>
+              ) : (
+                `(${addresses.length})`
+              )}
+            </span>
           </button>
           <button
             type="button"
@@ -505,7 +559,7 @@ export const AccountPage: React.FC = () => {
                 : 'border-transparent text-[#666059] hover:text-checkerboard'
             }`}
           >
-            Security & Login
+            Login & Security
           </button>
           <button
             type="button"
@@ -516,7 +570,7 @@ export const AccountPage: React.FC = () => {
                 : 'border-transparent text-[#666059] hover:text-checkerboard'
             }`}
           >
-            Bespoke Orders
+            My Orders
           </button>
         </div>
 
@@ -526,7 +580,7 @@ export const AccountPage: React.FC = () => {
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-6 sm:p-8 shadow-2xs">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="font-serif text-xl text-checkerboard">Personal Identification</h2>
+                  <h2 className="font-serif text-xl text-checkerboard">Personal Details</h2>
                   {!isEditingProfile && (
                     <button
                       type="button"
@@ -534,7 +588,7 @@ export const AccountPage: React.FC = () => {
                       className="inline-flex items-center space-x-1.5 text-xs text-tangerine font-semibold hover:underline cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
-                      <span>Edit Information</span>
+                      <span>Edit Details</span>
                     </button>
                   )}
                 </div>
@@ -573,7 +627,7 @@ export const AccountPage: React.FC = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-[#1A1816]/10 gap-3">
                     <div>
                       <span className="block text-[11px] uppercase tracking-wider text-[#8C827A] font-medium">
-                        Contact Mobile (India)
+                        Phone Number
                       </span>
                       {isEditingProfile ? (
                         <input
@@ -590,7 +644,7 @@ export const AccountPage: React.FC = () => {
                       )}
                     </div>
                     <span className="text-[11px] text-[#8C827A]">
-                      For courier dispatch & installation liaison
+                      Used for delivery updates and assembly coordination
                     </span>
                   </div>
 
@@ -605,7 +659,7 @@ export const AccountPage: React.FC = () => {
                       </span>
                     </div>
                     <span className="text-xs text-[#8C827A] font-sans">
-                      Verified Identity
+                      Verified Account
                     </span>
                   </div>
 
@@ -613,7 +667,7 @@ export const AccountPage: React.FC = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <span className="block text-[11px] uppercase tracking-wider text-[#8C827A] font-medium">
-                        Account Privileges & Tier
+                        Account Role
                       </span>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-sm font-semibold capitalize text-checkerboard">
@@ -621,13 +675,13 @@ export const AccountPage: React.FC = () => {
                         </span>
                         {isAdmin && (
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-tangerine/10 text-tangerine font-semibold uppercase">
-                            Admin Access Granted
+                            Admin Access
                           </span>
                         )}
                       </div>
                     </div>
                     <span className="text-[11px] text-[#8C827A]">
-                      Protected by PostgreSQL 17 RBAC
+                      Verified role
                     </span>
                   </div>
 
@@ -661,21 +715,21 @@ export const AccountPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Column: Atelier Concierge */}
+            {/* Right Column: Customer Support */}
             <div className="space-y-6">
               <div className="bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-6 shadow-2xs">
                 <span className="text-[10px] uppercase tracking-[0.2em] text-tangerine font-semibold block mb-2">
-                  Atelier Concierge
+                  Customer Support
                 </span>
-                <h3 className="font-serif text-lg text-checkerboard mb-2">Private Residence Liaison</h3>
+                <h3 className="font-serif text-lg text-checkerboard mb-2">Need Assistance?</h3>
                 <p className="text-xs text-[#666059] leading-relaxed mb-4">
-                  Need custom millwork, white-glove delivery coordination, or bespoke architectural finishes?
+                  Have questions about furniture dimensions, delivery dates, or custom wood finishes?
                 </p>
                 <Link
                   href="/#visit-us"
                   className="inline-flex items-center space-x-2 text-xs font-semibold text-checkerboard hover:text-tangerine transition-colors"
                 >
-                  <span>Connect with Showroom</span>
+                  <span>Contact Us</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -683,47 +737,86 @@ export const AccountPage: React.FC = () => {
           </div>
         )}
 
-        {/* Tab 2: Indian Residence Addresses Registry */}
+        {/* Tab 2: Saved Addresses */}
         {activeTab === 'addresses' && (
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="font-serif text-2xl text-checkerboard">Residence Registry</h2>
+                <h2 className="font-serif text-2xl text-checkerboard">Saved Addresses</h2>
                 <p className="text-xs text-[#666059] mt-0.5">
-                  Saved Indian delivery destinations for seamless white-glove installation
+                  Manage your delivery addresses for seamless ordering and room delivery
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={handleOpenAddAddress}
-                className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-checkerboard hover:bg-tangerine text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-md self-start sm:self-auto cursor-pointer"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add New Residence</span>
-              </button>
+              <div className="flex items-center space-x-3 self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => loadAddresses()}
+                  disabled={isLoadingAddresses}
+                  className="inline-flex items-center justify-center p-2.5 rounded-full border border-[#1A1816]/15 hover:border-checkerboard text-checkerboard transition-colors cursor-pointer disabled:opacity-40"
+                  title="Refresh saved addresses"
+                  aria-label="Refresh saved addresses"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isLoadingAddresses ? 'animate-spin' : ''}`} />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenAddAddress}
+                  className="inline-flex items-center space-x-2 py-2.5 px-5 rounded-full bg-checkerboard hover:bg-tangerine text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-md cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add New Address</span>
+                </button>
+              </div>
             </div>
 
             {addressError && (
-              <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center space-x-2">
-                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-                <span>{addressError}</span>
+              <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-center justify-between gap-3 animate-fadeIn">
+                <div className="flex items-center space-x-2">
+                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                  <span>{addressError}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => loadAddresses()}
+                  className="text-xs text-red-700 underline font-semibold hover:text-red-900 cursor-pointer shrink-0"
+                >
+                  Retry
+                </button>
               </div>
             )}
 
-            {isLoadingAddresses ? (
+            {isLoadingAddresses && !hasFetchedAddresses ? (
               <div className="bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-12 text-center">
                 <div className="w-8 h-8 rounded-full border-2 border-checkerboard/20 border-t-tangerine animate-spin mx-auto mb-3" />
-                <p className="text-xs text-[#666059]">Querying residence registry...</p>
+                <p className="text-xs text-[#666059]">Loading saved addresses...</p>
+              </div>
+            ) : addressError && !hasFetchedAddresses ? (
+              <div className="bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-10 sm:p-14 text-center shadow-2xs">
+                <div className="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
+                  <AlertCircle className="w-7 h-7" />
+                </div>
+                <h3 className="font-serif text-2xl text-checkerboard mb-2">Unable to Load Addresses</h3>
+                <p className="text-xs sm:text-sm text-[#666059] max-w-md mx-auto mb-6 leading-relaxed">
+                  We could not retrieve your saved addresses. Please check your internet connection and try again.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => loadAddresses()}
+                  className="inline-flex items-center space-x-2 py-3 px-6 rounded-full bg-checkerboard hover:bg-tangerine text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-md cursor-pointer"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  <span>Retry</span>
+                </button>
               </div>
             ) : addresses.length === 0 ? (
               <div className="bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-10 sm:p-14 text-center shadow-2xs">
                 <div className="w-14 h-14 rounded-full bg-checkerboard/10 text-checkerboard flex items-center justify-center mx-auto mb-4">
                   <MapPin className="w-7 h-7" />
                 </div>
-                <h3 className="font-serif text-2xl text-checkerboard mb-2">No Saved Residences</h3>
+                <h3 className="font-serif text-2xl text-checkerboard mb-2">No Saved Addresses</h3>
                 <p className="text-xs sm:text-sm text-[#666059] max-w-md mx-auto mb-6 leading-relaxed">
-                  Add your primary villa, residence, or commercial salon destination for expedited bespoke deliveries.
+                  Save your home and office addresses for faster checkout.
                 </p>
                 <button
                   type="button"
@@ -731,7 +824,7 @@ export const AccountPage: React.FC = () => {
                   className="inline-flex items-center space-x-2 py-3 px-6 rounded-full bg-tangerine hover:bg-tangerine/90 text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-md cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Register First Residence</span>
+                  <span>Add First Address</span>
                 </button>
               </div>
             ) : (
@@ -757,7 +850,7 @@ export const AccountPage: React.FC = () => {
                           {addr.isDefault && (
                             <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-tangerine/15 text-tangerine text-[10px] font-semibold uppercase tracking-wider">
                               <Check className="w-3 h-3" />
-                              <span>Primary Residence</span>
+                              <span>Default Address</span>
                             </span>
                           )}
                         </div>
@@ -811,7 +904,7 @@ export const AccountPage: React.FC = () => {
                           onClick={() => handleSetDefaultAddress(addr.id)}
                           className="text-[11px] text-tangerine hover:underline font-semibold cursor-pointer"
                         >
-                          Set as Primary Residence
+                          Set as Default Address
                         </button>
                       </div>
                     )}
@@ -825,9 +918,9 @@ export const AccountPage: React.FC = () => {
         {/* Tab 3: Security & Login */}
         {activeTab === 'security' && (
           <div className="max-w-2xl bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-6 sm:p-8 shadow-2xs">
-            <h2 className="font-serif text-xl text-checkerboard mb-2">Security & Credentials</h2>
+            <h2 className="font-serif text-xl text-checkerboard mb-2">Login & Security</h2>
             <p className="text-xs text-[#666059] mb-6 font-sans">
-              Manage your passphrases and cryptographic session parameters.
+              Manage your password and account security settings.
             </p>
 
             {passwordError && (
@@ -847,7 +940,7 @@ export const AccountPage: React.FC = () => {
                   <div className="flex items-center justify-between p-4 rounded-2xl bg-white border border-[#1A1816]/10">
                     <div className="flex items-center space-x-3">
                       <Lock className="w-4 h-4 text-[#8C827A]" />
-                      <span className="text-xs text-checkerboard font-medium">Password Authentication</span>
+                      <span className="text-xs text-checkerboard font-medium">Password</span>
                     </div>
                     <button
                       type="button"
@@ -861,7 +954,7 @@ export const AccountPage: React.FC = () => {
                   <form onSubmit={handleUpdatePassword} className="space-y-4 p-5 rounded-2xl bg-white border border-[#1A1816]/10">
                     <div>
                       <label className="block text-[11px] uppercase tracking-wider font-medium text-[#666059] mb-1">
-                        New Password (min 8 characters)
+                        New Password (minimum 8 characters)
                       </label>
                       <input
                         type="password"
@@ -913,21 +1006,21 @@ export const AccountPage: React.FC = () => {
           </div>
         )}
 
-        {/* Tab 4: Bespoke Orders Placeholder */}
+        {/* Tab 4: My Orders Placeholder */}
         {activeTab === 'orders' && (
           <div className="bg-[#FAF8F5] border border-[#1A1816]/10 rounded-3xl p-10 sm:p-14 text-center shadow-2xs">
             <div className="w-14 h-14 rounded-full bg-tangerine/10 text-tangerine flex items-center justify-center mx-auto mb-4">
               <Package className="w-7 h-7" />
             </div>
-            <h3 className="font-serif text-2xl text-checkerboard mb-2">No Active Acquisitions</h3>
+            <h3 className="font-serif text-2xl text-checkerboard mb-2">No Orders Yet</h3>
             <p className="text-xs sm:text-sm text-[#666059] max-w-md mx-auto mb-6 leading-relaxed">
-              When you acquire signature bespoke furniture pieces, tracking, crafting updates, and freight details will be chronicled here.
+              When you place an order, its delivery status and details will appear here.
             </p>
             <Link
               href="/collections"
               className="inline-flex items-center space-x-2 py-3 px-6 rounded-full bg-checkerboard hover:bg-tangerine text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-md"
             >
-              <span>Explore Collection Catalogue</span>
+              <span>Explore Furniture</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -939,7 +1032,7 @@ export const AccountPage: React.FC = () => {
             <div className="bg-white border border-[#1A1816]/15 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between pb-4 border-b border-[#1A1816]/10 mb-5">
                 <h3 className="font-serif text-xl text-checkerboard">
-                  {editingAddressId ? 'Edit Residence Destination' : 'Add Residence Destination'}
+                  {editingAddressId ? 'Edit Address' : 'Add New Address'}
                 </h3>
                 <button
                   type="button"
@@ -990,14 +1083,14 @@ export const AccountPage: React.FC = () => {
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider font-medium text-[#666059] mb-1">
-                    Address Line 1 (Villa/Flat, Building, Street) *
+                    Address Line 1 (Flat, House No., Building, Street) *
                   </label>
                   <input
                     type="text"
                     required
                     value={addressFormData.streetLine1}
                     onChange={(e) => setAddressFormData({ ...addressFormData, streetLine1: e.target.value })}
-                    placeholder="e.g. Penthouse 4B, Malabar Residences, B.G. Kher Marg"
+                    placeholder="e.g. Flat 4B, Malabar Apartments, B.G. Kher Marg"
                     className="w-full bg-[#FAF8F5] border border-[#1A1816]/15 rounded-xl px-3.5 py-2 text-sm text-checkerboard focus:outline-hidden focus:border-tangerine"
                   />
                 </div>
@@ -1011,7 +1104,7 @@ export const AccountPage: React.FC = () => {
                       type="text"
                       value={addressFormData.streetLine2 || ''}
                       onChange={(e) => setAddressFormData({ ...addressFormData, streetLine2: e.target.value })}
-                      placeholder="e.g. Near Governor's Estate"
+                      placeholder="e.g. Near City Center"
                       className="w-full bg-[#FAF8F5] border border-[#1A1816]/15 rounded-xl px-3.5 py-2 text-sm text-checkerboard focus:outline-hidden focus:border-tangerine"
                     />
                   </div>
@@ -1024,7 +1117,7 @@ export const AccountPage: React.FC = () => {
                       type="text"
                       value={addressFormData.landmark || ''}
                       onChange={(e) => setAddressFormData({ ...addressFormData, landmark: e.target.value })}
-                      placeholder="e.g. Opposite Hanging Gardens"
+                      placeholder="e.g. Opposite City Park"
                       className="w-full bg-[#FAF8F5] border border-[#1A1816]/15 rounded-xl px-3.5 py-2 text-sm text-checkerboard focus:outline-hidden focus:border-tangerine"
                     />
                   </div>
@@ -1081,7 +1174,7 @@ export const AccountPage: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
                   <div>
                     <label className="block text-[11px] uppercase tracking-wider font-medium text-[#666059] mb-1.5">
-                      Destination Type
+                      Address Type
                     </label>
                     <div className="flex items-center space-x-2">
                       {(['Home', 'Work', 'Other'] as const).map((type) => (
@@ -1108,7 +1201,7 @@ export const AccountPage: React.FC = () => {
                       onChange={(e) => setAddressFormData({ ...addressFormData, isDefault: e.target.checked })}
                       className="w-4 h-4 rounded-sm border-gray-300 text-tangerine focus:ring-tangerine"
                     />
-                    <span>Make Primary Residence</span>
+                    <span>Set as Default Address</span>
                   </label>
                 </div>
 
@@ -1133,7 +1226,7 @@ export const AccountPage: React.FC = () => {
                     ) : (
                       <>
                         <Check className="w-4 h-4" />
-                        <span>{editingAddressId ? 'Update Residence' : 'Save Residence'}</span>
+                        <span>{editingAddressId ? 'Update Address' : 'Save Address'}</span>
                       </>
                     )}
                   </button>

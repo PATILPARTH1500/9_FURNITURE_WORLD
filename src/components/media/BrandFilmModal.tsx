@@ -136,7 +136,7 @@ export const BrandFilmModal: React.FC<BrandFilmModalProps> = ({ isOpen, onClose 
               Brand Film
             </span>
             <span className="font-serif text-lg text-white font-medium">
-              FURNITURE VILLAGE · Continuous Residence Journey
+              FURNITURE VILLAGE · Virtual Home Journey
             </span>
           </div>
 

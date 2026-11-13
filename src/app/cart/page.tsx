@@ -53,11 +53,11 @@ export default function CartPage() {
             <div className="flex items-center space-x-2 mb-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-tangerine" />
               <span className="font-sans text-xs tracking-widest uppercase text-tangerine font-semibold">
-                Curated Order Bag
+                Shopping Cart
               </span>
             </div>
             <h1 className="font-serif text-4xl sm:text-5xl text-checkerboard font-semibold">
-              Your Architectural Selection
+              Your Shopping Cart
             </h1>
           </div>
           <Link
@@ -65,7 +65,7 @@ export default function CartPage() {
             className="inline-flex items-center space-x-2 text-xs uppercase tracking-wider text-checkerboard/80 hover:text-tangerine font-sans font-semibold transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Continue Exploring Collections</span>
+            <span>Continue Shopping</span>
           </Link>
         </div>
 
@@ -73,26 +73,26 @@ export default function CartPage() {
           <div className="max-w-xl mx-auto py-16 text-center space-y-6 bg-white/95 backdrop-blur-xs rounded-2xl border border-checkerboard/10 p-12 shadow-retro">
             <CheckCircle2 className="w-16 h-16 text-olive mx-auto stroke-[1.5]" />
             <span className="font-sans text-xs uppercase tracking-wider text-tangerine font-semibold block">
-              Order Confirmed & Scheduled
+              Order Confirmed
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl text-checkerboard font-semibold">
               Thank You for Your Order
             </h2>
             <p className="text-sm text-checkerboard/80 font-normal leading-relaxed">
-              Order reference <span className="font-sans text-checkerboard font-bold bg-cream px-2 py-0.5 rounded border border-checkerboard/10">{orderConfirmation}</span> has been confirmed. Our Bengaluru atelier concierge will contact you within 24 hours to coordinate white-glove delivery and room assembly.
+              Order reference <span className="font-sans text-checkerboard font-bold bg-cream px-2 py-0.5 rounded border border-checkerboard/10">{orderConfirmation}</span> has been confirmed. Our Bengaluru customer care team will contact you within 24 hours to coordinate room delivery and assembly.
             </p>
             <div className="p-4 bg-cream/70 rounded-xl border border-checkerboard/10 text-xs font-sans text-checkerboard/80 text-left space-y-1.5">
-              <p className="font-semibold text-checkerboard">Included White-Glove Inclusions:</p>
-              <p>• Placement in your designated room of choice</p>
-              <p>• Full solid timber inspection and unboxing</p>
-              <p>• Complete eco-friendly packaging disposal</p>
+              <p className="font-semibold text-checkerboard">Delivery & Assembly Services:</p>
+              <p>• Delivery to your room of choice</p>
+              <p>• Unboxing and furniture inspection</p>
+              <p>• Removal of packaging materials</p>
             </div>
             <div className="pt-4">
               <Link
                 href="/collections"
                 className="inline-block bg-tangerine hover:bg-coral text-white py-3.5 px-8 rounded-full uppercase tracking-wider text-xs font-bold transition-all shadow-warm"
               >
-                Return to Showroom
+                Continue Shopping
               </Link>
             </div>
           </div>
@@ -102,9 +102,9 @@ export default function CartPage() {
               <div className="w-16 h-16 mx-auto rounded-full bg-cream-dark flex items-center justify-center border border-checkerboard/10">
                 <ShoppingBag className="w-7 h-7 text-walnut" />
               </div>
-              <h2 className="font-serif text-3xl text-checkerboard font-semibold">Your shopping bag is empty</h2>
+              <h2 className="font-serif text-3xl text-checkerboard font-semibold">Your cart is empty</h2>
               <p className="text-xs text-walnut leading-relaxed font-normal">
-                Discover handcrafted seating, solid walnut dining tables, and warm bedroom suites to begin curating your living space.
+                Discover comfortable sofas, dining tables, and bedroom furniture designed for your home.
               </p>
             </div>
 
@@ -161,8 +161,8 @@ export default function CartPage() {
                     <Truck className="w-4 h-4 text-tangerine" />
                     <span>
                       {qualifiesForFreeShipping
-                        ? 'White-Glove Room Delivery Unlocked'
-                        : `Add ${formatPrice(remainingForFreeShipping)} for Complimentary Room Setup`}
+                        ? 'Free Delivery & Assembly Unlocked'
+                        : `Add ${formatPrice(remainingForFreeShipping)} for Free Delivery & Assembly`}
                     </span>
                   </span>
                   <span className="text-tangerine font-bold">{progressPercent}%</span>
@@ -253,14 +253,14 @@ export default function CartPage() {
 
                 <div className="space-y-3 text-xs font-sans">
                   <div className="flex justify-between text-walnut">
-                    <span>Curated Subtotal</span>
+                    <span>Subtotal</span>
                     <span className="font-sans text-checkerboard font-semibold">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-walnut">
-                    <span>White-Glove Room Delivery</span>
+                    <span>Delivery & Assembly</span>
                     <span className="font-sans text-checkerboard font-semibold">
                       {qualifiesForFreeShipping ? (
-                        <span className="text-olive font-bold">Complimentary</span>
+                        <span className="text-olive font-bold">Free</span>
                       ) : (
                         formatPrice(shippingCost)
                       )}
@@ -283,7 +283,7 @@ export default function CartPage() {
                   disabled={isSubmitting}
                   className="w-full bg-tangerine hover:bg-coral text-white py-4 px-6 rounded-xl uppercase tracking-wider text-xs font-bold flex items-center justify-center space-x-2 transition-all duration-300 shadow-warm hover:shadow-lg disabled:opacity-50 active:scale-98"
                 >
-                  <span>{isSubmitting ? 'Securing Showroom Order...' : 'Proceed to Checkout'}</span>
+                  <span>{isSubmitting ? 'Processing Order...' : 'Proceed to Checkout'}</span>
                   {!isSubmitting && <ArrowRight className="w-4 h-4" />}
                 </button>
 
@@ -292,7 +292,7 @@ export default function CartPage() {
                     <ShieldCheck className="w-4 h-4 text-tangerine shrink-0" />
                     <span className="font-medium">10-year structural frame guarantee</span>
                   </div>
-                  <p>Our dedicated two-person logistics team unpacks and installs every piece in your desired room.</p>
+                  <p>Our delivery team unboxes and sets up each furniture piece in your room of choice.</p>
                 </div>
               </div>
             </div>

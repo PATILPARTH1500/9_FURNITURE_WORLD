@@ -9,7 +9,7 @@ export const AuthCallbackPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [statusMessage, setStatusMessage] = useState<string>('Validating credentials and establishing session...');
+  const [statusMessage, setStatusMessage] = useState<string>('Verifying your account...');
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -117,7 +117,7 @@ export const AuthCallbackPage: React.FC = () => {
               href="/login"
               className="inline-flex items-center justify-center space-x-2 py-3 px-6 rounded-full bg-checkerboard hover:bg-tangerine text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-md"
             >
-              <span>Return to Sign In</span>
+              <span>Back to Login</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

@@ -164,7 +164,7 @@ export const EditorialSpreadSection: React.FC = () => {
           </div>
 
           <p className="font-sans text-sm sm:text-base text-[#A8A29E] leading-relaxed max-w-md font-normal">
-            Essays, material studies, and design perspectives from the Furniture World atelier exploring how thoughtful proportions, honest materials, and natural light shape contemporary homes.
+            Articles, material guides, and design perspectives from Furniture World exploring how comfortable furniture, natural materials, and light shape contemporary Indian homes.
           </p>
         </div>
 
@@ -261,14 +261,14 @@ export const EditorialSpreadSection: React.FC = () => {
         <div className="mt-12 sm:mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-sans text-[#A8A29E]">
           <div className="flex items-center space-x-2">
             <Compass className="w-4 h-4 text-[#E07A5F]" />
-            <span>Furniture World Journal · Architectural Perspectives from Our Atelier</span>
+            <span>Furniture World Journal · Design Guides &amp; Living Stories</span>
           </div>
 
           <Link
             href="/collections"
             className="inline-flex items-center space-x-1.5 uppercase tracking-wider text-[#FBF9F5] hover:text-[#E07A5F] font-semibold transition-colors min-h-[44px]"
           >
-            <span>Explore All Atelier Collections</span>
+            <span>Explore All Collections</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>

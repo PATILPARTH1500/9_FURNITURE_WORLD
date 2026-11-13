@@ -20,7 +20,7 @@ const CONFIRMED_SERVICES: ServiceItem[] = [
     title: 'Room-of-Choice Delivery',
     subtitle: 'Directly into your chosen room',
     description:
-      'Our white-glove two-person delivery team carries your furniture up staircases or elevators directly into the room you want it in, with zero heavy lifting on your part.',
+      'Our two-person delivery team carries your furniture directly into the room you want it in, with no heavy lifting on your part.',
     icon: Truck,
   },
   {
@@ -225,7 +225,7 @@ export const ThoughtfulServiceSection: React.FC = () => {
                 className="space-x-2 text-xs font-sans uppercase tracking-wider bg-tangerine hover:bg-coral text-white font-medium px-7 py-4 rounded-full shadow-warm transition-all duration-300 hover:shadow-lg w-full sm:w-auto justify-center"
               >
                 <Phone className="w-4 h-4" />
-                <TextRoll>Call Concierge</TextRoll>
+                <TextRoll>Call Us</TextRoll>
               </MagneticButton>
             </MovingBorder>
 

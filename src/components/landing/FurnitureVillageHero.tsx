@@ -68,7 +68,7 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
             <div className="flex items-center space-x-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[#B54113] shrink-0" aria-hidden="true" />
               <span className="font-sans text-[11px] sm:text-xs uppercase tracking-[0.22em] text-[#B54113] font-semibold">
-                {BRAND_CONFIG.name} · Atelier Collection 2026
+                {BRAND_CONFIG.name} · Collection 2026
               </span>
             </div>
 
@@ -89,14 +89,14 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
             variants={itemVariants}
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-3.5 pt-1 sm:pt-2"
           >
-            {/* Primary Action: Explore Residence Tour */}
+            {/* Primary Action: Explore Virtual Tour */}
             <motion.button
               whileHover={prefersReduced ? {} : { scale: 1.01 }}
               whileTap={prefersReduced ? {} : { scale: 0.98 }}
               onClick={handleScrollToTour}
               className="min-h-[48px] inline-flex items-center justify-center space-x-2.5 px-7 py-3.5 rounded-full bg-[#1A1816] hover:bg-[#C84D1B] text-white font-sans text-xs uppercase tracking-[0.14em] font-semibold shadow-xs hover:shadow-md transition-all duration-200 group cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#C84D1B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF9F5]"
             >
-              <span>Explore Residence Tour</span>
+              <span>Explore Virtual Tour</span>
               <motion.div
                 animate={prefersReduced ? {} : { y: [0, 2.5, 0] }}
                 transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
@@ -115,7 +115,7 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
                 href="/collections"
                 className="min-h-[48px] w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-3.5 rounded-full bg-white hover:bg-[#F2EFE9] text-[#1A1816] border border-[#1A1816]/15 hover:border-[#1A1816]/30 font-sans text-xs uppercase tracking-[0.14em] font-semibold shadow-2xs transition-all duration-200 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#C84D1B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF9F5]"
               >
-                <span>View Full Catalogue</span>
+                <span>Explore All Furniture</span>
                 <ArrowUpRight className="w-3.5 h-3.5 text-[#C84D1B] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
               </Link>
             </motion.div>
@@ -126,33 +126,33 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
             variants={itemVariants}
             className="grid grid-cols-3 gap-2.5 sm:gap-6 pt-6 sm:pt-7 border-t border-[#1A1816]/10 max-w-lg"
           >
-            {/* Stat 01: 05 Curated Suites */}
+            {/* Stat 01: 05 Curated Rooms */}
             <div className="space-y-1 min-w-0">
               <span className="font-serif text-xl sm:text-2xl font-normal text-[#1A1816] block tracking-tight leading-none">
                 05
               </span>
               <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.12em] text-[#57534E] font-medium block leading-tight">
-                Curated Suites
+                Curated Rooms
               </span>
             </div>
 
-            {/* Stat 02: 10-Yr Frame Guarantee */}
+            {/* Stat 02: 10-Yr Frame Warranty */}
             <div className="space-y-1 min-w-0">
               <span className="font-serif text-xl sm:text-2xl font-normal text-[#1A1816] block tracking-tight leading-none">
                 10-Yr
               </span>
               <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.12em] text-[#57534E] font-medium block leading-tight">
-                Frame Guarantee
+                Frame Warranty
               </span>
             </div>
 
-            {/* Stat 03: White-Glove (Protected from wrapping on mobile) */}
+            {/* Stat 03: Free Setup */}
             <div className="space-y-1 min-w-0">
               <span className="font-serif text-xl sm:text-2xl font-normal text-[#1A1816] block tracking-tight leading-none whitespace-nowrap">
-                White-Glove
+                Free Setup
               </span>
               <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.12em] text-[#57534E] font-medium block leading-tight">
-                In-Home Assembly
+                Room Assembly
               </span>
             </div>
           </motion.div>
@@ -163,7 +163,7 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
           <div className="relative aspect-[16/11] sm:aspect-[16/10] lg:aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#1A1816]/10 shadow-[0_16px_48px_rgba(26,24,22,0.06)] bg-[#F2EFE9] group">
             <Image
               src="/images/collections/collection-sanctuary-seating.webp"
-              alt="Furniture World Sanctuary Seating Suite — Handcrafted Bouclé and White Oak Lounge"
+              alt="Furniture World Living Seating — Handcrafted Bouclé and White Oak Lounge"
               fill
               priority
               className="object-cover object-[center_42%] transition-transform duration-700 ease-out group-hover:scale-103"
@@ -184,10 +184,10 @@ export const FurnitureVillageHero: React.FC<FurnitureVillageHeroProps> = ({ onEx
         {/* Right: Interactive Scroll Prompt (Accessible touch target >= 44px) */}
         <button
           onClick={handleScrollToTour}
-          aria-label="Scroll to cinematic residence tour"
+          aria-label="Scroll to virtual tour"
           className="min-h-[44px] inline-flex items-center space-x-2 text-[#1A1816] hover:text-[#C84D1B] font-sans text-[11px] sm:text-xs uppercase tracking-[0.14em] font-semibold transition-colors py-2 px-3 -mx-3 rounded-full hover:bg-[#1A1816]/5 cursor-pointer group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#C84D1B]"
         >
-          <span>Scroll into Cinematic Residence</span>
+          <span>Scroll to Virtual Tour</span>
           <ArrowDown className="w-3.5 h-3.5 text-[#C84D1B] transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true" />
         </button>
       </div>

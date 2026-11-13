@@ -181,14 +181,14 @@ export const RegisterPage: React.FC = () => {
               {BRAND_CONFIG.name}
             </span>
             <span className="block text-[9px] uppercase tracking-[0.28em] text-[#666059] -mt-0.5">
-              Client Onboarding
+              Create Account
             </span>
           </Link>
           <h1 className="font-serif text-3xl sm:text-4xl text-checkerboard font-normal tracking-tight">
-            Create an Account
+            Create Account
           </h1>
           <p className="mt-2 text-xs sm:text-sm text-[#666059] font-sans">
-            Join the Furniture World residence network for exclusive curations.
+            Join Furniture Village for easy ordering and saved addresses.
           </p>
         </div>
 
@@ -251,7 +251,7 @@ export const RegisterPage: React.FC = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
-                  placeholder="Eleanor Vance"
+                  placeholder="e.g. Rahul Sharma"
                   className="w-full bg-white border border-[#1A1816]/15 rounded-2xl px-4 py-3 pl-10 text-sm text-checkerboard placeholder:text-[#9E9891] focus:outline-hidden focus:border-tangerine focus:ring-1 focus:ring-tangerine transition-all"
                   autoComplete="name"
                 />
@@ -269,7 +269,7 @@ export const RegisterPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="eleanor@atelier.com"
+                  placeholder="name@example.com"
                   className="w-full bg-white border border-[#1A1816]/15 rounded-2xl px-4 py-3 pl-10 text-sm text-checkerboard placeholder:text-[#9E9891] focus:outline-hidden focus:border-tangerine focus:ring-1 focus:ring-tangerine transition-all"
                   autoComplete="email"
                 />
@@ -342,12 +342,12 @@ export const RegisterPage: React.FC = () => {
           {/* Footer Navigation */}
           <div className="mt-8 pt-6 border-t border-[#1A1816]/10 text-center">
             <p className="text-xs text-[#666059]">
-              Already an account holder?{' '}
+              Already have an account?{' '}
               <Link
                 href={`/login${redirectTo !== '/account' ? `?redirectTo=${encodeURIComponent(redirectTo)}` : ''}`}
                 className="text-tangerine font-semibold hover:underline"
               >
-                Sign In
+                Login
               </Link>
             </p>
           </div>

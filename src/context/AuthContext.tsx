@@ -488,20 +488,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('[Security] is_admin RPC failed — failing closed:', error.message);
         return {
           isAdmin: false,
-          error: 'Atelier cryptographic verification failed. Access denied.',
+          error: 'Admin verification check failed. Access denied.',
         };
       }
 
       const isAdmin = Boolean(data);
       return {
         isAdmin,
-        error: isAdmin ? undefined : 'Account does not possess verified administrator privileges.',
+        error: isAdmin ? undefined : 'This account does not have administrator privileges.',
       };
     } catch (err) {
       console.error('[Security] is_admin RPC exception — failing closed:', err);
       return {
         isAdmin: false,
-        error: 'Security boundary error during administrative handshake.',
+        error: 'Security error during administrator verification.',
       };
     }
   }, [user]);

@@ -121,7 +121,7 @@ export const VisitUsShowroomSection: React.FC = () => {
                   priority
                 />
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3.5 py-1.5 rounded-full border border-stone-200 text-xs font-sans font-semibold text-[#1A1816] uppercase tracking-wider">
-                  Flagship Atelier
+                  Flagship Store
                 </div>
               </div>
 
@@ -184,7 +184,7 @@ export const VisitUsShowroomSection: React.FC = () => {
                       {BRAND_CONFIG.contact.hours}
                     </p>
                     <p className="text-[11px] text-[#78716C]">
-                      Sunday: Closed for atelier maintenance
+                      Sunday: Closed
                     </p>
                   </div>
                 </div>
