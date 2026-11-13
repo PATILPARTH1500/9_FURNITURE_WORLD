@@ -41,3 +41,5 @@ Thumbs.db
 
 # Temporary test & scratch artifacts
 /scratch/
+supabase/.temp/
+

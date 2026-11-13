@@ -3,11 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Link from '@/components/common/Link';
-import { ShoppingBag, Menu, X, ArrowUpRight, Search, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Menu, X, ArrowUpRight, Search, ChevronDown, User as UserIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BRAND_CONFIG } from '@/config/brand';
 import { useCartStore } from '@/store/useCartStore';
 import { scrollToSection } from '@/utils/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 const SearchModal = React.lazy(() =>
   import('@/components/discovery/SearchModal').then((m) => ({ default: m.SearchModal }))
@@ -23,6 +24,16 @@ export const Navbar: React.FC = () => {
   const [navTheme, setNavTheme] = useState<'light' | 'dark'>('light');
   const { getTotalCount, setIsOpen } = useCartStore();
   const [cartCount, setCartCount] = useState(0);
+
+  const { user, profile, isAuthenticated } = useAuth();
+  const customerName = profile?.fullName || user?.user_metadata?.full_name || user?.user_metadata?.name || 'Account';
+  const avatarUrl = profile?.avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const initials = customerName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((n: string) => n[0].toUpperCase())
+    .join('') || 'FW';
 
   const navRef = useRef<HTMLElement>(null);
   const moreDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -391,6 +402,39 @@ export const Navbar: React.FC = () => {
               </span>
             </button>
 
+            {/* Customer Account Sanctuary Entry */}
+            <Link
+              href={isAuthenticated ? '/account' : '/login'}
+              className={`inline-flex items-center space-x-1.5 p-2 rounded-full transition-colors ${
+                navTheme === 'dark'
+                  ? 'text-white/85 hover:text-[#E7C89F] hover:bg-white/10'
+                  : 'text-[#1A1816]/85 hover:text-[#C84D1B] hover:bg-[#1A1816]/5'
+              }`}
+              aria-label={isAuthenticated ? `Customer Account: ${customerName}` : 'Customer Sign In'}
+              title={isAuthenticated ? `Signed in as ${customerName}` : 'Sign In / Register'}
+            >
+              {isAuthenticated && avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={customerName}
+                  className="w-4 h-4 rounded-full object-cover border border-current"
+                />
+              ) : isAuthenticated ? (
+                <span className="w-4 h-4 rounded-full bg-[#C84D1B] text-white text-[8px] font-sans font-bold flex items-center justify-center">
+                  {initials}
+                </span>
+              ) : (
+                <UserIcon className="w-4 h-4 shrink-0" />
+              )}
+              <span
+                className={`hidden xl:inline text-xs font-sans tracking-wide uppercase ${
+                  navTheme === 'dark' ? 'text-[#D0C4B4]' : 'text-[#666059]'
+                }`}
+              >
+                {isAuthenticated ? 'Sanctuary' : 'Sign In'}
+              </span>
+            </Link>
+
             {/* Shopping Bag Button */}
             <button
               onClick={() => setIsOpen(true)}
@@ -480,6 +524,38 @@ export const Navbar: React.FC = () => {
                 >
                   <X className="w-5 h-5" />
                 </button>
+              </div>
+
+              {/* Customer Account Sanctuary in Mobile Drawer */}
+              <div className="pt-4 pb-1">
+                <Link
+                  href={isAuthenticated ? '/account' : '/login'}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between p-3.5 rounded-2xl bg-[#1A1816]/5 hover:bg-[#1A1816]/10 transition-colors"
+                >
+                  <div className="flex items-center space-x-3">
+                    {isAuthenticated && avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt={customerName}
+                        className="w-9 h-9 rounded-full object-cover border border-[#1A1816]/10 shadow-xs"
+                      />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-checkerboard text-white flex items-center justify-center font-serif text-sm shadow-xs">
+                        {isAuthenticated ? initials : <UserIcon className="w-4 h-4" />}
+                      </div>
+                    )}
+                    <div className="text-left">
+                      <span className="block font-serif text-sm text-[#1A1816] font-medium leading-tight">
+                        {isAuthenticated ? customerName : 'Customer Sign In'}
+                      </span>
+                      <span className="block text-[10px] text-[#666059] font-sans mt-0.5">
+                        {isAuthenticated ? 'Client Sanctuary & Portfolio' : 'Access bespoke curations'}
+                      </span>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-[#666059]" />
+                </Link>
               </div>
 
               {/* All 9 Major Navigation Destinations */}
